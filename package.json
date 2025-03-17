@@ -4,9 +4,9 @@
   "description": "The NodeJS backend of Menuchi",
   "main": "index.js",
   "scripts": {
-    "start:build": "tsc -w",
-    "start:run": "nodemon ./build/index.js",
-    "start": "concurrently npm:start:*"
+    "dev:build": "tsc -w",
+    "dev:run": "nodemon ./build/index.js",
+    "dev": "concurrently npm:start:*"
   },
   "repository": {
     "type": "git",
