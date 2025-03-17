@@ -1,26 +1,27 @@
-FROM node:22-alpine as build
+FROM node:22-alpine as base
 
 WORKDIR /app
 
-COPY ./package*.json .
-RUN npm install
+COPY package*.json ./
+RUN npm ci --omit=dev
+COPY ./ ./
 
-COPY tsconfig.json .
-COPY ./src .
+###################################################
+FROM base as build
 
-RUN tsc
+RUN npx tsc
 
-#########################################################
-FROM build as dev
+###################################################
+FROM node:22-alpine as runtime
 
 WORKDIR /app
 
-COPY --from=build /app/package*.json .
+COPY --from=build /app/package*.json ./
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/build ./build
 
-ENV PORT=3000
+ENV PORT=8080
 
-EXPOSE 3000
+EXPOSE 8080
 
-CMD ["npm", "run", "dev:run"]
+CMD ["npm", "start"]

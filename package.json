@@ -6,7 +6,8 @@
   "scripts": {
     "dev:build": "tsc -w",
     "dev:run": "nodemon ./build/index.js",
-    "dev": "concurrently npm:start:*"
+    "dev": "concurrently npm:start:*",
+    "start": "node ./build/index.js"
   },
   "repository": {
     "type": "git",
@@ -23,9 +24,12 @@
   "dependencies": {
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.10",
-    "concurrently": "^9.1.2",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "typescript": "^5.8.2"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "nodemon": "^3.1.9"
   }
 }
