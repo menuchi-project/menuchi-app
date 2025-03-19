@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id                    String         @id @db.Uuid
+  id                    String         @id @default(uuid()) @db.Uuid
   username              String?        @unique
   password              String?
   phoneNumber           String?        @unique @map("phone_number")
@@ -24,14 +24,14 @@ model User {
 }
 
 model roles {
-  id     String  @id @db.Uuid
+  id     String  @id @default(uuid()) @db.Uuid
   userId String? @map("user_id") @db.Uuid
   role   Int?
   users  User?   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model UserProfiles {
-  id       String  @id @db.Uuid
+  id       String  @id @default(uuid()) @db.Uuid
   userId   String? @map("user_id") @db.Uuid
   fullName String? @map("full_name")
   gender   Gender?
@@ -50,7 +50,7 @@ enum Gender {
 }
 
 model Restaurant {
-  id        String   @id @db.Uuid
+  id        String   @id @default(uuid()) @db.Uuid
   managerId String?  @map("manager_id") @db.Uuid
   name      String?
   slang     String?
@@ -66,7 +66,7 @@ model Restaurant {
 }
 
 model Branch {
-  id           String         @id @db.Uuid
+  id           String         @id @default(uuid()) @db.Uuid
   restaurantId String?        @map("restaurant_id") @db.Uuid
   iOpen        Boolean?       @map("is_open")
   status       String?
@@ -88,7 +88,7 @@ model Branch {
 }
 
 model Staff {
-  id       String  @id @db.Uuid
+  id       String  @id @default(uuid()) @db.Uuid
   userId   String? @map("user_id") @db.Uuid
   branchId String? @map("branch_id") @db.Uuid
   branches Branch? @relation(fields: [branchId], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -98,7 +98,7 @@ model Staff {
 }
 
 model OpeningTimes {
-  id       String  @id @db.Uuid
+  id       String  @id @default(uuid()) @db.Uuid
   branchId String? @map("branch_id") @db.Uuid
   sat      String?
   sun      String?
@@ -113,7 +113,7 @@ model OpeningTimes {
 }
 
 model Address {
-  id          String  @id @db.Uuid
+  id          String  @id @default(uuid()) @db.Uuid
   branchId    String? @map("branch_id") @db.Uuid
   country     String? @default("Iran")
   region      String?
@@ -127,7 +127,7 @@ model Address {
 }
 
 model Backlog {
-  id         String     @id @db.Uuid
+  id         String     @id @default(uuid()) @db.Uuid
   branchId   String?    @map("branch_id") @db.Uuid
   branches   Branch?    @relation(fields: [branchId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   categories Category[]
@@ -136,7 +136,7 @@ model Backlog {
 }
 
 model Menu {
-  id       String  @id @db.Uuid
+  id       String  @id @default(uuid()) @db.Uuid
   branchId String? @map("branch_id") @db.Uuid
   name     String?
   favicon  String? @db.Text
@@ -146,7 +146,7 @@ model Menu {
 }
 
 model Category {
-  id            String          @id @db.Uuid
+  id            String          @id @default(uuid()) @db.Uuid
   backlogId     String?         @map("branch_id") @db.Uuid
   name          String?
   backlog       Backlog?        @relation(fields: [backlogId], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -157,7 +157,7 @@ model Category {
 }
 
 model SubCategories {
-  id         String    @id @db.Uuid
+  id         String    @id @default(uuid()) @db.Uuid
   categoryId String?   @map("category_id") @db.Uuid
   name       String?
   items      Item[]
@@ -167,7 +167,7 @@ model SubCategories {
 }
 
 model Item {
-  id            String         @id @db.Uuid
+  id            String         @id @default(uuid()) @db.Uuid
   categoryId    String?        @map("category_id") @db.Uuid
   subCategoryId String?        @map("sub_category_id") @db.Uuid
   name          String?
