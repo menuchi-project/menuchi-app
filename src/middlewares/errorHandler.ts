@@ -15,7 +15,6 @@ export function errorPreprocessor(
 ): void {
   if (error instanceof ValidateError) {
     const path = req.path;
-    console.log(path);
     const details = validationErrorCleaner(error);
 
     switch (path) {

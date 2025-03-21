@@ -212,6 +212,9 @@
 			},
 			"ErrorDetail": {
 				"properties": {
+					"field": {
+						"type": "string"
+					},
 					"message": {
 						"type": "string"
 					},
@@ -220,6 +223,7 @@
 					}
 				},
 				"required": [
+					"field",
 					"message"
 				],
 				"type": "object",

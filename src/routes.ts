@@ -76,6 +76,7 @@ const models: TsoaRoute.Models = {
     "ErrorDetail": {
         "dataType": "refObject",
         "properties": {
+            "field": {"dataType":"string","required":true},
             "message": {"dataType":"string","required":true},
             "value": {"dataType":"string"},
         },
