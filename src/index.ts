@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import { errorHandler, notFoundHandler } from './middlewares/ErrorHandler';
+import { errorHandler, notFoundHandler, errorPreprocessor } from './middlewares/ErrorHandler';
 import { RegisterRoutes } from './routes';
 import swaggerUi from 'swagger-ui-express';
 import * as swagger from './config/swagger.json';
@@ -13,6 +13,7 @@ app.use(express.json());
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swagger));
 RegisterRoutes(app);
+app.use(errorPreprocessor)
 app.use(errorHandler);
 app.use(notFoundHandler);
 
