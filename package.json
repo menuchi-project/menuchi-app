@@ -4,11 +4,12 @@
   "description": "The NodeJS backend of Menuchi",
   "main": "index.js",
   "scripts": {
+    "dev:tsoa": "npx tsoa spec-and-routes",
     "dev:build": "tsc -w",
     "dev:run": "nodemon ./build/index.js",
-    "dev": "concurrently npm:start:*",
+    "dev": "concurrently npm:dev:*",
     "start": "node ./build/index.js",
-    "migrate": "npx prisma migrate dev"
+    "migrate": "npx prisma migrate dev --schema=./src/db/schema.prisma"
   },
   "repository": {
     "type": "git",
@@ -26,10 +27,14 @@
     "@prisma/client": "^6.5.0",
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.10",
+    "@types/swagger-ui-express": "^4.1.8",
+    "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "prisma": "^6.5.0",
+    "reflect-metadata": "^0.2.2",
+    "swagger-ui-express": "^5.0.1",
     "tsoa": "^6.6.0",
     "typescript": "^5.8.2"
   },
