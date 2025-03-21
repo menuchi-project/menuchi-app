@@ -1,43 +1,17 @@
 import { Completable } from "./BaseTypes";
-import { URL, UUID } from "./TypeAliases";
+import { Boolean, DefaultString, URL, UUID } from "./TypeAliases";
 
 export interface RestaurantCompactIn {
+  name: DefaultString;
   /**
-   * @minLength 2
-   * @maxLength 50
-   */
-  name: string;
-  /**
-   * @minLength 2
-   * @maxLength 50
    * @pattern ^[a-zA-Z0-9]*$
    */
-  slang?: string | null;
-  /**
-   * @minLength 2
-   * @maxLength 50
-   */
-  instagram?: string | null;
-  /**
-   * @minLength 2
-   * @maxLength 50
-   */
-  telegram?: string | null;
-  /**
-   * @minLength 2
-   * @maxLength 50
-   */
-  twitter?: string | null;
-  /**
-   * @minLength 2
-   * @maxLength 50
-   */
-  youtube?: string | null;
-  /**
-   * @minLength 2
-   * @maxLength 50
-   */
-  eitaa?: string | null;
+  slang?: DefaultString | null;
+  instagram?: DefaultString | null;
+  telegram?: DefaultString | null;
+  twitter?: DefaultString | null;
+  youtube?: DefaultString | null;
+  eitaa?: DefaultString | null;
   avatarUrl?: URL | null;
   coverUrl?: URL | null;
   logoUrl?: URL | null;
@@ -49,43 +23,20 @@ export interface RestaurantCompleteOut extends Completable {
 
 export interface BranchCompleteOut extends Completable {
   restaurantId: UUID | null;
-  iOpen?: boolean | null;
+  iOpen?: Boolean | null;
+  status?: DefaultString | null;
   /**
-   * @minLength 2
-   * @maxLength 50
-   */
-  status?: string | null;
-  /**
+   * @isNumber should be a number
    * @minimum 0
    * @maximum 5
    */
   rating?: number | null;
-  showRating?: boolean | null;
-  /**
-   * @minLength 5
-   * @maxLength 50
-   */
-  instagram?: string | null;
-  /**
-   * @minLength 5
-   * @maxLength 50
-   */
-  telegram?: string | null;
-  /**
-   * @minLength 5
-   * @maxLength 50
-   */
-  twitter?: string | null;
-  /**
-   * @minLength 5
-   * @maxLength 50
-   */
-  youtube?: string | null;
-  /**
-   * @minLength 5
-   * @maxLength 50
-   */
-  eitaa?: string | null;
+  showRating?: Boolean | null;
+  instagram?: DefaultString | null;
+  telegram?: DefaultString | null;
+  twitter?: DefaultString | null;
+  youtube?: DefaultString | null;
+  eitaa?: DefaultString | null;
   backlog: BacklogCompleteOut | null;
 }
 

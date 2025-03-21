@@ -9,9 +9,19 @@
 		"schemas": {
 			"UUID": {
 				"type": "string",
+				"example": "52907745-7672-470e-a803-a2f8feb52944",
 				"format": "uuid",
 				"description": "Stringified UUIDv4.\r\nSee [RFC 4112](https://tools.ietf.org/html/rfc4122)",
 				"pattern": "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}"
+			},
+			"Boolean": {
+				"type": "boolean"
+			},
+			"DefaultString": {
+				"type": "string",
+				"example": "string",
+				"minLength": 2,
+				"maxLength": 50
 			},
 			"BacklogCompleteOut": {
 				"properties": {
@@ -76,14 +86,20 @@
 						"nullable": true
 					},
 					"iOpen": {
-						"type": "boolean",
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
 						"nullable": true
 					},
 					"status": {
-						"type": "string",
-						"nullable": true,
-						"minLength": 2,
-						"maxLength": 50
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
 					},
 					"rating": {
 						"type": "number",
@@ -93,38 +109,52 @@
 						"maximum": 5
 					},
 					"showRating": {
-						"type": "boolean",
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
 						"nullable": true
 					},
 					"instagram": {
-						"type": "string",
-						"nullable": true,
-						"minLength": 5,
-						"maxLength": 50
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
 					},
 					"telegram": {
-						"type": "string",
-						"nullable": true,
-						"minLength": 5,
-						"maxLength": 50
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
 					},
 					"twitter": {
-						"type": "string",
-						"nullable": true,
-						"minLength": 5,
-						"maxLength": 50
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
 					},
 					"youtube": {
-						"type": "string",
-						"nullable": true,
-						"minLength": 5,
-						"maxLength": 50
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
 					},
 					"eitaa": {
-						"type": "string",
-						"nullable": true,
-						"minLength": 5,
-						"maxLength": 50
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
 					},
 					"backlog": {
 						"allOf": [
@@ -180,8 +210,58 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"ErrorDetail": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"value": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"RestaurantValidationError": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"URL": {
 				"type": "string",
+				"example": "https://example.com/example",
 				"format": "uri",
 				"description": "URL format.",
 				"pattern": "^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$"
@@ -189,46 +269,56 @@
 			"RestaurantCompactIn": {
 				"properties": {
 					"name": {
-						"type": "string",
-						"minLength": 2,
-						"maxLength": 50
+						"$ref": "#/components/schemas/DefaultString"
 					},
 					"slang": {
-						"type": "string",
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
 						"nullable": true,
-						"minLength": 2,
-						"maxLength": 50,
 						"pattern": "^[a-zA-Z0-9]*$"
 					},
 					"instagram": {
-						"type": "string",
-						"nullable": true,
-						"minLength": 2,
-						"maxLength": 50
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
 					},
 					"telegram": {
-						"type": "string",
-						"nullable": true,
-						"minLength": 2,
-						"maxLength": 50
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
 					},
 					"twitter": {
-						"type": "string",
-						"nullable": true,
-						"minLength": 2,
-						"maxLength": 50
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
 					},
 					"youtube": {
-						"type": "string",
-						"nullable": true,
-						"minLength": 2,
-						"maxLength": 50
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
 					},
 					"eitaa": {
-						"type": "string",
-						"nullable": true,
-						"minLength": 2,
-						"maxLength": 50
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
 					},
 					"avatarUrl": {
 						"allOf": [
@@ -284,6 +374,16 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/RestaurantCompleteOut"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "4221 RestaurantValidationError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RestaurantValidationError"
 								}
 							}
 						}
