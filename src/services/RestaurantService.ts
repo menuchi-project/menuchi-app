@@ -27,7 +27,7 @@ class RestaurantService {
           }
         }
       }
-    }) as Promise<RestaurantCompleteOut>;
+    });
   }
 }
 
