@@ -1,6 +1,6 @@
 import { UUID } from "./TypeAliases";
 
-export interface Completable {
+export interface CompleteOut {
   id: UUID;
   createdAt: Date;
   updatedAt: Date;

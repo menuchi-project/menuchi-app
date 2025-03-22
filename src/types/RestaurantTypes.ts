@@ -1,4 +1,4 @@
-import { Completable } from "./BaseTypes";
+import { CompleteOut } from "./BaseTypes";
 import { Boolean, DefaultString, URL, UUID } from "./TypeAliases";
 
 export interface RestaurantCompactIn {
@@ -17,11 +17,11 @@ export interface RestaurantCompactIn {
   logoUrl?: URL | null;
 }
 
-export interface RestaurantCompleteOut extends Completable {
+export interface RestaurantCompleteOut extends CompleteOut {
   branch?: BranchCompleteOut | null;
 }
 
-export interface BranchCompleteOut extends Completable {
+export interface BranchCompleteOut extends CompleteOut {
   restaurantId: UUID | null;
   iOpen?: Boolean | null;
   status?: DefaultString | null;
@@ -40,6 +40,6 @@ export interface BranchCompleteOut extends Completable {
   backlog: BacklogCompleteOut | null;
 }
 
-export interface BacklogCompleteOut extends Completable {
+export interface BacklogCompleteOut extends CompleteOut {
   branchId: UUID | null;
 }
