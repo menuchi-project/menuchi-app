@@ -9,6 +9,8 @@ COPY ./ ./
 ###################################################
 FROM base as build
 
+RUN npx tsoa spec-and-routes
+RUN npx prisma db push
 RUN npx tsc
 
 ###################################################
