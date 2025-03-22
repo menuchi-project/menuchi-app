@@ -30,7 +30,7 @@ model Role {
   id        String     @id @default(uuid()) @db.Uuid
   userId    String?    @map("user_id") @db.Uuid
   role      RolesEnum?
-  users     User?      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users     User?      @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   createdAt DateTime   @default(now()) @map("created_at")
   updatedAt DateTime   @updatedAt @map("updated_at")
   deletedAt DateTime?  @map("deleted_at")
@@ -51,7 +51,7 @@ model UserProfile {
   fullName  String?   @map("full_name")
   gender    Gender?
   bio       String?   @db.Text
-  user      User?     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user      User?     @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
@@ -81,7 +81,7 @@ model Restaurant {
   coverUrl  String?   @map("cover_url")
   logoUrl   String?   @map("logo_url")
   branches  Branch[]
-  users     User?     @relation(fields: [managerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users     User?     @relation(fields: [managerId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
@@ -103,7 +103,7 @@ model Branch {
   eitaa        String?
   address      Address?
   backlog      Backlog?
-  restaurants  Restaurant?   @relation(fields: [restaurantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  restaurants  Restaurant?   @relation(fields: [restaurantId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   menus        Menu[]
   openingTimes OpeningTimes?
   staff        Staff[]
@@ -118,8 +118,8 @@ model Staff {
   id        String    @id @default(uuid()) @db.Uuid
   userId    String?   @map("user_id") @db.Uuid
   branchId  String?   @map("branch_id") @db.Uuid
-  branches  Branch?   @relation(fields: [branchId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  users     User?     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  branches  Branch?   @relation(fields: [branchId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  users     User?     @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
@@ -137,7 +137,7 @@ model OpeningTimes {
   wed       String?
   thu       String?
   fri       String?
-  branch    Branch?   @relation(fields: [branchId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  branch    Branch?   @relation(fields: [branchId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
@@ -154,7 +154,7 @@ model Address {
   area        String?
   street      String?
   description String?   @db.Text
-  branch      Branch?   @relation(fields: [branchId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  branch      Branch?   @relation(fields: [branchId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
   deletedAt   DateTime? @map("deleted_at")
@@ -173,7 +173,7 @@ model CategoryName {
 model Backlog {
   id         String     @id @default(uuid()) @db.Uuid
   branchId   String?    @unique @map("branch_id") @db.Uuid
-  branch     Branch?    @relation(fields: [branchId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  branch     Branch?    @relation(fields: [branchId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   categories Category[]
   createdAt  DateTime   @default(now()) @map("created_at")
   updatedAt  DateTime   @updatedAt @map("updated_at")
@@ -185,9 +185,9 @@ model Backlog {
 model Category {
   id                String          @id @default(uuid()) @db.Uuid
   categoryNameId    String?         @map("category_name_id") @db.Uuid
-  categoryName      CategoryName?   @relation(fields: [categoryNameId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  categoryName      CategoryName?   @relation(fields: [categoryNameId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   backlogId         String?         @map("branch_id") @db.Uuid
-  backlog           Backlog?        @relation(fields: [backlogId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  backlog           Backlog?        @relation(fields: [backlogId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   positionInBacklog Int?            @map("position_in_backlog")
   items             Item[]
   subCategories     SubCategories[]
@@ -204,7 +204,7 @@ model SubCategories {
   name               String?
   positionInCategory Int?      @map("position_in_category")
   items              Item[]
-  categories         Category? @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  categories         Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   createdAt          DateTime  @default(now()) @map("created_at")
   updatedAt          DateTime  @updatedAt @map("updated_at")
   deletedAt          DateTime? @map("deleted_at")
@@ -222,8 +222,8 @@ model Item {
   picUrl              String?        @map("pic_url")
   positionInItemsList Int?           @map("position_in_items_list")
   positionInCategory  Int?           @map("position_in_category")
-  categories          Category?      @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  subCategories       SubCategories? @relation(fields: [subCategoryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  categories          Category?      @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  subCategories       SubCategories? @relation(fields: [subCategoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   createdAt           DateTime       @default(now()) @map("created_at")
   updatedAt           DateTime       @updatedAt @map("updated_at")
   deletedAt           DateTime?      @map("deleted_at")
@@ -236,7 +236,7 @@ model Menu {
   branchId  String?   @map("branch_id") @db.Uuid
   name      String?
   favicon   String?   @db.Text
-  branches  Branch?   @relation(fields: [branchId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  branches  Branch?   @relation(fields: [branchId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
