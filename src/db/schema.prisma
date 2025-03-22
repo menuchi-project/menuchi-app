@@ -162,6 +162,14 @@ model Address {
   @@map("addresses")
 }
 
+model CategoryName {
+  id         String     @id @default(uuid()) @db.Uuid
+  name       String?    @unique
+  categories Category[]
+
+  @@map("category_names")
+}
+
 model Backlog {
   id         String     @id @default(uuid()) @db.Uuid
   branchId   String?    @unique @map("branch_id") @db.Uuid
@@ -176,8 +184,9 @@ model Backlog {
 
 model Category {
   id                String          @id @default(uuid()) @db.Uuid
+  categoryNameId    String?         @map("category_name_id") @db.Uuid
+  categoryName      CategoryName?   @relation(fields: [categoryNameId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   backlogId         String?         @map("branch_id") @db.Uuid
-  name              String?
   backlog           Backlog?        @relation(fields: [backlogId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   positionInBacklog Int?            @map("position_in_backlog")
   items             Item[]
