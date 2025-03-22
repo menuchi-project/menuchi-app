@@ -14,14 +14,23 @@
 				"description": "Stringified UUIDv4.\r\nSee [RFC 4112](https://tools.ietf.org/html/rfc4122)",
 				"pattern": "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}"
 			},
-			"Boolean": {
-				"type": "boolean"
-			},
 			"DefaultString": {
 				"type": "string",
 				"example": "string",
 				"minLength": 2,
 				"maxLength": 50
+			},
+			"Slug": {
+				"type": "string",
+				"example": "my-name",
+				"format": "slug",
+				"description": "URL-friendly string identifier.\r\nContains only English letters, numbers, and hyphens.",
+				"pattern": "^[a-zA-Z0-9-]+$",
+				"minLength": 2,
+				"maxLength": 50
+			},
+			"Boolean": {
+				"type": "boolean"
 			},
 			"BacklogCompleteOut": {
 				"properties": {
@@ -84,6 +93,12 @@
 							}
 						],
 						"nullable": true
+					},
+					"name": {
+						"$ref": "#/components/schemas/DefaultString"
+					},
+					"displayName": {
+						"$ref": "#/components/schemas/Slug"
 					},
 					"iOpen": {
 						"allOf": [
@@ -170,6 +185,8 @@
 					"createdAt",
 					"updatedAt",
 					"restaurantId",
+					"name",
+					"displayName",
 					"backlog"
 				],
 				"type": "object",
@@ -229,6 +246,40 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"ConstraintsDatabaseError": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"RestaurantValidationError": {
 				"properties": {
 					"name": {
@@ -274,6 +325,9 @@
 				"properties": {
 					"name": {
 						"$ref": "#/components/schemas/DefaultString"
+					},
+					"displayName": {
+						"$ref": "#/components/schemas/Slug"
 					},
 					"slang": {
 						"allOf": [
@@ -350,7 +404,8 @@
 					}
 				},
 				"required": [
-					"name"
+					"name",
+					"displayName"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -378,6 +433,16 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/RestaurantCompleteOut"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "ConstraintsDatabaseError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ConstraintsDatabaseError"
 								}
 							}
 						}

@@ -43,3 +43,13 @@ export type DefaultString = string;
  */
 export type Boolean = boolean;
 
+/**
+ * URL-friendly string identifier.
+ * Contains only English letters, numbers, and hyphens.
+ * @pattern ^[a-zA-Z0-9-]+$
+ * @minLength 2 length must be between 2 and 50
+ * @maxLength 50 length must be between 2 and 50
+ * @format slug
+ * @example "my-name"
+ */
+export type Slug = string;

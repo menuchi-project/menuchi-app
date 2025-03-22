@@ -1,8 +1,9 @@
 import { CompleteOut } from "./BaseTypes";
-import { Boolean, DefaultString, URL, UUID } from "./TypeAliases";
+import { Boolean, DefaultString, Slug, URL, UUID } from "./TypeAliases";
 
 export interface RestaurantCompactIn {
   name: DefaultString;
+  displayName: Slug;
   /**
    * @pattern ^[a-zA-Z0-9]*$
    */
@@ -23,6 +24,8 @@ export interface RestaurantCompleteOut extends CompleteOut {
 
 export interface BranchCompleteOut extends CompleteOut {
   restaurantId: UUID | null;
+  name?: DefaultString;
+  displayName?: Slug;
   iOpen?: Boolean | null;
   status?: DefaultString | null;
   /**

@@ -18,7 +18,7 @@ model User {
   restaurants           Restaurant[]
   roles                 Role[]
   staff                 Staff[]
-  userProfiles          UserProfile?
+  userProfile           UserProfile?
   createdAt             DateTime     @default(now()) @map("created_at")
   updatedAt             DateTime     @updatedAt @map("updated_at")
   deletedAt             DateTime?    @map("deleted_at")
@@ -30,7 +30,7 @@ model Role {
   id        String     @id @default(uuid()) @db.Uuid
   userId    String?    @map("user_id") @db.Uuid
   role      RolesEnum?
-  users     User?      @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  user      User?      @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   createdAt DateTime   @default(now()) @map("created_at")
   updatedAt DateTime   @updatedAt @map("updated_at")
   deletedAt DateTime?  @map("deleted_at")
@@ -68,23 +68,24 @@ enum Gender {
 }
 
 model Restaurant {
-  id        String    @id @default(uuid()) @db.Uuid
-  managerId String?   @map("manager_id") @db.Uuid
-  name      String?
-  slang     String?
-  instagram String?
-  telegram  String?
-  twitter   String?
-  youtube   String?
-  eitaa     String?
-  avatarUrl String?   @map("avatar_url")
-  coverUrl  String?   @map("cover_url")
-  logoUrl   String?   @map("logo_url")
-  branches  Branch[]
-  users     User?     @relation(fields: [managerId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-  deletedAt DateTime? @map("deleted_at")
+  id          String    @id @default(uuid()) @db.Uuid
+  managerId   String?   @map("manager_id") @db.Uuid
+  name        String?
+  displayName String?   @unique
+  slang       String?
+  instagram   String?
+  telegram    String?
+  twitter     String?
+  youtube     String?
+  eitaa       String?
+  avatarUrl   String?   @map("avatar_url")
+  coverUrl    String?   @map("cover_url")
+  logoUrl     String?   @map("logo_url")
+  branches    Branch[]
+  user        User?     @relation(fields: [managerId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
 
   @@map("restaurants")
 }
@@ -92,6 +93,8 @@ model Restaurant {
 model Branch {
   id           String        @id @default(uuid()) @db.Uuid
   restaurantId String?       @map("restaurant_id") @db.Uuid
+  name         String?
+  displayName  String?       @unique
   iOpen        Boolean?      @map("is_open")
   status       String?
   rating       Float?
@@ -103,7 +106,7 @@ model Branch {
   eitaa        String?
   address      Address?
   backlog      Backlog?
-  restaurants  Restaurant?   @relation(fields: [restaurantId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  restaurant   Restaurant?   @relation(fields: [restaurantId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   menus        Menu[]
   openingTimes OpeningTimes?
   staff        Staff[]
@@ -118,8 +121,8 @@ model Staff {
   id        String    @id @default(uuid()) @db.Uuid
   userId    String?   @map("user_id") @db.Uuid
   branchId  String?   @map("branch_id") @db.Uuid
-  branches  Branch?   @relation(fields: [branchId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  users     User?     @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  branch    Branch?   @relation(fields: [branchId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  user      User?     @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
@@ -205,7 +208,7 @@ model SubCategories {
   name               String?
   positionInCategory Int?      @map("position_in_category")
   items              Item[]
-  categories         Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  category           Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   createdAt          DateTime  @default(now()) @map("created_at")
   updatedAt          DateTime  @updatedAt @map("updated_at")
   deletedAt          DateTime? @map("deleted_at")
@@ -223,8 +226,8 @@ model Item {
   picUrl              String?        @map("pic_url")
   positionInItemsList Int?           @map("position_in_items_list")
   positionInCategory  Int?           @map("position_in_category")
-  categories          Category?      @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  subCategories       SubCategories? @relation(fields: [subCategoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  category            Category?      @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  subCategory         SubCategories? @relation(fields: [subCategoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   createdAt           DateTime       @default(now()) @map("created_at")
   updatedAt           DateTime       @updatedAt @map("updated_at")
   deletedAt           DateTime?      @map("deleted_at")
@@ -237,7 +240,7 @@ model Menu {
   branchId  String?   @map("branch_id") @db.Uuid
   name      String?
   favicon   String?   @db.Text
-  branches  Branch?   @relation(fields: [branchId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  branch    Branch?   @relation(fields: [branchId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
