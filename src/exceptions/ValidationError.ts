@@ -3,9 +3,9 @@ import MenuchiError from './MenuchiError';
 
 export class ValidationError extends MenuchiError {
   constructor(
-    message: string,
-    status: number,
-    code: number,
+    message: string = 'Validation failed',
+    status: number = 422,
+    code: number = 4220,
     details?: ErrorDetail[]
   ) {
     super(message, status, code, details);
