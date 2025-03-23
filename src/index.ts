@@ -4,10 +4,12 @@ import { errorHandler, notFoundHandler, errorPreprocessor } from './middlewares/
 import { RegisterRoutes } from './routes';
 import swaggerUi from 'swagger-ui-express';
 import * as swagger from './config/swagger.json';
+import morgan from 'morgan';
 
 dotenv.config();
 const app = express();
 
+app.use(morgan(':date[web] | :url <:method, :status> | :response-time[3]'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 

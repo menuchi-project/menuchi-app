@@ -11,7 +11,7 @@
 				"type": "string",
 				"example": "52907745-7672-470e-a803-a2f8feb52944",
 				"format": "uuid",
-				"description": "Stringified UUIDv4.\r\nSee [RFC 4112](https://tools.ietf.org/html/rfc4122)",
+				"description": "Stringified UUIDv4.\nSee [RFC 4112](https://tools.ietf.org/html/rfc4122)",
 				"pattern": "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}"
 			},
 			"DefaultString": {
@@ -24,7 +24,7 @@
 				"type": "string",
 				"example": "my-name",
 				"format": "slug",
-				"description": "URL-friendly string identifier.\r\nContains only English letters, numbers, and hyphens.",
+				"description": "URL-friendly string identifier.\nContains only English letters, numbers, and hyphens.",
 				"pattern": "^[a-zA-Z0-9-]+$",
 				"minLength": 2,
 				"maxLength": 50
@@ -185,8 +185,6 @@
 					"createdAt",
 					"updatedAt",
 					"restaurantId",
-					"name",
-					"displayName",
 					"backlog"
 				],
 				"type": "object",
