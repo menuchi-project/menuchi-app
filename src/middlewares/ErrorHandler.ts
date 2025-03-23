@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { ValidateError } from 'tsoa';
 import { validationErrorCleaner } from '../utils/utils';
 import {
+  CategoryNameValidationError,
   RestaurantValidationError,
   ValidationError,
 } from '../exceptions/ValidationError';
@@ -28,6 +29,8 @@ export function errorPreprocessor(
       case '/restaurants':
         throw new RestaurantValidationError(details);
         break;
+      case '/category-names':
+        throw new CategoryNameValidationError(details);
       default:
         throw new ValidationError();
     }

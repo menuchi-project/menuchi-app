@@ -17,3 +17,9 @@ export class RestaurantValidationError extends ValidationError {
     super('Restaurant validation failed', 422, 4221, details);
   }
 }
+
+export class CategoryNameValidationError extends ValidationError {
+  constructor(details?: ErrorDetail[]) {
+    super('Category Name validation failed', 422, 4222, details);
+  }
+}
