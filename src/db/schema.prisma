@@ -71,7 +71,7 @@ model Restaurant {
   id          String    @id @default(uuid()) @db.Uuid
   managerId   String?   @map("manager_id") @db.Uuid
   name        String?
-  displayName String?   @unique
+  displayName String?   @unique @map("display_name") 
   slang       String?
   instagram   String?
   telegram    String?
@@ -94,7 +94,7 @@ model Branch {
   id           String        @id @default(uuid()) @db.Uuid
   restaurantId String?       @map("restaurant_id") @db.Uuid
   name         String?
-  displayName  String?       @unique
+  displayName  String?       @unique @map("display_name") 
   iOpen        Boolean?      @map("is_open")
   status       String?
   rating       Float?
@@ -127,6 +127,7 @@ model Staff {
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
+  @@unique([userId, branchId])
   @@map("staff")
 }
 
