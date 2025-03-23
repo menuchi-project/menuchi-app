@@ -1,0 +1,250 @@
+generator db {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                    String       @id @default(uuid()) @db.Uuid
+  username              String?      @unique
+  password              String?
+  phoneNumber           String?      @unique @map("phone_number")
+  isPhoneNumberVerified Boolean?     @map("is_phone_number_verified")
+  email                 String?      @unique
+  isEmailVerified       Boolean?     @map("is_email_verified")
+  restaurants           Restaurant[]
+  roles                 Role[]
+  staff                 Staff[]
+  userProfile           UserProfile?
+  createdAt             DateTime     @default(now()) @map("created_at")
+  updatedAt             DateTime     @updatedAt @map("updated_at")
+  deletedAt             DateTime?    @map("deleted_at")
+
+  @@map("users")
+}
+
+model Role {
+  id        String     @id @default(uuid()) @db.Uuid
+  userId    String?    @map("user_id") @db.Uuid
+  role      RolesEnum?
+  user      User?      @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  deletedAt DateTime?  @map("deleted_at")
+
+  @@map("roles")
+}
+
+enum RolesEnum {
+  admin
+  normal
+
+  @@map("roles_enum")
+}
+
+model UserProfile {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String?   @unique @map("user_id") @db.Uuid
+  fullName  String?   @map("full_name")
+  gender    Gender?
+  bio       String?   @db.Text
+  user      User?     @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@map("user_profiles")
+}
+
+enum Gender {
+  male
+  female
+  other
+
+  @@map("genders_enum")
+}
+
+model Restaurant {
+  id          String    @id @default(uuid()) @db.Uuid
+  managerId   String?   @map("manager_id") @db.Uuid
+  name        String?
+  displayName String?   @unique @map("display_name") 
+  slang       String?
+  instagram   String?
+  telegram    String?
+  twitter     String?
+  youtube     String?
+  eitaa       String?
+  avatarUrl   String?   @map("avatar_url")
+  coverUrl    String?   @map("cover_url")
+  logoUrl     String?   @map("logo_url")
+  branches    Branch[]
+  user        User?     @relation(fields: [managerId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  @@map("restaurants")
+}
+
+model Branch {
+  id           String        @id @default(uuid()) @db.Uuid
+  restaurantId String?       @map("restaurant_id") @db.Uuid
+  name         String?
+  displayName  String?       @unique @map("display_name") 
+  iOpen        Boolean?      @map("is_open")
+  status       String?
+  rating       Float?
+  showRating   Boolean?      @map("show_rating")
+  instagram    String?
+  telegram     String?
+  twitter      String?
+  youtube      String?
+  eitaa        String?
+  address      Address?
+  backlog      Backlog?
+  restaurant   Restaurant?   @relation(fields: [restaurantId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  menus        Menu[]
+  openingTimes OpeningTimes?
+  staff        Staff[]
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  deletedAt    DateTime?     @map("deleted_at")
+
+  @@map("branches")
+}
+
+model Staff {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String?   @map("user_id") @db.Uuid
+  branchId  String?   @map("branch_id") @db.Uuid
+  branch    Branch?   @relation(fields: [branchId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  user      User?     @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@unique([userId, branchId])
+  @@map("staff")
+}
+
+model OpeningTimes {
+  id        String    @id @default(uuid()) @db.Uuid
+  branchId  String?   @unique @map("branch_id") @db.Uuid
+  sat       String?
+  sun       String?
+  mon       String?
+  tue       String?
+  wed       String?
+  thu       String?
+  fri       String?
+  branch    Branch?   @relation(fields: [branchId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@map("opening_times")
+}
+
+model Address {
+  id          String    @id @default(uuid()) @db.Uuid
+  branchId    String?   @unique @map("branch_id") @db.Uuid
+  country     String?   @default("Iran")
+  region      String?
+  city        String?
+  area        String?
+  street      String?
+  description String?   @db.Text
+  branch      Branch?   @relation(fields: [branchId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  @@map("addresses")
+}
+
+model CategoryName {
+  id         String     @id @default(uuid()) @db.Uuid
+  name       String?    @unique
+  categories Category[]
+
+  @@map("category_names")
+}
+
+model Backlog {
+  id         String     @id @default(uuid()) @db.Uuid
+  branchId   String?    @unique @map("branch_id") @db.Uuid
+  branch     Branch?    @relation(fields: [branchId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  categories Category[]
+  createdAt  DateTime   @default(now()) @map("created_at")
+  updatedAt  DateTime   @updatedAt @map("updated_at")
+  deletedAt  DateTime?  @map("deleted_at")
+
+  @@map("backlog")
+}
+
+model Category {
+  id                String          @id @default(uuid()) @db.Uuid
+  backlogId         String?         @map("branch_id") @db.Uuid
+  backlog           Backlog?        @relation(fields: [backlogId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  categoryNameId    String?         @map("category_name_id") @db.Uuid
+  categoryName      CategoryName?   @relation(fields: [categoryNameId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  positionInBacklog Int?            @map("position_in_backlog")
+  items             Item[]
+  subCategories     SubCategories[]
+  createdAt         DateTime        @default(now()) @map("created_at")
+  updatedAt         DateTime        @updatedAt @map("updated_at")
+  deletedAt         DateTime?       @map("deleted_at")
+
+  @@unique([backlogId, categoryNameId])
+  @@map("categories")
+}
+
+model SubCategories {
+  id                 String    @id @default(uuid()) @db.Uuid
+  categoryId         String?   @map("category_id") @db.Uuid
+  name               String?
+  positionInCategory Int?      @map("position_in_category")
+  items              Item[]
+  category           Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+  deletedAt          DateTime? @map("deleted_at")
+
+  @@map("sub_categories")
+}
+
+model Item {
+  id                  String         @id @default(uuid()) @db.Uuid
+  categoryId          String?        @map("category_id") @db.Uuid
+  subCategoryId       String?        @map("sub_category_id") @db.Uuid
+  name                String?
+  ingredients         String?        @db.Text
+  price               Float?
+  picUrl              String?        @map("pic_url")
+  positionInItemsList Int?           @map("position_in_items_list")
+  positionInCategory  Int?           @map("position_in_category")
+  category            Category?      @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  subCategory         SubCategories? @relation(fields: [subCategoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt           DateTime       @default(now()) @map("created_at")
+  updatedAt           DateTime       @updatedAt @map("updated_at")
+  deletedAt           DateTime?      @map("deleted_at")
+
+  @@map("items")
+}
+
+model Menu {
+  id        String    @id @default(uuid()) @db.Uuid
+  branchId  String?   @map("branch_id") @db.Uuid
+  name      String?
+  favicon   String?   @db.Text
+  branch    Branch?   @relation(fields: [branchId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@map("menus")
+}

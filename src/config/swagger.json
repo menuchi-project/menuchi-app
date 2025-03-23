@@ -1,0 +1,484 @@
+{
+	"openapi": "3.0.0",
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"UUID": {
+				"type": "string",
+				"example": "52907745-7672-470e-a803-a2f8feb52944",
+				"format": "uuid",
+				"description": "Stringified UUIDv4.\r\nSee [RFC 4112](https://tools.ietf.org/html/rfc4122)",
+				"pattern": "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}"
+			},
+			"DefaultString": {
+				"type": "string",
+				"example": "string",
+				"minLength": 2,
+				"maxLength": 50
+			},
+			"Slug": {
+				"type": "string",
+				"example": "my-name",
+				"format": "slug",
+				"description": "URL-friendly string identifier.\r\nContains only English letters, numbers, and hyphens.",
+				"pattern": "^[a-zA-Z0-9-]+$",
+				"minLength": 2,
+				"maxLength": 50
+			},
+			"Boolean": {
+				"type": "boolean"
+			},
+			"BacklogCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"branchId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"branchId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"BranchCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"restaurantId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"name": {
+						"$ref": "#/components/schemas/DefaultString"
+					},
+					"displayName": {
+						"$ref": "#/components/schemas/Slug"
+					},
+					"iOpen": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
+						"nullable": true
+					},
+					"status": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"rating": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"minimum": 0,
+						"maximum": 5
+					},
+					"showRating": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
+						"nullable": true
+					},
+					"instagram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"telegram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"twitter": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"youtube": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"eitaa": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"backlog": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/BacklogCompleteOut"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"restaurantId",
+					"name",
+					"displayName",
+					"backlog"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"RestaurantCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"branch": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/BranchCompleteOut"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ErrorDetail": {
+				"properties": {
+					"field": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"value": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"field",
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ConstraintsDatabaseError": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"RestaurantValidationError": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"URL": {
+				"type": "string",
+				"example": "https://example.com/example",
+				"format": "uri",
+				"description": "URL format.",
+				"pattern": "^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$"
+			},
+			"RestaurantCompactIn": {
+				"properties": {
+					"name": {
+						"$ref": "#/components/schemas/DefaultString"
+					},
+					"displayName": {
+						"$ref": "#/components/schemas/Slug"
+					},
+					"slang": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true,
+						"pattern": "^[a-zA-Z0-9]*$"
+					},
+					"instagram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"telegram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"twitter": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"youtube": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"eitaa": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"avatarUrl": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/URL"
+							}
+						],
+						"nullable": true
+					},
+					"coverUrl": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/URL"
+							}
+						],
+						"nullable": true
+					},
+					"logoUrl": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/URL"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"name",
+					"displayName"
+				],
+				"type": "object",
+				"additionalProperties": false
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "menuchi-node-backend",
+		"version": "1.0.0",
+		"description": "The NodeJS backend of Menuchi",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {}
+	},
+	"paths": {
+		"/restaurants": {
+			"post": {
+				"operationId": "CreateRestaurant",
+				"responses": {
+					"201": {
+						"description": "Restaurant, a branch and its backlog created successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RestaurantCompleteOut"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "ConstraintsDatabaseError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ConstraintsDatabaseError"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "4221 RestaurantValidationError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RestaurantValidationError"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Restaurant"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/RestaurantCompactIn"
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}

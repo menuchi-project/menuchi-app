@@ -9,7 +9,7 @@ COPY ./ ./
 ###################################################
 FROM base as build
 
-RUN npx tsc
+RUN npx tsoa spec-and-routes && npx prisma generate && npx tsc
 
 ###################################################
 FROM node:22-alpine as runtime
