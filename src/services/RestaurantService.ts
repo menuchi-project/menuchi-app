@@ -8,7 +8,7 @@ class RestaurantService {
     this.prisma = new PrismaClient();
   }
 
-  createRestaurant(restaurantDTO: RestaurantCompactIn): Promise<RestaurantCompleteOut> {
+  createRestaurant(restaurantDTO: RestaurantCompactIn): Promise<RestaurantCompleteOut | never> {
     return this.prisma.restaurant.create({
       data: {
         ...restaurantDTO,
