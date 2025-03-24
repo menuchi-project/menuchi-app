@@ -10,8 +10,8 @@ networks:
         - subnet: 172.16.10.0/24
 
 volumes:
-  postgres_data:
-    name: postgres_data
+  menuchi_data:
+    name: menuchi_data
 
 services:
   menuchi.api:
@@ -26,23 +26,32 @@ services:
     env_file:
       - ./.docker/.dev.env
     depends_on:
-      - menuchi.psql
+      menuchi.psql:
+        condition: service_healthy
     networks:
       menuchi.net.back:
 
   menuchi.psql:
     image: postgres:latest
     hostname: menuchi.psql
-    container_name: menushi.psql
-    env_file:
-      - ./.docker/.dev.env
+    container_name: menuchi.psql
+    restart: unless-stopped
+    stop_grace_period: 2m
     environment:
       TZ: "Asia/Tehran"
       PGTZ: "Asia/Tehran"
       POSTGRES_DB: menuchi
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 20s
+      retries: 5
+      start_period: 10s
+    env_file:
+      - ./.docker/.dev.env
     volumes:
-      - "postgres_data:/var/lib/postgresql/data"
+      - "menuchi_data:/var/lib/postgresql/data"
     networks:
       menuchi.net.back:
