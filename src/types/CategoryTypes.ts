@@ -2,9 +2,10 @@ import { CompleteOut } from "./BaseTypes";
 import { DefaultString } from "./TypeAliases";
 
 export interface CategoryNameCompactIn {
-  name: DefaultString | null;
+  name: DefaultString;
 }
 
-export interface CategoryNameCompleteOut extends CategoryNameCompactIn, CompleteOut {
+export interface CategoryNameCompleteOut extends CompleteOut {
+  name: DefaultString | null;
   // categories
 }

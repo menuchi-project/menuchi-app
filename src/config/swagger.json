@@ -7,13 +7,6 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"UUID": {
-				"type": "string",
-				"example": "52907745-7672-470e-a803-a2f8feb52944",
-				"format": "uuid",
-				"description": "Stringified UUIDv4.\nSee [RFC 4112](https://tools.ietf.org/html/rfc4122)",
-				"pattern": "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}"
-			},
 			"DefaultString": {
 				"type": "string",
 				"example": "string",
@@ -28,6 +21,20 @@
 				"pattern": "^[a-zA-Z0-9-]+$",
 				"minLength": 2,
 				"maxLength": 50
+			},
+			"URL": {
+				"type": "string",
+				"example": "https://example.com/example",
+				"format": "uri",
+				"description": "URL format.",
+				"pattern": "^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$"
+			},
+			"UUID": {
+				"type": "string",
+				"example": "52907745-7672-470e-a803-a2f8feb52944",
+				"format": "uuid",
+				"description": "Stringified UUIDv4.\nSee [RFC 4112](https://tools.ietf.org/html/rfc4122)",
+				"pattern": "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}"
 			},
 			"Boolean": {
 				"type": "boolean"
@@ -200,15 +207,24 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"URL": {
-				"type": "string",
-				"example": "https://example.com/example",
-				"format": "uri",
-				"description": "URL format.",
-				"pattern": "^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$"
-			},
 			"RestaurantCompleteOut": {
 				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
 					"name": {
 						"allOf": [
 							{
@@ -298,22 +314,6 @@
 						],
 						"nullable": true
 					},
-					"id": {
-						"$ref": "#/components/schemas/UUID"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"deletedAt": {
-						"type": "string",
-						"format": "date-time",
-						"nullable": true
-					},
 					"branch": {
 						"allOf": [
 							{
@@ -324,11 +324,11 @@
 					}
 				},
 				"required": [
-					"name",
-					"displayName",
 					"id",
 					"createdAt",
-					"updatedAt"
+					"updatedAt",
+					"name",
+					"displayName"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -423,20 +423,10 @@
 			"RestaurantCompactIn": {
 				"properties": {
 					"name": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
+						"$ref": "#/components/schemas/DefaultString"
 					},
 					"displayName": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Slug"
-							}
-						],
-						"nullable": true
+						"$ref": "#/components/schemas/Slug"
 					},
 					"slang": {
 						"allOf": [
@@ -521,14 +511,6 @@
 			},
 			"CategoryNameCompleteOut": {
 				"properties": {
-					"name": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
 					"id": {
 						"$ref": "#/components/schemas/UUID"
 					},
@@ -544,13 +526,21 @@
 						"type": "string",
 						"format": "date-time",
 						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
 					}
 				},
 				"required": [
-					"name",
 					"id",
 					"createdAt",
-					"updatedAt"
+					"updatedAt",
+					"name"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -592,12 +582,7 @@
 			"CategoryNameCompactIn": {
 				"properties": {
 					"name": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
+						"$ref": "#/components/schemas/DefaultString"
 					}
 				},
 				"required": [
