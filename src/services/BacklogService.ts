@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { ItemCompactIn, ItemCompleteOut } from '../types/ItemTypes';
 import { UUID } from '../types/TypeAliases';
 import { BacklogNotFound } from '../exceptions/NotFoundError';
+import { BacklogCompleteOut } from '../types/RestaurantTypes';
 
 class BacklogService {
   private prisma: PrismaClient;
@@ -23,14 +24,6 @@ class BacklogService {
     }: ItemCompactIn
   ): Promise<ItemCompleteOut | never> {
     return this.prisma.$transaction(async (tx) => {
-      // const backlog = await tx.backlog.findUnique({
-      //   where: { id: backlogId },
-      // });
-
-      // if (!backlog) {
-      //   throw new BacklogNotFound();
-      // }
-
       const category = await tx.category
         .upsert({
           where: {
@@ -49,11 +42,15 @@ class BacklogService {
           },
         })
         .catch((error: Error) => {
-          if (error.message.includes('Foreign key constraint violated: `categories_branch_id_fkey (index)`'))
+          if (
+            error.message.includes(
+              'Foreign key constraint violated: `categories_branch_id_fkey (index)`'
+            )
+          )
             throw new BacklogNotFound();
           throw error;
         });
-
+        
       const item = (await tx.item.create({
         data: {
           categoryId: category.id,
@@ -66,9 +63,29 @@ class BacklogService {
         },
       })) as ItemCompleteOut;
 
-      item.categoryName = category.categoryName?.name;
+      item.categoryName = category.categoryName;
 
       return item;
+    });
+  }
+
+  async getBacklog(backlogId: UUID): Promise<BacklogCompleteOut | never> {
+    return this.prisma.backlog.findUniqueOrThrow({
+      where: {
+        id: backlogId,
+      },
+      include: {
+        categories: {
+          include: {
+            categoryName: true,
+            items: true,
+          },
+        },
+      },
+    }).catch((error: Error) => {
+      if (error.message.includes('not found'))
+        throw new BacklogNotFound();
+      throw error;
     });
   }
 }

@@ -191,7 +191,7 @@ model Backlog {
 
 model Category {
   id                String          @id @default(uuid()) @db.Uuid
-  backlogId         String?         @map("branch_id") @db.Uuid
+  backlogId         String?         @map("backlog_id") @db.Uuid
   backlog           Backlog?        @relation(fields: [backlogId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   categoryNameId    String?         @map("category_name_id") @db.Uuid
   categoryName      CategoryName?   @relation(fields: [categoryNameId], references: [id], onDelete: SetNull, onUpdate: Cascade)

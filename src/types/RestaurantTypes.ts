@@ -1,4 +1,5 @@
 import { CompleteOut } from "./BaseTypes";
+import { CategoryCompleteOut } from "./CategoryTypes";
 import { Boolean, DefaultString, Slug, URL, UUID } from "./TypeAliases";
 
 export interface RestaurantCompactIn {
@@ -59,4 +60,5 @@ export interface BranchCompleteOut extends CompleteOut {
 
 export interface BacklogCompleteOut extends CompleteOut {
   branchId: UUID | null;
+  categories?: CategoryCompleteOut[] | null;
 }
