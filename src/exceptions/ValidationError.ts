@@ -23,3 +23,9 @@ export class CategoryNameValidationError extends ValidationError {
     super('Category Name validation failed', 422, 4222, details);
   }
 }
+
+export class ItemValidationError extends ValidationError {
+  constructor(details?: ErrorDetail[]) {
+    super('Item validation failed', 422, 4223, details);
+  }
+}

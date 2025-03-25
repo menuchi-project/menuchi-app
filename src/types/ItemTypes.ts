@@ -1,25 +1,24 @@
 import { CompleteOut } from "./BaseTypes";
-import { String, Int, UUID } from "./TypeAliases";
+import { DefaultString, Int, UUID } from "./TypeAliases";
 
 export interface ItemCompactIn {
-  backlogId: UUID;
   categoryNameId: UUID;
-  name: String;
-  ingredients?: String | null;
+  name: DefaultString;
+  ingredients?: DefaultString | null;
   price?: number | null;
-  picUrl?: String | null;
+  picUrl?: DefaultString | null;
   positionInItemsList?: Int | null;
   positionInCategory?: Int | null;
 }
 
 export interface ItemCompleteOut extends CompleteOut {
-  categoryName?: String | null;
+  categoryName?: DefaultString | null;
   categoryId?: UUID | null;
   subCategoryId?: UUID | null;
-  name?: String | null;
-  ingredients?: String | null;
+  name?: DefaultString | null;
+  ingredients?: DefaultString | null;
   price?: number | null;
-  picUrl?: String | null;
+  picUrl?: DefaultString | null;
   positionInItemsList?: Int | null;
   positionInCategory?: Int | null;
 }

@@ -346,7 +346,6 @@
 					}
 				},
 				"required": [
-					"field",
 					"message"
 				],
 				"type": "object",
@@ -509,6 +508,88 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"CategoryNameCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"name"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CategoryNameValidationError": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CategoryNameCompactIn": {
+				"properties": {
+					"name": {
+						"$ref": "#/components/schemas/DefaultString"
+					}
+				},
+				"required": [
+					"name"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"Int": {
 				"type": "integer",
 				"format": "int32"
@@ -611,9 +692,6 @@
 			},
 			"ItemCompactIn": {
 				"properties": {
-					"backlogId": {
-						"$ref": "#/components/schemas/UUID"
-					},
 					"categoryNameId": {
 						"$ref": "#/components/schemas/UUID"
 					},
@@ -659,90 +737,7 @@
 					}
 				},
 				"required": [
-					"backlogId",
 					"categoryNameId",
-					"name"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"CategoryNameCompleteOut": {
-				"properties": {
-					"id": {
-						"$ref": "#/components/schemas/UUID"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"deletedAt": {
-						"type": "string",
-						"format": "date-time",
-						"nullable": true
-					},
-					"name": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					}
-				},
-				"required": [
-					"id",
-					"createdAt",
-					"updatedAt",
-					"name"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"CategoryNameValidationError": {
-				"properties": {
-					"name": {
-						"type": "string"
-					},
-					"message": {
-						"type": "string"
-					},
-					"stack": {
-						"type": "string"
-					},
-					"status": {
-						"type": "number",
-						"format": "double"
-					},
-					"code": {
-						"type": "number",
-						"format": "double"
-					},
-					"details": {
-						"items": {
-							"$ref": "#/components/schemas/ErrorDetail"
-						},
-						"type": "array"
-					}
-				},
-				"required": [
-					"name",
-					"message",
-					"status"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"CategoryNameCompactIn": {
-				"properties": {
-					"name": {
-						"$ref": "#/components/schemas/DefaultString"
-					}
-				},
-				"required": [
 					"name"
 				],
 				"type": "object",
@@ -807,38 +802,6 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/RestaurantCompactIn"
-							}
-						}
-					}
-				}
-			}
-		},
-		"/items": {
-			"post": {
-				"operationId": "CreateItem",
-				"responses": {
-					"201": {
-						"description": "Item and its category created successfully.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ItemCompleteOut"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Item"
-				],
-				"security": [],
-				"parameters": [],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/ItemCompactIn"
 							}
 						}
 					}
@@ -918,6 +881,47 @@
 				],
 				"security": [],
 				"parameters": []
+			}
+		},
+		"/backlog/{backlogId}/items": {
+			"post": {
+				"operationId": "CreateItem",
+				"responses": {
+					"201": {
+						"description": "Item created successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ItemCompleteOut"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Backlog"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "backlogId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ItemCompactIn"
+							}
+						}
+					}
+				}
 			}
 		}
 	},

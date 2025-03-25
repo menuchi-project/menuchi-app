@@ -3,6 +3,7 @@ import { ValidateError } from 'tsoa';
 import { validationErrorCleaner } from '../utils/utils';
 import {
   CategoryNameValidationError,
+  ItemValidationError,
   RestaurantValidationError,
   ValidationError,
 } from '../exceptions/ValidationError';
@@ -14,6 +15,7 @@ import {
 } from '../exceptions/DatabaseError';
 import { ErrorDetail } from '../types/ErrorTypes';
 import { Prisma } from '@prisma/client';
+import { NotFoundError } from '../exceptions/NotFoundError';
 
 export function errorPreprocessor(
   error: Error,
@@ -25,24 +27,35 @@ export function errorPreprocessor(
     const path = req.path;
     const details = validationErrorCleaner(error);
 
+    if (path.includes('/items')) {
+      throw new ItemValidationError(details);
+    }
+
     switch (path) {
       case '/restaurants':
         throw new RestaurantValidationError(details);
         break;
       case '/category-names':
         throw new CategoryNameValidationError(details);
+        break;
       default:
         throw new ValidationError();
     }
   }
 
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
-    const field = `Fields [${error.meta?.target}] at ${error.meta?.modelName} model`;
+    const field = `Fields [${
+      error.meta?.target ?? error.meta?.field_name
+    }] at ${error.meta?.modelName} model`;
     const lines = error.message.split('\n');
     const message = lines[lines.length - 1];
 
     const detail: ErrorDetail[] = [{ field, message }];
     throw new ConstraintsDatabaseError(detail);
+  }
+
+  if (error instanceof NotFoundError) {
+    throw error;
   }
 
   if (error instanceof Prisma.PrismaClientValidationError) {
@@ -54,7 +67,9 @@ export function errorPreprocessor(
     Prisma.PrismaClientUnknownRequestError ||
     Prisma.PrismaClientRustPanicError
   ) {
-    throw new DatabaseError();
+    throw new DatabaseError(undefined, undefined, undefined, [
+      { message: error.message },
+    ]);
   }
 
   throw new MenuchiError(error.message, 500);
