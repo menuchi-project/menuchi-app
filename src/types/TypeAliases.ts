@@ -36,7 +36,7 @@ export type IranPhoneNumber = string;
  * @maxLength 50 length must be between 2 and 50
  * @example "string"
  */
-export type DefaultString = string;
+export type String = string;
 
 /**
  * @isInt number should be integer

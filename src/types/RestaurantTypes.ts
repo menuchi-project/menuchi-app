@@ -1,35 +1,35 @@
 import { CompleteOut } from "./BaseTypes";
-import { Boolean, DefaultString, Slug, URL, UUID } from "./TypeAliases";
+import { Boolean, String, Slug, URL, UUID } from "./TypeAliases";
 
 export interface RestaurantCompactIn {
-  name: DefaultString;
+  name: String;
   displayName: Slug;
   /**
    * @pattern ^[a-zA-Z0-9]*$
    */
-  slang?: DefaultString | null;
-  instagram?: DefaultString | null;
-  telegram?: DefaultString | null;
-  twitter?: DefaultString | null;
-  youtube?: DefaultString | null;
-  eitaa?: DefaultString | null;
+  slang?: String | null;
+  instagram?: String | null;
+  telegram?: String | null;
+  twitter?: String | null;
+  youtube?: String | null;
+  eitaa?: String | null;
   avatarUrl?: URL | null;
   coverUrl?: URL | null;
   logoUrl?: URL | null;
 }
 
 export interface RestaurantCompleteOut extends CompleteOut {
-  name: DefaultString | null;
+  name: String | null;
   displayName: Slug | null;
   /**
    * @pattern ^[a-zA-Z0-9]*$
    */
-  slang?: DefaultString | null;
-  instagram?: DefaultString | null;
-  telegram?: DefaultString | null;
-  twitter?: DefaultString | null;
-  youtube?: DefaultString | null;
-  eitaa?: DefaultString | null;
+  slang?: String | null;
+  instagram?: String | null;
+  telegram?: String | null;
+  twitter?: String | null;
+  youtube?: String | null;
+  eitaa?: String | null;
   avatarUrl?: URL | null;
   coverUrl?: URL | null;
   logoUrl?: URL | null;
@@ -38,10 +38,10 @@ export interface RestaurantCompleteOut extends CompleteOut {
 
 export interface BranchCompleteOut extends CompleteOut {
   restaurantId: UUID | null;
-  name?: DefaultString | null;
+  name?: String | null;
   displayName?: Slug | null;
   iOpen?: Boolean | null;
-  status?: DefaultString | null;
+  status?: String | null;
   /**
    * @isNumber should be a number
    * @minimum 0
@@ -49,11 +49,11 @@ export interface BranchCompleteOut extends CompleteOut {
    */
   rating?: number | null;
   showRating?: Boolean | null;
-  instagram?: DefaultString | null;
-  telegram?: DefaultString | null;
-  twitter?: DefaultString | null;
-  youtube?: DefaultString | null;
-  eitaa?: DefaultString | null;
+  instagram?: String | null;
+  telegram?: String | null;
+  twitter?: String | null;
+  youtube?: String | null;
+  eitaa?: String | null;
   backlog: BacklogCompleteOut | null;
 }
 
