@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { ItemCompactIn, ItemCompleteOut, ItemListCompleteOut } from '../types/ItemTypes';
+import { DeleteItemOut, ItemCompactIn, ItemCompleteOut, ItemListCompleteOut } from '../types/ItemTypes';
 import { UUID } from '../types/TypeAliases';
 import { BacklogNotFound } from '../exceptions/NotFoundError';
 import { BacklogCompleteOut } from '../types/RestaurantTypes';
@@ -103,6 +103,16 @@ class BacklogService {
           include: {
             categoryName: true
           }
+        }
+      }
+    });
+  }
+
+  async deleteItems(itemsId: UUID[]): Promise<DeleteItemOut> {
+    return this.prisma.item.deleteMany({
+      where: {
+        id: {
+          in: itemsId
         }
       }
     });

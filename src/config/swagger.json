@@ -1071,6 +1071,19 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"DeleteItemOut": {
+				"properties": {
+					"count": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"count"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -1344,6 +1357,41 @@
 						}
 					}
 				]
+			}
+		},
+		"/backlog/items": {
+			"delete": {
+				"operationId": "DeleteItems",
+				"responses": {
+					"200": {
+						"description": "Items deleted successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/DeleteItemOut"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Backlog"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"items": {
+									"$ref": "#/components/schemas/UUID"
+								},
+								"type": "array"
+							}
+						}
+					}
+				}
 			}
 		}
 	},

@@ -1,10 +1,10 @@
-import { Body, Controller, Get, Path, Post, Response, Route, SuccessResponse, Tags } from "tsoa";
-import { ItemCompactIn, ItemCompleteOut, ItemListCompleteOut } from "../types/ItemTypes";
+import { Body, Controller, Delete, Get, Path, Post, Response, Route, SuccessResponse, Tags } from "tsoa";
+import { DeleteItemOut, ItemCompactIn, ItemCompleteOut, ItemListCompleteOut } from "../types/ItemTypes";
 import BacklogService from "../services/BacklogService";
 import { UUID } from "../types/TypeAliases";
 import { BacklogCompleteOut } from "../types/RestaurantTypes";
 import { ItemValidationError } from "../exceptions/ValidationError";
-import { BacklogNotFound, NotFoundError } from "../exceptions/NotFoundError";
+import { BacklogNotFound } from "../exceptions/NotFoundError";
 
 @Route('/backlog')
 @Tags('Backlog')
@@ -29,5 +29,11 @@ export class BacklogController extends Controller {
   @Get('/{backlogId}/items')
   public async getItems(@Path() backlogId: UUID): Promise<ItemListCompleteOut[]> {
     return BacklogService.getItems(backlogId);
+  }
+
+  @SuccessResponse(200, 'Items deleted successfully.')
+  @Delete('/items')
+  public async deleteItems(@Body() body: UUID[]): Promise<DeleteItemOut> {
+    return BacklogService.deleteItems(body);
   }
 }

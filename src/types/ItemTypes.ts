@@ -30,3 +30,7 @@ export interface ItemCompleteOut extends ItemCompactOut {
 export interface ItemListCompleteOut extends ItemCompactOut {
   category: CategoryCompleteOut | null;
 }
+
+export interface DeleteItemOut {
+  count: number
+}
