@@ -1,10 +1,10 @@
 import { Body, Controller, Get, Path, Post, Response, Route, SuccessResponse, Tags } from "tsoa";
-import { ItemCompactIn, ItemCompleteOut } from "../types/ItemTypes";
+import { ItemCompactIn, ItemCompleteOut, ItemListCompleteOut } from "../types/ItemTypes";
 import BacklogService from "../services/BacklogService";
 import { UUID } from "../types/TypeAliases";
 import { BacklogCompleteOut } from "../types/RestaurantTypes";
 import { ItemValidationError } from "../exceptions/ValidationError";
-import { BacklogNotFound } from "../exceptions/NotFoundError";
+import { BacklogNotFound, NotFoundError } from "../exceptions/NotFoundError";
 
 @Route('/backlog')
 @Tags('Backlog')
@@ -22,5 +22,12 @@ export class BacklogController extends Controller {
   @Get('/{backlogId}')
   public async geBacklog(@Path() backlogId: UUID): Promise<BacklogCompleteOut> {
     return BacklogService.getBacklog(backlogId);
+  }
+
+  @Response(200, 'BacklogNotFound without raise any error.')
+  @SuccessResponse(200, 'All backlog items retrieved successfully.')
+  @Get('/{backlogId}/items')
+  public async getItems(@Path() backlogId: UUID): Promise<ItemListCompleteOut[]> {
+    return BacklogService.getItems(backlogId);
   }
 }

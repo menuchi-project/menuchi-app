@@ -8,7 +8,6 @@ export interface CategoryNameCompactIn {
 
 export interface CategoryNameCompleteOut extends CompleteOut {
   name: DefaultString | null;
-  // categories
 }
 
 export interface CategoryCompleteOut extends CompleteOut {

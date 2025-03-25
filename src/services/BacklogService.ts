@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { ItemCompactIn, ItemCompleteOut } from '../types/ItemTypes';
+import { ItemCompactIn, ItemCompleteOut, ItemListCompleteOut } from '../types/ItemTypes';
 import { UUID } from '../types/TypeAliases';
 import { BacklogNotFound } from '../exceptions/NotFoundError';
 import { BacklogCompleteOut } from '../types/RestaurantTypes';
@@ -86,6 +86,25 @@ class BacklogService {
       if (error.message.includes('not found'))
         throw new BacklogNotFound();
       throw error;
+    });
+  }
+
+  async getItems(backlogId: UUID): Promise<ItemListCompleteOut[]> {
+    return this.prisma.item.findMany({
+      where: {
+        category: {
+          backlog: {
+            id: backlogId
+          },
+        }
+      },
+      include: {
+        category: {
+          include: {
+            categoryName: true
+          }
+        }
+      }
     });
   }
 }

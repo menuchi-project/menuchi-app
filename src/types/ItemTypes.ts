@@ -1,5 +1,5 @@
 import { CompleteOut } from "./BaseTypes";
-import { CategoryNameCompleteOut } from "./CategoryTypes";
+import { CategoryCompleteOut, CategoryNameCompleteOut } from "./CategoryTypes";
 import { DefaultString, Int, UUID } from "./TypeAliases";
 
 export interface ItemCompactIn {
@@ -25,4 +25,8 @@ export interface ItemCompactOut extends CompleteOut {
 
 export interface ItemCompleteOut extends ItemCompactOut {
   categoryName?: CategoryNameCompleteOut | null;
+}
+
+export interface ItemListCompleteOut extends ItemCompactOut {
+  category: CategoryCompleteOut | null;
 }

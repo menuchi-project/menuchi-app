@@ -974,6 +974,103 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"ItemListCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"categoryId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"subCategoryId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"ingredients": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"price": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"picUrl": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"positionInItemsList": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					},
+					"positionInCategory": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					},
+					"category": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/CategoryCompleteOut"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"category"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -1174,6 +1271,38 @@
 						}
 					}
 				}
+			},
+			"get": {
+				"operationId": "GetItems",
+				"responses": {
+					"200": {
+						"description": "All backlog items retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ItemListCompleteOut"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Backlog"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "backlogId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
 			}
 		},
 		"/backlog/{backlogId}": {
