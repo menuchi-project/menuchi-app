@@ -854,6 +854,40 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"CategoryNameNotFound": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"BacklogNotFound": {
 				"properties": {
 					"name": {
@@ -1307,7 +1341,7 @@
 						}
 					},
 					"404": {
-						"description": "4041 BacklogNotFound",
+						"description": "4044 BacklogNotFound",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -1400,7 +1434,7 @@
 						}
 					},
 					"404": {
-						"description": "4041 BacklogNotFound",
+						"description": "4044 BacklogNotFound",
 						"content": {
 							"application/json": {
 								"schema": {

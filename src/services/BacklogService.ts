@@ -7,7 +7,7 @@ import {
   ItemListCompleteOut,
 } from '../types/ItemTypes';
 import { UUID } from '../types/TypeAliases';
-import { BacklogNotFound } from '../exceptions/NotFoundError';
+import { BacklogNotFound, CategoryNameNotFound } from '../exceptions/NotFoundError';
 import { BacklogCompleteOut } from '../types/RestaurantTypes';
 
 class BacklogService {
@@ -48,12 +48,10 @@ class BacklogService {
           },
         })
         .catch((error: Error) => {
-          if (
-            error.message.includes(
-              'Foreign key constraint violated: `categories_branch_id_fkey (index)`'
-            )
-          )
+          if (error.message.includes('categories_backlog_id_fkey (index)'))
             throw new BacklogNotFound();
+          if (error.message.includes('categories_category_name_id_fkey (index)'))
+            throw new CategoryNameNotFound();
           throw error;
         });
 
@@ -115,12 +113,15 @@ class BacklogService {
     });
   }
 
-  async updateItem(itemId: UUID, itemDTO: UpdateItemIn): Promise<ItemCompleteOut> {
+  async updateItem(
+    itemId: UUID,
+    itemDTO: UpdateItemIn
+  ): Promise<ItemCompleteOut> {
     return this.prisma.item.update({
       where: {
         id: itemId,
       },
-      data: itemDTO
+      data: itemDTO,
     });
   }
 
