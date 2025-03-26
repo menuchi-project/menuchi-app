@@ -1,0 +1,25 @@
+import { ErrorDetail } from '../types/ErrorTypes';
+import MenuchiError from './MenuchiError';
+
+export class NotFoundError extends MenuchiError {
+  constructor(
+    message: string = 'Not found error',
+    status: number = 404,
+    code?: number,
+    details?: ErrorDetail[]
+  ) {
+    super(message, status, code, details);
+  }
+}
+
+export class BacklogNotFound extends NotFoundError {
+  constructor() {
+    super('Backlog with the given id not found', 404, 4044);
+  }
+}
+
+export class CategoryNameNotFound extends NotFoundError {
+  constructor() {
+    super('Category Name with the given id not found', 404, 4042);
+  }
+}

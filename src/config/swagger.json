@@ -7,13 +7,6 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"UUID": {
-				"type": "string",
-				"example": "52907745-7672-470e-a803-a2f8feb52944",
-				"format": "uuid",
-				"description": "Stringified UUIDv4.\nSee [RFC 4112](https://tools.ietf.org/html/rfc4122)",
-				"pattern": "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}"
-			},
 			"DefaultString": {
 				"type": "string",
 				"example": "string",
@@ -29,8 +22,219 @@
 				"minLength": 2,
 				"maxLength": 50
 			},
+			"URL": {
+				"type": "string",
+				"example": "https://example.com/example",
+				"format": "uri",
+				"description": "URL format.",
+				"pattern": "^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$"
+			},
+			"UUID": {
+				"type": "string",
+				"example": "52907745-7672-470e-a803-a2f8feb52944",
+				"format": "uuid",
+				"description": "Stringified UUIDv4.\nSee [RFC 4112](https://tools.ietf.org/html/rfc4122)",
+				"pattern": "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}"
+			},
 			"Boolean": {
 				"type": "boolean"
+			},
+			"CategoryNameCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"name"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Int": {
+				"type": "integer",
+				"format": "int32"
+			},
+			"ItemCompactOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"categoryId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"subCategoryId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"ingredients": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"price": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"picUrl": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"positionInItemsList": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					},
+					"positionInCategory": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CategoryCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"backlogId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"categoryNameId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"categoryName": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/CategoryNameCompleteOut"
+							}
+						],
+						"nullable": true
+					},
+					"positionInBacklog": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					},
+					"items": {
+						"items": {
+							"$ref": "#/components/schemas/ItemCompactOut"
+						},
+						"type": "array",
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"backlogId",
+					"categoryNameId",
+					"categoryName"
+				],
+				"type": "object",
+				"additionalProperties": false
 			},
 			"BacklogCompleteOut": {
 				"properties": {
@@ -56,6 +260,13 @@
 								"$ref": "#/components/schemas/UUID"
 							}
 						],
+						"nullable": true
+					},
+					"categories": {
+						"items": {
+							"$ref": "#/components/schemas/CategoryCompleteOut"
+						},
+						"type": "array",
 						"nullable": true
 					}
 				},
@@ -200,15 +411,24 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"URL": {
-				"type": "string",
-				"example": "https://example.com/example",
-				"format": "uri",
-				"description": "URL format.",
-				"pattern": "^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$"
-			},
 			"RestaurantCompleteOut": {
 				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
 					"name": {
 						"allOf": [
 							{
@@ -298,22 +518,6 @@
 						],
 						"nullable": true
 					},
-					"id": {
-						"$ref": "#/components/schemas/UUID"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"deletedAt": {
-						"type": "string",
-						"format": "date-time",
-						"nullable": true
-					},
 					"branch": {
 						"allOf": [
 							{
@@ -324,11 +528,11 @@
 					}
 				},
 				"required": [
-					"name",
-					"displayName",
 					"id",
 					"createdAt",
-					"updatedAt"
+					"updatedAt",
+					"name",
+					"displayName"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -346,7 +550,6 @@
 					}
 				},
 				"required": [
-					"field",
 					"message"
 				],
 				"type": "object",
@@ -423,20 +626,10 @@
 			"RestaurantCompactIn": {
 				"properties": {
 					"name": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
+						"$ref": "#/components/schemas/DefaultString"
 					},
 					"displayName": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Slug"
-							}
-						],
-						"nullable": true
+						"$ref": "#/components/schemas/Slug"
 					},
 					"slang": {
 						"allOf": [
@@ -519,42 +712,6 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"CategoryNameCompleteOut": {
-				"properties": {
-					"name": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"id": {
-						"$ref": "#/components/schemas/UUID"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"deletedAt": {
-						"type": "string",
-						"format": "date-time",
-						"nullable": true
-					}
-				},
-				"required": [
-					"name",
-					"id",
-					"createdAt",
-					"updatedAt"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
 			"CategoryNameValidationError": {
 				"properties": {
 					"name": {
@@ -592,17 +749,427 @@
 			"CategoryNameCompactIn": {
 				"properties": {
 					"name": {
+						"$ref": "#/components/schemas/DefaultString"
+					}
+				},
+				"required": [
+					"name"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ItemCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"categoryId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"subCategoryId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"name": {
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/DefaultString"
 							}
 						],
 						"nullable": true
+					},
+					"ingredients": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"price": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"picUrl": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"positionInItemsList": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					},
+					"positionInCategory": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					},
+					"categoryName": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/CategoryNameCompleteOut"
+							}
+						],
+						"nullable": true
 					}
 				},
 				"required": [
+					"id",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CategoryNameNotFound": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"BacklogNotFound": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ItemValidationError": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ItemCompactIn": {
+				"properties": {
+					"categoryNameId": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"name": {
+						"$ref": "#/components/schemas/DefaultString"
+					},
+					"ingredients": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"price": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"picUrl": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"positionInItemsList": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					},
+					"positionInCategory": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"categoryNameId",
 					"name"
 				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ItemListCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"categoryId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"subCategoryId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"ingredients": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"price": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"picUrl": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"positionInItemsList": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					},
+					"positionInCategory": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					},
+					"category": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/CategoryCompleteOut"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"category"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UpdateItemIn": {
+				"properties": {
+					"categoryId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"subCategoryId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"ingredients": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"price": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"picUrl": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"positionInItemsList": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					},
+					"positionInCategory": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					}
+				},
 				"type": "object",
 				"additionalProperties": false
 			}
@@ -744,6 +1311,224 @@
 				],
 				"security": [],
 				"parameters": []
+			}
+		},
+		"/backlog/{backlogId}/items": {
+			"post": {
+				"operationId": "CreateItem",
+				"responses": {
+					"201": {
+						"description": "Item created successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ItemCompleteOut"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4044 BacklogNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BacklogNotFound"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "4223 ItemValidationError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ItemValidationError"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Backlog"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "backlogId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ItemCompactIn"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "GetItems",
+				"responses": {
+					"200": {
+						"description": "All backlog items retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ItemListCompleteOut"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Backlog"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "backlogId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
+			}
+		},
+		"/backlog/{backlogId}": {
+			"get": {
+				"operationId": "GeBacklog",
+				"responses": {
+					"200": {
+						"description": "Backlog is retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BacklogCompleteOut"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4044 BacklogNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BacklogNotFound"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Backlog"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "backlogId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
+			}
+		},
+		"/backlog/items/{itemId}": {
+			"patch": {
+				"operationId": "UpdateItem",
+				"responses": {
+					"204": {
+						"description": "Item updated successfully. It doesn't retrieve anything.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Backlog"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "itemId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateItemIn"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/backlog/items": {
+			"delete": {
+				"operationId": "DeleteItems",
+				"responses": {
+					"204": {
+						"description": "Items deleted successfully.  It doesn't retrieve anything.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Backlog"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"items": {
+									"$ref": "#/components/schemas/UUID"
+								},
+								"type": "array"
+							}
+						}
+					}
+				}
 			}
 		}
 	},

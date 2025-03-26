@@ -39,6 +39,11 @@ export type IranPhoneNumber = string;
 export type DefaultString = string;
 
 /**
+ * @isInt number should be integer
+ */
+export type Int = number;
+
+/**
  * @isBoolean should be boolean
  */
 export type Boolean = boolean;

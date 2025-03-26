@@ -1,5 +1,5 @@
 export interface ErrorDetail {
-  field: string;
+  field?: string;
   message: string;
   value?: string;
 }
