@@ -32,9 +32,9 @@ export class BacklogController extends Controller {
     return BacklogService.getItems(backlogId);
   }
 
-  @SuccessResponse(204, 'Item updated successfully.')
+  @SuccessResponse(204, 'Item updated successfully. It doesn\'t retrieve anything.')
   @Patch('/items/{itemId}')
-  public async updateItem(@Path() itemId: UUID, @Body() body: UpdateItemIn): Promise<UpdateItemIn> {
+  public async updateItem(@Path() itemId: UUID, @Body() body: UpdateItemIn) {
     return BacklogService.updateItem(itemId, body);
   }
 

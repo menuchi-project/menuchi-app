@@ -116,7 +116,7 @@ class BacklogService {
   async updateItem(
     itemId: UUID,
     itemDTO: UpdateItemIn
-  ): Promise<ItemCompleteOut> {
+  ) {
     return this.prisma.item.update({
       where: {
         id: itemId,

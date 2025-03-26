@@ -1465,11 +1465,69 @@
 				"operationId": "UpdateItem",
 				"responses": {
 					"204": {
-						"description": "Item updated successfully.",
+						"description": "Item updated successfully. It doesn't retrieve anything.",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UpdateItemIn"
+									"properties": {
+										"deletedAt": {
+											"type": "string",
+											"format": "date-time"
+										},
+										"updatedAt": {
+											"type": "string",
+											"format": "date-time"
+										},
+										"createdAt": {
+											"type": "string",
+											"format": "date-time"
+										},
+										"positionInCategory": {
+											"type": "number",
+											"format": "double"
+										},
+										"positionInItemsList": {
+											"type": "number",
+											"format": "double"
+										},
+										"picUrl": {
+											"type": "string"
+										},
+										"price": {
+											"type": "number",
+											"format": "double"
+										},
+										"ingredients": {
+											"type": "string"
+										},
+										"name": {
+											"type": "string"
+										},
+										"subCategoryId": {
+											"type": "string"
+										},
+										"categoryId": {
+											"type": "string"
+										},
+										"id": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"deletedAt",
+										"updatedAt",
+										"createdAt",
+										"positionInCategory",
+										"positionInItemsList",
+										"picUrl",
+										"price",
+										"ingredients",
+										"name",
+										"subCategoryId",
+										"categoryId",
+										"id"
+									],
+									"type": "object"
 								}
 							}
 						}
