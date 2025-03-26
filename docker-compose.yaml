@@ -15,7 +15,7 @@ volumes:
 
 services:
   menuchi.api:
-    image: mahdihaghverdi/menuchi:dev
+    image: mahdihaghverdi/menuchi-project:dev
     hostname: menuchi.api
     ports:
       - "8000:8000"
