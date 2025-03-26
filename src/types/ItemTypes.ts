@@ -41,7 +41,3 @@ export interface UpdateItemIn {
   positionInItemsList?: Int | null;
   positionInCategory?: Int | null;
 }
-
-export interface DeleteItemOut {
-  count: number
-}

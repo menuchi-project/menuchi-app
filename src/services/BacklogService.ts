@@ -1,13 +1,15 @@
 import { PrismaClient } from '@prisma/client';
 import {
-  DeleteItemOut,
   UpdateItemIn,
   ItemCompactIn,
   ItemCompleteOut,
   ItemListCompleteOut,
 } from '../types/ItemTypes';
 import { UUID } from '../types/TypeAliases';
-import { BacklogNotFound, CategoryNameNotFound } from '../exceptions/NotFoundError';
+import {
+  BacklogNotFound,
+  CategoryNameNotFound,
+} from '../exceptions/NotFoundError';
 import { BacklogCompleteOut } from '../types/RestaurantTypes';
 
 class BacklogService {
@@ -50,7 +52,9 @@ class BacklogService {
         .catch((error: Error) => {
           if (error.message.includes('categories_backlog_id_fkey (index)'))
             throw new BacklogNotFound();
-          if (error.message.includes('categories_category_name_id_fkey (index)'))
+          if (
+            error.message.includes('categories_category_name_id_fkey (index)')
+          )
             throw new CategoryNameNotFound();
           throw error;
         });
@@ -83,7 +87,11 @@ class BacklogService {
           categories: {
             include: {
               categoryName: true,
-              items: true,
+              items: {
+                where: {
+                  deletedAt: null,
+                },
+              },
             },
           },
         },
@@ -97,6 +105,7 @@ class BacklogService {
   async getItems(backlogId: UUID): Promise<ItemListCompleteOut[]> {
     return this.prisma.item.findMany({
       where: {
+        deletedAt: null,
         category: {
           backlog: {
             id: backlogId,
@@ -113,10 +122,7 @@ class BacklogService {
     });
   }
 
-  async updateItem(
-    itemId: UUID,
-    itemDTO: UpdateItemIn
-  ) {
+  async updateItem(itemId: UUID, itemDTO: UpdateItemIn) {
     return this.prisma.item.update({
       where: {
         id: itemId,
@@ -125,12 +131,16 @@ class BacklogService {
     });
   }
 
-  async deleteItems(itemsId: UUID[]): Promise<DeleteItemOut> {
-    return this.prisma.item.deleteMany({
+  async deleteItems(itemsId: UUID[]) {
+    return this.prisma.item.updateMany({
       where: {
         id: {
           in: itemsId,
         },
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: new Date(),
       },
     });
   }

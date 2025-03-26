@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Patch, Path, Post, Response, Route, SuccessResponse, Tags } from "tsoa";
-import { DeleteItemOut, UpdateItemIn, ItemCompactIn, ItemCompleteOut, ItemListCompleteOut } from "../types/ItemTypes";
+import { UpdateItemIn, ItemCompactIn, ItemCompleteOut, ItemListCompleteOut } from "../types/ItemTypes";
 import BacklogService from "../services/BacklogService";
 import { UUID } from "../types/TypeAliases";
 import { BacklogCompleteOut } from "../types/RestaurantTypes";
@@ -34,13 +34,15 @@ export class BacklogController extends Controller {
 
   @SuccessResponse(204, 'Item updated successfully. It doesn\'t retrieve anything.')
   @Patch('/items/{itemId}')
-  public async updateItem(@Path() itemId: UUID, @Body() body: UpdateItemIn) {
-    return BacklogService.updateItem(itemId, body);
+  public async updateItem(@Path() itemId: UUID, @Body() body: UpdateItemIn): Promise<null> {
+    await BacklogService.updateItem(itemId, body);
+    return null
   }
 
-  @SuccessResponse(200, 'Items deleted successfully.')
+  @SuccessResponse(204, 'Items deleted successfully.  It doesn\'t retrieve anything.')
   @Delete('/items')
-  public async deleteItems(@Body() body: UUID[]): Promise<DeleteItemOut> {
-    return BacklogService.deleteItems(body);
+  public async deleteItems(@Body() body: UUID[]): Promise<null> {
+    await BacklogService.deleteItems(body);
+    return null;
   }
 }
