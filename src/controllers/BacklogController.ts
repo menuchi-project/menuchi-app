@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Path, Post, Response, Route, SuccessResponse, Tags } from "tsoa";
-import { DeleteItemOut, ItemCompactIn, ItemCompleteOut, ItemListCompleteOut } from "../types/ItemTypes";
+import { Body, Controller, Delete, Get, Patch, Path, Post, Response, Route, SuccessResponse, Tags } from "tsoa";
+import { DeleteItemOut, UpdateItemIn, ItemCompactIn, ItemCompleteOut, ItemListCompleteOut } from "../types/ItemTypes";
 import BacklogService from "../services/BacklogService";
 import { UUID } from "../types/TypeAliases";
 import { BacklogCompleteOut } from "../types/RestaurantTypes";
@@ -29,6 +29,12 @@ export class BacklogController extends Controller {
   @Get('/{backlogId}/items')
   public async getItems(@Path() backlogId: UUID): Promise<ItemListCompleteOut[]> {
     return BacklogService.getItems(backlogId);
+  }
+
+  @SuccessResponse(204, 'Item updated successfully.')
+  @Patch('/items/{itemId}')
+  public async updateItem(@Path() itemId: UUID, @Body() body: UpdateItemIn): Promise<UpdateItemIn> {
+    return BacklogService.updateItem(itemId, body);
   }
 
   @SuccessResponse(200, 'Items deleted successfully.')

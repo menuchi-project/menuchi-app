@@ -1,5 +1,11 @@
 import { PrismaClient } from '@prisma/client';
-import { DeleteItemOut, ItemCompactIn, ItemCompleteOut, ItemListCompleteOut } from '../types/ItemTypes';
+import {
+  DeleteItemOut,
+  UpdateItemIn,
+  ItemCompactIn,
+  ItemCompleteOut,
+  ItemListCompleteOut,
+} from '../types/ItemTypes';
 import { UUID } from '../types/TypeAliases';
 import { BacklogNotFound } from '../exceptions/NotFoundError';
 import { BacklogCompleteOut } from '../types/RestaurantTypes';
@@ -50,7 +56,7 @@ class BacklogService {
             throw new BacklogNotFound();
           throw error;
         });
-        
+
       const item = (await tx.item.create({
         data: {
           categoryId: category.id,
@@ -70,23 +76,24 @@ class BacklogService {
   }
 
   async getBacklog(backlogId: UUID): Promise<BacklogCompleteOut | never> {
-    return this.prisma.backlog.findUniqueOrThrow({
-      where: {
-        id: backlogId,
-      },
-      include: {
-        categories: {
-          include: {
-            categoryName: true,
-            items: true,
+    return this.prisma.backlog
+      .findUniqueOrThrow({
+        where: {
+          id: backlogId,
+        },
+        include: {
+          categories: {
+            include: {
+              categoryName: true,
+              items: true,
+            },
           },
         },
-      },
-    }).catch((error: Error) => {
-      if (error.message.includes('not found'))
-        throw new BacklogNotFound();
-      throw error;
-    });
+      })
+      .catch((error: Error) => {
+        if (error.message.includes('not found')) throw new BacklogNotFound();
+        throw error;
+      });
   }
 
   async getItems(backlogId: UUID): Promise<ItemListCompleteOut[]> {
@@ -94,17 +101,26 @@ class BacklogService {
       where: {
         category: {
           backlog: {
-            id: backlogId
+            id: backlogId,
           },
-        }
+        },
       },
       include: {
         category: {
           include: {
-            categoryName: true
-          }
-        }
-      }
+            categoryName: true,
+          },
+        },
+      },
+    });
+  }
+
+  async updateItem(itemId: UUID, itemDTO: UpdateItemIn): Promise<ItemCompleteOut> {
+    return this.prisma.item.update({
+      where: {
+        id: itemId,
+      },
+      data: itemDTO
     });
   }
 
@@ -112,9 +128,9 @@ class BacklogService {
     return this.prisma.item.deleteMany({
       where: {
         id: {
-          in: itemsId
-        }
-      }
+          in: itemsId,
+        },
+      },
     });
   }
 }

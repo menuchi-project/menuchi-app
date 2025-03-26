@@ -31,6 +31,17 @@ export interface ItemListCompleteOut extends ItemCompactOut {
   category: CategoryCompleteOut | null;
 }
 
+export interface UpdateItemIn {
+  categoryId?: UUID | null;
+  subCategoryId?: UUID | null;
+  name?: DefaultString | null;
+  ingredients?: DefaultString | null;
+  price?: number | null;
+  picUrl?: DefaultString | null;
+  positionInItemsList?: Int | null;
+  positionInCategory?: Int | null;
+}
+
 export interface DeleteItemOut {
   count: number
 }
