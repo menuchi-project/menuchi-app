@@ -5,10 +5,12 @@ import { RegisterRoutes } from './routes';
 import swaggerUi from 'swagger-ui-express';
 import * as swagger from './config/swagger.json';
 import morgan from 'morgan';
+import cors from 'cors';
 
 dotenv.config();
 const app = express();
 
+app.use(cors());
 app.use(morgan(':date[web] | :url <:method, :status> | :response-time[3]ms'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
