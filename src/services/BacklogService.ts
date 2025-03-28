@@ -25,9 +25,7 @@ class BacklogService {
       name,
       ingredients,
       price,
-      picUrl,
-      positionInItemsList,
-      positionInCategory,
+      picUrl
     }: ItemCompactIn
   ): Promise<ItemCompleteOut | never> {
     return this.prisma.$transaction(async (tx) => {
@@ -58,6 +56,19 @@ class BacklogService {
           throw error;
         });
 
+      const maxPositions = await tx.item.aggregate({
+        _max: {
+          positionInItemsList: true,
+          positionInCategory: true,
+        },
+        where: {
+          categoryId: category.id
+        },
+      });
+
+      const positionInItemsList = (maxPositions._max.positionInItemsList ?? 0) + 1;
+      const positionInCategory = (maxPositions._max.positionInCategory ?? 0) + 1;
+
       const item = (await tx.item.create({
         data: {
           categoryId: category.id,
@@ -66,13 +77,14 @@ class BacklogService {
           price,
           picUrl,
           positionInItemsList,
-          positionInCategory,
+          positionInCategory
         },
-      })) as ItemCompleteOut;
+      }));
 
-      item.categoryName = category.categoryName?.name;
-
-      return item;
+      return {
+        ...item,
+        categoryName: category.categoryName?.name
+      };
     });
   }
 
@@ -90,11 +102,14 @@ class BacklogService {
                 where: {
                   deletedAt: null,
                 },
+                orderBy: {
+                  positionInCategory: 'asc'
+                }
               },
             },
             omit: {
-              categoryNameId: true
-            }
+              categoryNameId: true,
+            },
           },
         },
       })
@@ -133,6 +148,9 @@ class BacklogService {
           },
         },
       },
+      orderBy: {
+        positionInItemsList: 'asc'
+      }
     });
 
     return items.map((item) => ({

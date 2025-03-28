@@ -19,7 +19,7 @@ export class BacklogController extends Controller {
   }
 
   @Response<BacklogNotFound>(404, '4044 BacklogNotFound')
-  @SuccessResponse(200, 'Backlog is retrieved successfully')
+  @SuccessResponse(200, 'Backlog is retrieved successfully.')
   @Get('/{backlogId}')
   public async geBacklog(@Path() backlogId: UUID): Promise<BacklogCompleteOut> {
     return BacklogService.getBacklog(backlogId);
