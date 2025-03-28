@@ -3,7 +3,6 @@ import {
   UpdateItemIn,
   ItemCompactIn,
   ItemCompleteOut,
-  ItemListCompleteOut,
 } from '../types/ItemTypes';
 import { UUID } from '../types/TypeAliases';
 import {
@@ -71,14 +70,14 @@ class BacklogService {
         },
       })) as ItemCompleteOut;
 
-      item.categoryName = category.categoryName;
+      item.categoryName = category.categoryName?.name;
 
       return item;
     });
   }
 
   async getBacklog(backlogId: UUID): Promise<BacklogCompleteOut | never> {
-    return this.prisma.backlog
+    const backlog = await this.prisma.backlog
       .findUniqueOrThrow({
         where: {
           id: backlogId,
@@ -93,6 +92,9 @@ class BacklogService {
                 },
               },
             },
+            omit: {
+              categoryNameId: true
+            }
           },
         },
       })
@@ -100,10 +102,22 @@ class BacklogService {
         if (error.message.includes('not found')) throw new BacklogNotFound();
         throw error;
       });
+
+    return {
+      ...backlog,
+      categories: backlog.categories.map((category) => ({
+        ...category,
+        categoryName: category.categoryName?.name ?? null,
+        items: category.items.map((item) => ({
+          ...item,
+          categoryName: category.categoryName?.name ?? null,
+        })),
+      })),
+    };
   }
 
-  async getItems(backlogId: UUID): Promise<ItemListCompleteOut[]> {
-    return this.prisma.item.findMany({
+  async getItems(backlogId: UUID): Promise<ItemCompleteOut[]> {
+    const items = await this.prisma.item.findMany({
       where: {
         deletedAt: null,
         category: {
@@ -120,6 +134,12 @@ class BacklogService {
         },
       },
     });
+
+    return items.map((item) => ({
+      ...item,
+      categoryName: item.category?.categoryName?.name,
+      category: undefined,
+    }));
   }
 
   async updateItem(itemId: UUID, itemDTO: UpdateItemIn) {

@@ -12,8 +12,9 @@ export interface ItemCompactIn {
   positionInCategory?: Int | null;
 }
 
-export interface ItemCompactOut extends CompleteOut {
+export interface ItemCompleteOut extends CompleteOut {
   categoryId?: UUID | null;
+  categoryName?: DefaultString | null;
   subCategoryId?: UUID | null;
   name?: DefaultString | null;
   ingredients?: DefaultString | null;
@@ -21,14 +22,6 @@ export interface ItemCompactOut extends CompleteOut {
   picUrl?: DefaultString | null;
   positionInItemsList?: Int | null;
   positionInCategory?: Int | null;
-}
-
-export interface ItemCompleteOut extends ItemCompactOut {
-  categoryName?: CategoryNameCompleteOut | null;
-}
-
-export interface ItemListCompleteOut extends ItemCompactOut {
-  category: CategoryCompleteOut | null;
 }
 
 export interface UpdateItemIn {
