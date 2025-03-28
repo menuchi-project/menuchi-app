@@ -108,6 +108,9 @@ class BacklogService {
         },
         include: {
           categories: {
+            where: {
+              deletedAt: null
+            },
             include: {
               categoryName: true,
               items: {
@@ -148,6 +151,7 @@ class BacklogService {
       where: {
         deletedAt: null,
         category: {
+          deletedAt: null,
           backlog: {
             id: backlogId,
           },

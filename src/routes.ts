@@ -79,7 +79,7 @@ const models: TsoaRoute.Models = {
         "type": {"dataType":"string","validators":{"pattern":{"errorMsg":"is not a valid URL","value":"^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$"}}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "CreateRestaurantCompleteOut": {
+    "RestaurantCompleteOut": {
         "dataType": "refObject",
         "properties": {
             "slang": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}],"validators":{"pattern":{"value":"^[a-zA-Z0-9]*$"}}},
@@ -97,7 +97,7 @@ const models: TsoaRoute.Models = {
             "deletedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}]},
             "name": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}],"required":true},
             "displayName": {"dataType":"union","subSchemas":[{"ref":"Slug"},{"dataType":"enum","enums":[null]}],"required":true},
-            "branch": {"dataType":"union","subSchemas":[{"ref":"BranchCompleteOut"},{"dataType":"enum","enums":[null]}]},
+            "branches": {"dataType":"union","subSchemas":[{"dataType":"array","array":{"dataType":"refObject","ref":"BranchCompleteOut"}},{"dataType":"enum","enums":[null]}]},
         },
         "additionalProperties": false,
     },
@@ -152,27 +152,6 @@ const models: TsoaRoute.Models = {
             "logoUrl": {"dataType":"union","subSchemas":[{"ref":"URL"},{"dataType":"enum","enums":[null]}]},
             "name": {"ref":"DefaultString","required":true},
             "displayName": {"ref":"Slug","required":true},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "RestaurantCompleteOut": {
-        "dataType": "refObject",
-        "properties": {
-            "slang": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}],"validators":{"pattern":{"value":"^[a-zA-Z0-9]*$"}}},
-            "instagram": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
-            "telegram": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
-            "twitter": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
-            "youtube": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
-            "eitaa": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
-            "avatarUrl": {"dataType":"union","subSchemas":[{"ref":"URL"},{"dataType":"enum","enums":[null]}]},
-            "coverUrl": {"dataType":"union","subSchemas":[{"ref":"URL"},{"dataType":"enum","enums":[null]}]},
-            "logoUrl": {"dataType":"union","subSchemas":[{"ref":"URL"},{"dataType":"enum","enums":[null]}]},
-            "id": {"ref":"UUID","required":true},
-            "createdAt": {"dataType":"datetime","required":true},
-            "updatedAt": {"dataType":"datetime","required":true},
-            "deletedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}]},
-            "branches": {"dataType":"union","subSchemas":[{"dataType":"array","array":{"dataType":"refObject","ref":"BranchCompleteOut"}},{"dataType":"enum","enums":[null]}]},
         },
         "additionalProperties": false,
     },
@@ -506,6 +485,36 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'updateItem',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 204,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsCategoryController_deleteItems: Record<string, TsoaRoute.ParameterSchema> = {
+                categoryId: {"in":"path","name":"categoryId","required":true,"ref":"UUID"},
+        };
+        app.delete('/categories/:categoryId',
+            ...(fetchMiddlewares<RequestHandler>(CategoryController)),
+            ...(fetchMiddlewares<RequestHandler>(CategoryController.prototype.deleteItems)),
+
+            async function CategoryController_deleteItems(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsCategoryController_deleteItems, request, response });
+
+                const controller = new CategoryController();
+
+              await templateService.apiHandler({
+                methodName: 'deleteItems',
                 controller,
                 response,
                 next,

@@ -19,6 +19,28 @@ class CategoryNService {
       }
     });
   }
+
+  async deleteCategory(categoryId: UUID) {
+    return this.prisma.$transaction(async (tx) => {
+      await tx.category.update({
+        where: {
+          id: categoryId
+        },
+        data: {
+          deletedAt: new Date()
+        }
+      });
+
+      await tx.item.updateMany({
+        where: {
+          categoryId
+        },
+        data: {
+          deletedAt: new Date()
+        }
+      });
+    });
+  }
 }
 
 export default new CategoryNService();

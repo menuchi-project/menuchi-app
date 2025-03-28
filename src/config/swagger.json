@@ -207,7 +207,7 @@
 				"description": "URL format.",
 				"pattern": "^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$"
 			},
-			"CreateRestaurantCompleteOut": {
+			"RestaurantCompleteOut": {
 				"properties": {
 					"slang": {
 						"allOf": [
@@ -314,12 +314,11 @@
 						],
 						"nullable": true
 					},
-					"branch": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/BranchCompleteOut"
-							}
-						],
+					"branches": {
+						"items": {
+							"$ref": "#/components/schemas/BranchCompleteOut"
+						},
+						"type": "array",
 						"nullable": true
 					}
 				},
@@ -504,113 +503,6 @@
 				"required": [
 					"name",
 					"displayName"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"RestaurantCompleteOut": {
-				"properties": {
-					"slang": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true,
-						"pattern": "^[a-zA-Z0-9]*$"
-					},
-					"instagram": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"telegram": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"twitter": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"youtube": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"eitaa": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"avatarUrl": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/URL"
-							}
-						],
-						"nullable": true
-					},
-					"coverUrl": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/URL"
-							}
-						],
-						"nullable": true
-					},
-					"logoUrl": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/URL"
-							}
-						],
-						"nullable": true
-					},
-					"id": {
-						"$ref": "#/components/schemas/UUID"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"deletedAt": {
-						"type": "string",
-						"format": "date-time",
-						"nullable": true
-					},
-					"branches": {
-						"items": {
-							"$ref": "#/components/schemas/BranchCompleteOut"
-						},
-						"type": "array",
-						"nullable": true
-					}
-				},
-				"required": [
-					"id",
-					"createdAt",
-					"updatedAt"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1174,7 +1066,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/CreateRestaurantCompleteOut"
+									"$ref": "#/components/schemas/RestaurantCompleteOut"
 								}
 							}
 						}
@@ -1376,6 +1268,39 @@
 						}
 					}
 				}
+			},
+			"delete": {
+				"operationId": "DeleteItems",
+				"responses": {
+					"204": {
+						"description": "Category and its items deleted successfully.  It doesn't retrieve anything.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Category"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "categoryId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
 			}
 		},
 		"/backlog/{backlogId}/items": {

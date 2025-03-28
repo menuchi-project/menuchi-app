@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import {
   RestaurantCompactIn,
-  CreateRestaurantCompleteOut,
   RestaurantCompleteOut,
 } from '../types/RestaurantTypes';
 import { UUID } from '../types/TypeAliases';
@@ -16,7 +15,7 @@ class RestaurantService {
 
  async createRestaurant(
     restaurantDTO: RestaurantCompactIn
-  ): Promise<CreateRestaurantCompleteOut | never> {
+  ): Promise<RestaurantCompleteOut | never> {
     return this.prisma.restaurant.create({
       data: {
         ...restaurantDTO,

@@ -1,4 +1,4 @@
-import { Body, Controller, Patch, Path, Route, SuccessResponse, Tags } from "tsoa";
+import { Body, Controller, Delete, Patch, Path, Route, SuccessResponse, Tags } from "tsoa";
 import { UUID } from "../types/TypeAliases";
 import { UpdateCategoryIn } from "../types/CategoryTypes";
 import CategoryService from "../services/CategoryService";
@@ -11,5 +11,12 @@ export class CategoryController extends Controller {
   public async updateItem(@Path() categoryId: UUID, @Body() body: UpdateCategoryIn): Promise<null> {
     await CategoryService.updateCategory(categoryId, body);
     return null
+  }
+
+  @SuccessResponse(204, 'Category and its items deleted successfully.  It doesn\'t retrieve anything.')
+  @Delete('/{categoryId}')
+  public async deleteItems(@Path() categoryId: UUID): Promise<null> {
+    await CategoryService.deleteCategory(categoryId);
+    return null;
   }
 }

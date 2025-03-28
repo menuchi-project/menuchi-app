@@ -22,13 +22,9 @@ export interface RestaurantCompactIn extends RestaurantInfo {
   displayName: Slug;
 }
 
-export interface CreateRestaurantCompleteOut extends RestaurantInfo, CompleteOut {
+export interface RestaurantCompleteOut extends RestaurantInfo, CompleteOut {
   name: DefaultString | null;
   displayName: Slug| null;
-  branch?: BranchCompleteOut | null;
-}
-
-export interface RestaurantCompleteOut extends RestaurantInfo, CompleteOut {
   branches?: BranchCompleteOut[] | null;
 }
 

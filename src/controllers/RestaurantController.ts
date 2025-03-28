@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Path, Post, Response, Route, SuccessResponse, Tags } from "tsoa";
 import RestaurantService from "../services/RestaurantService";
-import { RestaurantCompactIn, CreateRestaurantCompleteOut, RestaurantCompleteOut } from "../types/RestaurantTypes";
+import { RestaurantCompactIn, RestaurantCompleteOut } from "../types/RestaurantTypes";
 import { RestaurantValidationError } from "../exceptions/ValidationError";
 import { ConstraintsDatabaseError } from "../exceptions/DatabaseError";
 import { UUID } from "../types/TypeAliases";
@@ -13,7 +13,7 @@ export class RestaurantController extends Controller {
   @Response<RestaurantValidationError>(422, '4221 RestaurantValidationError')
   @SuccessResponse(201, 'Restaurant, a branch and its backlog created successfully.')
   @Post()
-  public async createRestaurant(@Body() body: RestaurantCompactIn): Promise<CreateRestaurantCompleteOut> {
+  public async createRestaurant(@Body() body: RestaurantCompactIn): Promise<RestaurantCompleteOut> {
     return RestaurantService.createRestaurant(body);
   }
 
