@@ -735,6 +735,18 @@
 				"type": "integer",
 				"format": "int32"
 			},
+			"UpdateCategoryIn": {
+				"properties": {
+					"positionInBacklog": {
+						"$ref": "#/components/schemas/Int"
+					}
+				},
+				"required": [
+					"positionInBacklog"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"ItemCompleteOut": {
 				"properties": {
 					"id": {
@@ -1319,6 +1331,51 @@
 				],
 				"security": [],
 				"parameters": []
+			}
+		},
+		"/categories/{categoryId}": {
+			"patch": {
+				"operationId": "UpdateItem",
+				"responses": {
+					"204": {
+						"description": "Category updated successfully. It doesn't retrieve anything.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Category"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "categoryId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateCategoryIn"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/backlog/{backlogId}/items": {

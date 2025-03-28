@@ -16,3 +16,7 @@ export interface CategoryCompleteOut extends CompleteOut {
   positionInBacklog?: Int | null;
   items?: ItemCompleteOut[] | null;
 }
+
+export interface UpdateCategoryIn {
+  positionInBacklog: Int;
+}

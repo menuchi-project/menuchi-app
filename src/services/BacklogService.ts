@@ -29,6 +29,17 @@ class BacklogService {
     }: ItemCompactIn
   ): Promise<ItemCompleteOut | never> {
     return this.prisma.$transaction(async (tx) => {
+      const maxCategoryPosition = await tx.category.aggregate({
+        _max: {
+          positionInBacklog: true
+        },
+        where: {
+          backlogId
+        },
+      });
+
+      const positionInBacklog = (maxCategoryPosition._max.positionInBacklog ?? 0) + 1;
+
       const category = await tx.category
         .upsert({
           where: {
@@ -41,6 +52,7 @@ class BacklogService {
           create: {
             backlogId: backlogId,
             categoryNameId: categoryNameId,
+            positionInBacklog
           },
           include: {
             categoryName: true,
@@ -56,7 +68,7 @@ class BacklogService {
           throw error;
         });
 
-      const maxPositions = await tx.item.aggregate({
+      const maxItemPositions = await tx.item.aggregate({
         _max: {
           positionInItemsList: true,
           positionInCategory: true,
@@ -66,8 +78,8 @@ class BacklogService {
         },
       });
 
-      const positionInItemsList = (maxPositions._max.positionInItemsList ?? 0) + 1;
-      const positionInCategory = (maxPositions._max.positionInCategory ?? 0) + 1;
+      const positionInItemsList = (maxItemPositions._max.positionInItemsList ?? 0) + 1;
+      const positionInCategory = (maxItemPositions._max.positionInCategory ?? 0) + 1;
 
       const item = (await tx.item.create({
         data: {
