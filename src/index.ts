@@ -10,7 +10,7 @@ import cors from 'cors';
 dotenv.config();
 const app = express();
 
-app.use(cors());
+app.use(cors({ origin: '*' }));
 app.use(morgan(':date[web] | :url <:method, :status> | :response-time[3]ms'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
