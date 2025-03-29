@@ -95,6 +95,6 @@ export function notFoundHandler(
 ): void {
   res.status(404).json({
     success: false,
-    message: `Route ${req.route} not found.`,
+    message: `Route ${req.path} not found.`,
   });
 }

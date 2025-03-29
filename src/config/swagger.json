@@ -22,13 +22,6 @@
 				"minLength": 2,
 				"maxLength": 50
 			},
-			"URL": {
-				"type": "string",
-				"example": "https://example.com/example",
-				"format": "uri",
-				"description": "URL format.",
-				"pattern": "^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$"
-			},
 			"UUID": {
 				"type": "string",
 				"example": "52907745-7672-470e-a803-a2f8feb52944",
@@ -39,204 +32,7 @@
 			"Boolean": {
 				"type": "boolean"
 			},
-			"CategoryNameCompleteOut": {
-				"properties": {
-					"id": {
-						"$ref": "#/components/schemas/UUID"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"deletedAt": {
-						"type": "string",
-						"format": "date-time",
-						"nullable": true
-					},
-					"name": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					}
-				},
-				"required": [
-					"id",
-					"createdAt",
-					"updatedAt",
-					"name"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"Int": {
-				"type": "integer",
-				"format": "int32"
-			},
-			"ItemCompactOut": {
-				"properties": {
-					"id": {
-						"$ref": "#/components/schemas/UUID"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"deletedAt": {
-						"type": "string",
-						"format": "date-time",
-						"nullable": true
-					},
-					"categoryId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/UUID"
-							}
-						],
-						"nullable": true
-					},
-					"subCategoryId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/UUID"
-							}
-						],
-						"nullable": true
-					},
-					"name": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"ingredients": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"price": {
-						"type": "number",
-						"format": "double",
-						"nullable": true
-					},
-					"picUrl": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"positionInItemsList": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Int"
-							}
-						],
-						"nullable": true
-					},
-					"positionInCategory": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Int"
-							}
-						],
-						"nullable": true
-					}
-				},
-				"required": [
-					"id",
-					"createdAt",
-					"updatedAt"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"CategoryCompleteOut": {
-				"properties": {
-					"id": {
-						"$ref": "#/components/schemas/UUID"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"deletedAt": {
-						"type": "string",
-						"format": "date-time",
-						"nullable": true
-					},
-					"backlogId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/UUID"
-							}
-						],
-						"nullable": true
-					},
-					"categoryNameId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/UUID"
-							}
-						],
-						"nullable": true
-					},
-					"categoryName": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/CategoryNameCompleteOut"
-							}
-						],
-						"nullable": true
-					},
-					"positionInBacklog": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Int"
-							}
-						],
-						"nullable": true
-					},
-					"items": {
-						"items": {
-							"$ref": "#/components/schemas/ItemCompactOut"
-						},
-						"type": "array",
-						"nullable": true
-					}
-				},
-				"required": [
-					"id",
-					"createdAt",
-					"updatedAt",
-					"backlogId",
-					"categoryNameId",
-					"categoryName"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"BacklogCompleteOut": {
+			"BacklogCompactOut": {
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/UUID"
@@ -260,13 +56,6 @@
 								"$ref": "#/components/schemas/UUID"
 							}
 						],
-						"nullable": true
-					},
-					"categories": {
-						"items": {
-							"$ref": "#/components/schemas/CategoryCompleteOut"
-						},
-						"type": "array",
 						"nullable": true
 					}
 				},
@@ -395,7 +184,7 @@
 					"backlog": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/BacklogCompleteOut"
+								"$ref": "#/components/schemas/BacklogCompactOut"
 							}
 						],
 						"nullable": true
@@ -411,40 +200,15 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"URL": {
+				"type": "string",
+				"example": "https://example.com/example",
+				"format": "uri",
+				"description": "URL format.",
+				"pattern": "^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$"
+			},
 			"RestaurantCompleteOut": {
 				"properties": {
-					"id": {
-						"$ref": "#/components/schemas/UUID"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"deletedAt": {
-						"type": "string",
-						"format": "date-time",
-						"nullable": true
-					},
-					"name": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"displayName": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Slug"
-							}
-						],
-						"nullable": true
-					},
 					"slang": {
 						"allOf": [
 							{
@@ -518,12 +282,43 @@
 						],
 						"nullable": true
 					},
-					"branch": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"name": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/BranchCompleteOut"
+								"$ref": "#/components/schemas/DefaultString"
 							}
 						],
+						"nullable": true
+					},
+					"displayName": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Slug"
+							}
+						],
+						"nullable": true
+					},
+					"branches": {
+						"items": {
+							"$ref": "#/components/schemas/BranchCompleteOut"
+						},
+						"type": "array",
 						"nullable": true
 					}
 				},
@@ -625,12 +420,6 @@
 			},
 			"RestaurantCompactIn": {
 				"properties": {
-					"name": {
-						"$ref": "#/components/schemas/DefaultString"
-					},
-					"displayName": {
-						"$ref": "#/components/schemas/Slug"
-					},
 					"slang": {
 						"allOf": [
 							{
@@ -703,11 +492,87 @@
 							}
 						],
 						"nullable": true
+					},
+					"name": {
+						"$ref": "#/components/schemas/DefaultString"
+					},
+					"displayName": {
+						"$ref": "#/components/schemas/Slug"
 					}
 				},
 				"required": [
 					"name",
 					"displayName"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"RestaurantNotFound": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CategoryNameCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"name"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -758,6 +623,22 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"Int": {
+				"type": "integer",
+				"format": "int32"
+			},
+			"UpdateCategoryIn": {
+				"properties": {
+					"positionInBacklog": {
+						"$ref": "#/components/schemas/Int"
+					}
+				},
+				"required": [
+					"positionInBacklog"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"ItemCompleteOut": {
 				"properties": {
 					"id": {
@@ -780,6 +661,14 @@
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"categoryName": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
 							}
 						],
 						"nullable": true
@@ -833,14 +722,6 @@
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/Int"
-							}
-						],
-						"nullable": true
-					},
-					"categoryName": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/CategoryNameCompleteOut"
 							}
 						],
 						"nullable": true
@@ -984,22 +865,6 @@
 							}
 						],
 						"nullable": true
-					},
-					"positionInItemsList": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Int"
-							}
-						],
-						"nullable": true
-					},
-					"positionInCategory": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Int"
-							}
-						],
-						"nullable": true
 					}
 				},
 				"required": [
@@ -1009,7 +874,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"ItemListCompleteOut": {
+			"CategoryCompleteOut": {
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/UUID"
@@ -1027,7 +892,7 @@
 						"format": "date-time",
 						"nullable": true
 					},
-					"categoryId": {
+					"backlogId": {
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/UUID"
@@ -1035,15 +900,7 @@
 						],
 						"nullable": true
 					},
-					"subCategoryId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/UUID"
-							}
-						],
-						"nullable": true
-					},
-					"name": {
+					"categoryName": {
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/DefaultString"
@@ -1051,28 +908,7 @@
 						],
 						"nullable": true
 					},
-					"ingredients": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"price": {
-						"type": "number",
-						"format": "double",
-						"nullable": true
-					},
-					"picUrl": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"positionInItemsList": {
+					"positionInBacklog": {
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/Int"
@@ -1080,20 +916,11 @@
 						],
 						"nullable": true
 					},
-					"positionInCategory": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Int"
-							}
-						],
-						"nullable": true
-					},
-					"category": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/CategoryCompleteOut"
-							}
-						],
+					"items": {
+						"items": {
+							"$ref": "#/components/schemas/ItemCompleteOut"
+						},
+						"type": "array",
 						"nullable": true
 					}
 				},
@@ -1101,7 +928,51 @@
 					"id",
 					"createdAt",
 					"updatedAt",
-					"category"
+					"backlogId",
+					"categoryName"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"BacklogCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"branchId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"categories": {
+						"items": {
+							"$ref": "#/components/schemas/CategoryCompleteOut"
+						},
+						"type": "array",
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"branchId"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1238,6 +1109,47 @@
 				}
 			}
 		},
+		"/restaurants/{restaurantId}": {
+			"get": {
+				"operationId": "GetRestaurant",
+				"responses": {
+					"200": {
+						"description": "Restaurant is retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RestaurantCompleteOut"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4041 RestaurantNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RestaurantNotFound"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Restaurant"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "restaurantId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
+			}
+		},
 		"/category-names": {
 			"post": {
 				"operationId": "CreateCategoryName",
@@ -1313,6 +1225,84 @@
 				"parameters": []
 			}
 		},
+		"/categories/{categoryId}": {
+			"patch": {
+				"operationId": "UpdateItem",
+				"responses": {
+					"204": {
+						"description": "Category updated successfully. It doesn't retrieve anything.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Category"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "categoryId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateCategoryIn"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteItems",
+				"responses": {
+					"204": {
+						"description": "Category and its items deleted successfully.  It doesn't retrieve anything.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Category"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "categoryId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
+			}
+		},
 		"/backlog/{backlogId}/items": {
 			"post": {
 				"operationId": "CreateItem",
@@ -1382,7 +1372,7 @@
 							"application/json": {
 								"schema": {
 									"items": {
-										"$ref": "#/components/schemas/ItemListCompleteOut"
+										"$ref": "#/components/schemas/ItemCompleteOut"
 									},
 									"type": "array"
 								}
@@ -1411,7 +1401,7 @@
 				"operationId": "GeBacklog",
 				"responses": {
 					"200": {
-						"description": "Backlog is retrieved successfully",
+						"description": "Backlog is retrieved successfully.",
 						"content": {
 							"application/json": {
 								"schema": {

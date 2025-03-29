@@ -1,10 +1,8 @@
-import { CompleteOut } from "./BaseTypes";
-import { CategoryCompleteOut } from "./CategoryTypes";
-import { Boolean, DefaultString, Slug, URL, UUID } from "./TypeAliases";
+import { CompleteOut } from './BaseTypes';
+import { CategoryCompleteOut } from './CategoryTypes';
+import { Boolean, DefaultString, Slug, URL, UUID } from './TypeAliases';
 
-export interface RestaurantCompactIn {
-  name: DefaultString;
-  displayName: Slug;
+interface RestaurantInfo {
   /**
    * @pattern ^[a-zA-Z0-9]*$
    */
@@ -19,22 +17,15 @@ export interface RestaurantCompactIn {
   logoUrl?: URL | null;
 }
 
-export interface RestaurantCompleteOut extends CompleteOut {
+export interface RestaurantCompactIn extends RestaurantInfo {
+  name: DefaultString;
+  displayName: Slug;
+}
+
+export interface RestaurantCompleteOut extends RestaurantInfo, CompleteOut {
   name: DefaultString | null;
-  displayName: Slug | null;
-  /**
-   * @pattern ^[a-zA-Z0-9]*$
-   */
-  slang?: DefaultString | null;
-  instagram?: DefaultString | null;
-  telegram?: DefaultString | null;
-  twitter?: DefaultString | null;
-  youtube?: DefaultString | null;
-  eitaa?: DefaultString | null;
-  avatarUrl?: URL | null;
-  coverUrl?: URL | null;
-  logoUrl?: URL | null;
-  branch?: BranchCompleteOut | null;
+  displayName: Slug| null;
+  branches?: BranchCompleteOut[] | null;
 }
 
 export interface BranchCompleteOut extends CompleteOut {
@@ -55,7 +46,11 @@ export interface BranchCompleteOut extends CompleteOut {
   twitter?: DefaultString | null;
   youtube?: DefaultString | null;
   eitaa?: DefaultString | null;
-  backlog: BacklogCompleteOut | null;
+  backlog: BacklogCompactOut | null;
+}
+
+export interface BacklogCompactOut extends CompleteOut {
+  branchId: UUID | null;
 }
 
 export interface BacklogCompleteOut extends CompleteOut {

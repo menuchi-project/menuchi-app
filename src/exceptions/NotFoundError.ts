@@ -23,3 +23,9 @@ export class CategoryNameNotFound extends NotFoundError {
     super('Category Name with the given id not found', 404, 4042);
   }
 }
+
+export class RestaurantNotFound extends NotFoundError {
+  constructor() {
+    super('Restaurant with the given id not found', 404, 4041);
+  }
+}

@@ -3,7 +3,6 @@ import {
   UpdateItemIn,
   ItemCompactIn,
   ItemCompleteOut,
-  ItemListCompleteOut,
 } from '../types/ItemTypes';
 import { UUID } from '../types/TypeAliases';
 import {
@@ -26,12 +25,21 @@ class BacklogService {
       name,
       ingredients,
       price,
-      picUrl,
-      positionInItemsList,
-      positionInCategory,
+      picUrl
     }: ItemCompactIn
   ): Promise<ItemCompleteOut | never> {
     return this.prisma.$transaction(async (tx) => {
+      const maxCategoryPosition = await tx.category.aggregate({
+        _max: {
+          positionInBacklog: true
+        },
+        where: {
+          backlogId
+        },
+      });
+
+      const positionInBacklog = (maxCategoryPosition._max.positionInBacklog ?? 0) + 1;
+
       const category = await tx.category
         .upsert({
           where: {
@@ -44,6 +52,7 @@ class BacklogService {
           create: {
             backlogId: backlogId,
             categoryNameId: categoryNameId,
+            positionInBacklog
           },
           include: {
             categoryName: true,
@@ -59,6 +68,19 @@ class BacklogService {
           throw error;
         });
 
+      const maxItemPositions = await tx.item.aggregate({
+        _max: {
+          positionInItemsList: true,
+          positionInCategory: true,
+        },
+        where: {
+          categoryId: category.id
+        },
+      });
+
+      const positionInItemsList = (maxItemPositions._max.positionInItemsList ?? 0) + 1;
+      const positionInCategory = (maxItemPositions._max.positionInCategory ?? 0) + 1;
+
       const item = (await tx.item.create({
         data: {
           categoryId: category.id,
@@ -67,31 +89,41 @@ class BacklogService {
           price,
           picUrl,
           positionInItemsList,
-          positionInCategory,
+          positionInCategory
         },
-      })) as ItemCompleteOut;
+      }));
 
-      item.categoryName = category.categoryName;
-
-      return item;
+      return {
+        ...item,
+        categoryName: category.categoryName?.name
+      };
     });
   }
 
   async getBacklog(backlogId: UUID): Promise<BacklogCompleteOut | never> {
-    return this.prisma.backlog
+    const backlog = await this.prisma.backlog
       .findUniqueOrThrow({
         where: {
           id: backlogId,
         },
         include: {
           categories: {
+            where: {
+              deletedAt: null
+            },
             include: {
               categoryName: true,
               items: {
                 where: {
                   deletedAt: null,
                 },
+                orderBy: {
+                  positionInCategory: 'asc'
+                }
               },
+            },
+            omit: {
+              categoryNameId: true,
             },
           },
         },
@@ -100,13 +132,26 @@ class BacklogService {
         if (error.message.includes('not found')) throw new BacklogNotFound();
         throw error;
       });
+
+    return {
+      ...backlog,
+      categories: backlog.categories.map((category) => ({
+        ...category,
+        categoryName: category.categoryName?.name ?? null,
+        items: category.items.map((item) => ({
+          ...item,
+          categoryName: category.categoryName?.name ?? null,
+        })),
+      })),
+    };
   }
 
-  async getItems(backlogId: UUID): Promise<ItemListCompleteOut[]> {
-    return this.prisma.item.findMany({
+  async getItems(backlogId: UUID): Promise<ItemCompleteOut[]> {
+    const items = await this.prisma.item.findMany({
       where: {
         deletedAt: null,
         category: {
+          deletedAt: null,
           backlog: {
             id: backlogId,
           },
@@ -119,7 +164,16 @@ class BacklogService {
           },
         },
       },
+      orderBy: {
+        positionInItemsList: 'asc'
+      }
     });
+
+    return items.map((item) => ({
+      ...item,
+      categoryName: item.category?.categoryName?.name,
+      category: undefined,
+    }));
   }
 
   async updateItem(itemId: UUID, itemDTO: UpdateItemIn) {
