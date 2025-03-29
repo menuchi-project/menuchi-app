@@ -7,6 +7,49 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
+			"URL": {
+				"type": "string",
+				"example": "https://example.com/example",
+				"format": "uri",
+				"description": "URL format.",
+				"pattern": "^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$"
+			},
+			"UUID": {
+				"type": "string",
+				"example": "52907745-7672-470e-a803-a2f8feb52944",
+				"format": "uuid",
+				"description": "Stringified UUIDv4.\nSee [RFC 4112](https://tools.ietf.org/html/rfc4122)",
+				"pattern": "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}"
+			},
+			"ImageFilename": {
+				"type": "string",
+				"example": "my-image.jpg",
+				"format": "image-filename",
+				"description": "Valid filename for images with allowed extensions.\nContains only English letters, numbers, hyphens, and underscores.\nMust end with a valid image extension (.jpg, .jpeg, .png, .webp, .svg).",
+				"pattern": "^[a-zA-Z0-9-_]+\\.(jpg|jpeg|png|webp|svg)$",
+				"minLength": 5,
+				"maxLength": 255
+			},
+			"GetPicUrlIn": {
+				"properties": {
+					"restaurantId": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"branchId": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"fileName": {
+						"$ref": "#/components/schemas/ImageFilename"
+					}
+				},
+				"required": [
+					"restaurantId",
+					"branchId",
+					"fileName"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"DefaultString": {
 				"type": "string",
 				"example": "string",
@@ -21,13 +64,6 @@
 				"pattern": "^[a-zA-Z0-9-]+$",
 				"minLength": 2,
 				"maxLength": 50
-			},
-			"UUID": {
-				"type": "string",
-				"example": "52907745-7672-470e-a803-a2f8feb52944",
-				"format": "uuid",
-				"description": "Stringified UUIDv4.\nSee [RFC 4112](https://tools.ietf.org/html/rfc4122)",
-				"pattern": "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}"
 			},
 			"Boolean": {
 				"type": "boolean"
@@ -199,13 +235,6 @@
 				],
 				"type": "object",
 				"additionalProperties": false
-			},
-			"URL": {
-				"type": "string",
-				"example": "https://example.com/example",
-				"format": "uri",
-				"description": "URL format.",
-				"pattern": "^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$"
 			},
 			"RestaurantCompleteOut": {
 				"properties": {
@@ -1057,6 +1086,38 @@
 		"contact": {}
 	},
 	"paths": {
+		"/s3/get-item-pic-url": {
+			"post": {
+				"operationId": "GeneratePutPresignedUrl",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/URL"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"S3"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/GetPicUrlIn"
+							}
+						}
+					}
+				}
+			}
+		},
 		"/restaurants": {
 			"post": {
 				"operationId": "CreateRestaurant",
