@@ -78,9 +78,9 @@ model Restaurant {
   twitter     String?
   youtube     String?
   eitaa       String?
-  avatarUrl   String?   @map("avatar_url")
-  coverUrl    String?   @map("cover_url")
-  logoUrl     String?   @map("logo_url")
+  avatarKey   String?   @map("avatar_key")
+  coverKey    String?   @map("cover_key")
+  logoKey     String?   @map("logo_key")
   branches    Branch[]
   user        User?     @relation(fields: [managerId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   createdAt   DateTime  @default(now()) @map("created_at")
@@ -227,7 +227,7 @@ model Item {
   name                String?
   ingredients         String?        @db.Text
   price               Float?
-  picUrl              String?        @map("pic_url")
+  picKey              String?        @map("pic_key")
   positionInItemsList Int?           @map("position_in_items_list")
   positionInCategory  Int?           @map("position_in_category")
   category            Category?      @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
