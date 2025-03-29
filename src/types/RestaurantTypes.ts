@@ -1,8 +1,10 @@
 import { CompleteOut } from './BaseTypes';
 import { CategoryCompleteOut } from './CategoryTypes';
-import { Boolean, DefaultString, Slug, URL, UUID } from './TypeAliases';
+import { Boolean, DefaultString, LongString, Slug, URL, UUID } from './TypeAliases';
 
-interface RestaurantInfo {
+export interface RestaurantCompactIn {
+  name: DefaultString;
+  displayName: Slug;
   /**
    * @pattern ^[a-zA-Z0-9]*$
    */
@@ -12,20 +14,24 @@ interface RestaurantInfo {
   twitter?: DefaultString | null;
   youtube?: DefaultString | null;
   eitaa?: DefaultString | null;
-  avatarUrl?: URL | null;
-  coverUrl?: URL | null;
-  logoUrl?: URL | null;
+  avatarKey?: LongString | null;
+  coverKey?: LongString | null;
+  logoKey?: LongString | null;
 }
 
-export interface RestaurantCompactIn extends RestaurantInfo {
-  name: DefaultString;
-  displayName: Slug;
-}
-
-export interface RestaurantCompleteOut extends RestaurantInfo, CompleteOut {
+export interface RestaurantCompleteOut extends CompleteOut {
   name: DefaultString | null;
   displayName: Slug| null;
   branches?: BranchCompleteOut[] | null;
+  slang?: DefaultString | null;
+  instagram?: DefaultString | null;
+  telegram?: DefaultString | null;
+  twitter?: DefaultString | null;
+  youtube?: DefaultString | null;
+  eitaa?: DefaultString | null;
+  avatarUrl?: URL | null;
+  coverUrl?: URL | null;
+  logoUrl?: URL | null;
 }
 
 export interface BranchCompleteOut extends CompleteOut {

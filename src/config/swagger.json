@@ -14,6 +14,27 @@
 				"description": "URL format.",
 				"pattern": "^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$"
 			},
+			"LongString": {
+				"type": "string",
+				"minLength": 2,
+				"maxLength": 300
+			},
+			"GetItemPicUrlOut": {
+				"properties": {
+					"itemPicUrl": {
+						"$ref": "#/components/schemas/URL"
+					},
+					"itemPicKey": {
+						"$ref": "#/components/schemas/LongString"
+					}
+				},
+				"required": [
+					"itemPicUrl",
+					"itemPicKey"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"UUID": {
 				"type": "string",
 				"example": "52907745-7672-470e-a803-a2f8feb52944",
@@ -30,7 +51,7 @@
 				"minLength": 5,
 				"maxLength": 255
 			},
-			"GetPicUrlIn": {
+			"GetItemPicUrlIn": {
 				"properties": {
 					"restaurantId": {
 						"$ref": "#/components/schemas/UUID"
@@ -238,14 +259,52 @@
 			},
 			"RestaurantCompleteOut": {
 				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"displayName": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Slug"
+							}
+						],
+						"nullable": true
+					},
+					"branches": {
+						"items": {
+							"$ref": "#/components/schemas/BranchCompleteOut"
+						},
+						"type": "array",
+						"nullable": true
+					},
 					"slang": {
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/DefaultString"
 							}
 						],
-						"nullable": true,
-						"pattern": "^[a-zA-Z0-9]*$"
+						"nullable": true
 					},
 					"instagram": {
 						"allOf": [
@@ -309,45 +368,6 @@
 								"$ref": "#/components/schemas/URL"
 							}
 						],
-						"nullable": true
-					},
-					"id": {
-						"$ref": "#/components/schemas/UUID"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"deletedAt": {
-						"type": "string",
-						"format": "date-time",
-						"nullable": true
-					},
-					"name": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"displayName": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Slug"
-							}
-						],
-						"nullable": true
-					},
-					"branches": {
-						"items": {
-							"$ref": "#/components/schemas/BranchCompleteOut"
-						},
-						"type": "array",
 						"nullable": true
 					}
 				},
@@ -449,6 +469,12 @@
 			},
 			"RestaurantCompactIn": {
 				"properties": {
+					"name": {
+						"$ref": "#/components/schemas/DefaultString"
+					},
+					"displayName": {
+						"$ref": "#/components/schemas/Slug"
+					},
 					"slang": {
 						"allOf": [
 							{
@@ -498,35 +524,29 @@
 						],
 						"nullable": true
 					},
-					"avatarUrl": {
+					"avatarKey": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/URL"
+								"$ref": "#/components/schemas/LongString"
 							}
 						],
 						"nullable": true
 					},
-					"coverUrl": {
+					"coverKey": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/URL"
+								"$ref": "#/components/schemas/LongString"
 							}
 						],
 						"nullable": true
 					},
-					"logoUrl": {
+					"logoKey": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/URL"
+								"$ref": "#/components/schemas/LongString"
 							}
 						],
 						"nullable": true
-					},
-					"name": {
-						"$ref": "#/components/schemas/DefaultString"
-					},
-					"displayName": {
-						"$ref": "#/components/schemas/Slug"
 					}
 				},
 				"required": [
@@ -721,7 +741,7 @@
 					"ingredients": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/DefaultString"
+								"$ref": "#/components/schemas/LongString"
 							}
 						],
 						"nullable": true
@@ -734,7 +754,7 @@
 					"picUrl": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/DefaultString"
+								"$ref": "#/components/schemas/URL"
 							}
 						],
 						"nullable": true
@@ -877,7 +897,7 @@
 					"ingredients": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/DefaultString"
+								"$ref": "#/components/schemas/LongString"
 							}
 						],
 						"nullable": true
@@ -887,10 +907,10 @@
 						"format": "double",
 						"nullable": true
 					},
-					"picUrl": {
+					"picKey": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/DefaultString"
+								"$ref": "#/components/schemas/LongString"
 							}
 						],
 						"nullable": true
@@ -1035,7 +1055,7 @@
 					"ingredients": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/DefaultString"
+								"$ref": "#/components/schemas/LongString"
 							}
 						],
 						"nullable": true
@@ -1045,10 +1065,10 @@
 						"format": "double",
 						"nullable": true
 					},
-					"picUrl": {
+					"picKey": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/DefaultString"
+								"$ref": "#/components/schemas/LongString"
 							}
 						],
 						"nullable": true
@@ -1095,7 +1115,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/URL"
+									"$ref": "#/components/schemas/GetItemPicUrlOut"
 								}
 							}
 						}
@@ -1111,7 +1131,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/GetPicUrlIn"
+								"$ref": "#/components/schemas/GetItemPicUrlIn"
 							}
 						}
 					}
