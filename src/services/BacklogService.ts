@@ -10,6 +10,7 @@ import {
   CategoryNameNotFound,
 } from '../exceptions/NotFoundError';
 import { BacklogCompleteOut } from '../types/RestaurantTypes';
+import S3Service from './S3Service';
 
 class BacklogService {
   private prisma: PrismaClient;
@@ -20,25 +21,20 @@ class BacklogService {
 
   async createItem(
     backlogId: UUID,
-    {
-      categoryNameId,
-      name,
-      ingredients,
-      price,
-      picUrl
-    }: ItemCompactIn
+    { categoryNameId, name, ingredients, price, picKey }: ItemCompactIn
   ): Promise<ItemCompleteOut | never> {
     return this.prisma.$transaction(async (tx) => {
       const maxCategoryPosition = await tx.category.aggregate({
         _max: {
-          positionInBacklog: true
+          positionInBacklog: true,
         },
         where: {
-          backlogId
+          backlogId,
         },
       });
 
-      const positionInBacklog = (maxCategoryPosition._max.positionInBacklog ?? 0) + 1;
+      const positionInBacklog =
+        (maxCategoryPosition._max.positionInBacklog ?? 0) + 1;
 
       const category = await tx.category
         .upsert({
@@ -52,7 +48,7 @@ class BacklogService {
           create: {
             backlogId: backlogId,
             categoryNameId: categoryNameId,
-            positionInBacklog
+            positionInBacklog,
           },
           include: {
             categoryName: true,
@@ -74,28 +70,30 @@ class BacklogService {
           positionInCategory: true,
         },
         where: {
-          categoryId: category.id
+          categoryId: category.id,
         },
       });
 
-      const positionInItemsList = (maxItemPositions._max.positionInItemsList ?? 0) + 1;
-      const positionInCategory = (maxItemPositions._max.positionInCategory ?? 0) + 1;
+      const positionInItemsList =
+        (maxItemPositions._max.positionInItemsList ?? 0) + 1;
+      const positionInCategory =
+        (maxItemPositions._max.positionInCategory ?? 0) + 1;
 
-      const item = (await tx.item.create({
+      const item = await tx.item.create({
         data: {
           categoryId: category.id,
           name,
           ingredients,
           price,
-          picUrl,
+          picKey,
           positionInItemsList,
-          positionInCategory
+          positionInCategory,
         },
-      }));
+      });
 
       return {
         ...item,
-        categoryName: category.categoryName?.name
+        categoryName: category.categoryName?.name,
       };
     });
   }
@@ -109,7 +107,7 @@ class BacklogService {
         include: {
           categories: {
             where: {
-              deletedAt: null
+              deletedAt: null,
             },
             include: {
               categoryName: true,
@@ -118,8 +116,8 @@ class BacklogService {
                   deletedAt: null,
                 },
                 orderBy: {
-                  positionInCategory: 'asc'
-                }
+                  positionInCategory: 'asc',
+                },
               },
             },
             omit: {
@@ -135,14 +133,20 @@ class BacklogService {
 
     return {
       ...backlog,
-      categories: backlog.categories.map((category) => ({
-        ...category,
-        categoryName: category.categoryName?.name ?? null,
-        items: category.items.map((item) => ({
-          ...item,
+      categories: await Promise.all(
+        backlog.categories.map(async (category) => ({
+          ...category,
           categoryName: category.categoryName?.name ?? null,
-        })),
-      })),
+          items: await Promise.all(
+            category.items.map(async (item) => ({
+              ...item,
+              categoryName: category.categoryName?.name ?? null,
+              picUrl: await S3Service.generateGetPresignedUrl(item.picKey),
+              picKey: undefined,
+            }))
+          ),
+        }))
+      ),
     };
   }
 
@@ -165,15 +169,19 @@ class BacklogService {
         },
       },
       orderBy: {
-        positionInItemsList: 'asc'
-      }
+        positionInItemsList: 'asc',
+      },
     });
 
-    return items.map((item) => ({
-      ...item,
-      categoryName: item.category?.categoryName?.name,
-      category: undefined,
-    }));
+    return await Promise.all(
+      items.map(async (item) => ({
+        ...item,
+        categoryName: item.category?.categoryName?.name,
+        category: undefined,
+        picUrl: await S3Service.generateGetPresignedUrl(item.picKey),
+        picKey: undefined,
+      }))
+    );
   }
 
   async updateItem(itemId: UUID, itemDTO: UpdateItemIn) {

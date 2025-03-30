@@ -39,6 +39,13 @@ export type IranPhoneNumber = string;
 export type DefaultString = string;
 
 /**
+ * @isString should be a string
+ * @minLength 2 length must be between 2 and 300
+ * @maxLength 300 length must be between 2 and 300
+ */
+export type LongString = string;
+
+/**
  * @isInt number should be integer
  */
 export type Int = number;
@@ -58,3 +65,16 @@ export type Boolean = boolean;
  * @example "my-name"
  */
 export type Slug = string;
+
+/**
+ * Valid filename for images with allowed extensions.
+ * Contains only English letters, numbers, hyphens, and underscores.
+ * Must end with a valid image extension (.jpg, .jpeg, .png, .webp, .svg).
+ * @pattern ^[a-zA-Z0-9-_]+\.(jpg|jpeg|png|webp|svg)$
+ * @minLength 5 length must be between 5 and 255
+ * @maxLength 255 length must be between 5 and 255
+ * @format image-filename
+ * @example "my-image.jpg"
+ * @example "photo_123.png"
+ */
+export type ImageFilename = string;
