@@ -6,14 +6,19 @@ import swaggerUi from 'swagger-ui-express';
 import * as swagger from './config/swagger.json';
 import morgan from 'morgan';
 import cors from 'cors';
+import RedisClient from './config/RedisClient';
+import sessionConfig from './config/SessionConfig';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 const app = express();
 
 app.use(cors({ origin: '*' }));
 app.use(morgan(':date[web] | :url <:method, :status> | :response-time[3]ms'));
-app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser(process.env.COOKIE_PRIVATE_KEY));
+app.use(sessionConfig());
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swagger));
 RegisterRoutes(app);

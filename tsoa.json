@@ -11,10 +11,15 @@
     "description": "Menuchi API Documentation",
     "version": "1.0.0",
     "securityDefinitions": {
-      "jwt": {
+      "SessionAuth": {
         "type": "apiKey",
-        "name": "Authorization",
-        "in": "cookie"
+        "in": "cookie",
+        "name": "session-id" 
+      },
+      "JWTAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "access-token"
       }
     }
   },
