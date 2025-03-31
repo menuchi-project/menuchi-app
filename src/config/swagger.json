@@ -7,6 +7,70 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
+			"URL": {
+				"type": "string",
+				"example": "https://example.com/example",
+				"format": "uri",
+				"description": "URL format.",
+				"pattern": "^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$"
+			},
+			"LongString": {
+				"type": "string",
+				"minLength": 2,
+				"maxLength": 300
+			},
+			"GetItemPicUrlOut": {
+				"properties": {
+					"itemPicUrl": {
+						"$ref": "#/components/schemas/URL"
+					},
+					"itemPicKey": {
+						"$ref": "#/components/schemas/LongString"
+					}
+				},
+				"required": [
+					"itemPicUrl",
+					"itemPicKey"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UUID": {
+				"type": "string",
+				"example": "52907745-7672-470e-a803-a2f8feb52944",
+				"format": "uuid",
+				"description": "Stringified UUIDv4.\nSee [RFC 4112](https://tools.ietf.org/html/rfc4122)",
+				"pattern": "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}"
+			},
+			"ImageFilename": {
+				"type": "string",
+				"example": "my-image.jpg",
+				"format": "image-filename",
+				"description": "Valid filename for images with allowed extensions.\nContains only English letters, numbers, hyphens, and underscores.\nMust end with a valid image extension (.jpg, .jpeg, .png, .webp, .svg).",
+				"pattern": "^[a-zA-Z0-9-_]+\\.(jpg|jpeg|png|webp|svg)$",
+				"minLength": 5,
+				"maxLength": 255
+			},
+			"GetItemPicUrlIn": {
+				"properties": {
+					"restaurantId": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"branchId": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"fileName": {
+						"$ref": "#/components/schemas/ImageFilename"
+					}
+				},
+				"required": [
+					"restaurantId",
+					"branchId",
+					"fileName"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"DefaultString": {
 				"type": "string",
 				"example": "string",
@@ -22,221 +86,10 @@
 				"minLength": 2,
 				"maxLength": 50
 			},
-			"URL": {
-				"type": "string",
-				"example": "https://example.com/example",
-				"format": "uri",
-				"description": "URL format.",
-				"pattern": "^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$"
-			},
-			"UUID": {
-				"type": "string",
-				"example": "52907745-7672-470e-a803-a2f8feb52944",
-				"format": "uuid",
-				"description": "Stringified UUIDv4.\nSee [RFC 4112](https://tools.ietf.org/html/rfc4122)",
-				"pattern": "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}"
-			},
 			"Boolean": {
 				"type": "boolean"
 			},
-			"CategoryNameCompleteOut": {
-				"properties": {
-					"id": {
-						"$ref": "#/components/schemas/UUID"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"deletedAt": {
-						"type": "string",
-						"format": "date-time",
-						"nullable": true
-					},
-					"name": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					}
-				},
-				"required": [
-					"id",
-					"createdAt",
-					"updatedAt",
-					"name"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"Int": {
-				"type": "integer",
-				"format": "int32"
-			},
-			"ItemCompactOut": {
-				"properties": {
-					"id": {
-						"$ref": "#/components/schemas/UUID"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"deletedAt": {
-						"type": "string",
-						"format": "date-time",
-						"nullable": true
-					},
-					"categoryId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/UUID"
-							}
-						],
-						"nullable": true
-					},
-					"subCategoryId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/UUID"
-							}
-						],
-						"nullable": true
-					},
-					"name": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"ingredients": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"price": {
-						"type": "number",
-						"format": "double",
-						"nullable": true
-					},
-					"picUrl": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"positionInItemsList": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Int"
-							}
-						],
-						"nullable": true
-					},
-					"positionInCategory": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Int"
-							}
-						],
-						"nullable": true
-					}
-				},
-				"required": [
-					"id",
-					"createdAt",
-					"updatedAt"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"CategoryCompleteOut": {
-				"properties": {
-					"id": {
-						"$ref": "#/components/schemas/UUID"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"deletedAt": {
-						"type": "string",
-						"format": "date-time",
-						"nullable": true
-					},
-					"backlogId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/UUID"
-							}
-						],
-						"nullable": true
-					},
-					"categoryNameId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/UUID"
-							}
-						],
-						"nullable": true
-					},
-					"categoryName": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/CategoryNameCompleteOut"
-							}
-						],
-						"nullable": true
-					},
-					"positionInBacklog": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Int"
-							}
-						],
-						"nullable": true
-					},
-					"items": {
-						"items": {
-							"$ref": "#/components/schemas/ItemCompactOut"
-						},
-						"type": "array",
-						"nullable": true
-					}
-				},
-				"required": [
-					"id",
-					"createdAt",
-					"updatedAt",
-					"backlogId",
-					"categoryNameId",
-					"categoryName"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"BacklogCompleteOut": {
+			"BacklogCompactOut": {
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/UUID"
@@ -260,13 +113,6 @@
 								"$ref": "#/components/schemas/UUID"
 							}
 						],
-						"nullable": true
-					},
-					"categories": {
-						"items": {
-							"$ref": "#/components/schemas/CategoryCompleteOut"
-						},
-						"type": "array",
 						"nullable": true
 					}
 				},
@@ -395,7 +241,7 @@
 					"backlog": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/BacklogCompleteOut"
+								"$ref": "#/components/schemas/BacklogCompactOut"
 							}
 						],
 						"nullable": true
@@ -445,14 +291,20 @@
 						],
 						"nullable": true
 					},
+					"branches": {
+						"items": {
+							"$ref": "#/components/schemas/BranchCompleteOut"
+						},
+						"type": "array",
+						"nullable": true
+					},
 					"slang": {
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/DefaultString"
 							}
 						],
-						"nullable": true,
-						"pattern": "^[a-zA-Z0-9]*$"
+						"nullable": true
 					},
 					"instagram": {
 						"allOf": [
@@ -514,14 +366,6 @@
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/URL"
-							}
-						],
-						"nullable": true
-					},
-					"branch": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/BranchCompleteOut"
 							}
 						],
 						"nullable": true
@@ -680,26 +524,26 @@
 						],
 						"nullable": true
 					},
-					"avatarUrl": {
+					"avatarKey": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/URL"
+								"$ref": "#/components/schemas/LongString"
 							}
 						],
 						"nullable": true
 					},
-					"coverUrl": {
+					"coverKey": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/URL"
+								"$ref": "#/components/schemas/LongString"
 							}
 						],
 						"nullable": true
 					},
-					"logoUrl": {
+					"logoKey": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/URL"
+								"$ref": "#/components/schemas/LongString"
 							}
 						],
 						"nullable": true
@@ -708,6 +552,76 @@
 				"required": [
 					"name",
 					"displayName"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"RestaurantNotFound": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CategoryNameCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"name"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -758,6 +672,22 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"Int": {
+				"type": "integer",
+				"format": "int32"
+			},
+			"UpdateCategoryIn": {
+				"properties": {
+					"positionInBacklog": {
+						"$ref": "#/components/schemas/Int"
+					}
+				},
+				"required": [
+					"positionInBacklog"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"ItemCompleteOut": {
 				"properties": {
 					"id": {
@@ -784,6 +714,14 @@
 						],
 						"nullable": true
 					},
+					"categoryName": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
 					"subCategoryId": {
 						"allOf": [
 							{
@@ -803,7 +741,7 @@
 					"ingredients": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/DefaultString"
+								"$ref": "#/components/schemas/LongString"
 							}
 						],
 						"nullable": true
@@ -816,7 +754,7 @@
 					"picUrl": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/DefaultString"
+								"$ref": "#/components/schemas/URL"
 							}
 						],
 						"nullable": true
@@ -833,14 +771,6 @@
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/Int"
-							}
-						],
-						"nullable": true
-					},
-					"categoryName": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/CategoryNameCompleteOut"
 							}
 						],
 						"nullable": true
@@ -967,7 +897,7 @@
 					"ingredients": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/DefaultString"
+								"$ref": "#/components/schemas/LongString"
 							}
 						],
 						"nullable": true
@@ -977,26 +907,10 @@
 						"format": "double",
 						"nullable": true
 					},
-					"picUrl": {
+					"picKey": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"positionInItemsList": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Int"
-							}
-						],
-						"nullable": true
-					},
-					"positionInCategory": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Int"
+								"$ref": "#/components/schemas/LongString"
 							}
 						],
 						"nullable": true
@@ -1009,7 +923,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"ItemListCompleteOut": {
+			"CategoryCompleteOut": {
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/UUID"
@@ -1027,7 +941,7 @@
 						"format": "date-time",
 						"nullable": true
 					},
-					"categoryId": {
+					"backlogId": {
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/UUID"
@@ -1035,15 +949,7 @@
 						],
 						"nullable": true
 					},
-					"subCategoryId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/UUID"
-							}
-						],
-						"nullable": true
-					},
-					"name": {
+					"categoryName": {
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/DefaultString"
@@ -1051,28 +957,7 @@
 						],
 						"nullable": true
 					},
-					"ingredients": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"price": {
-						"type": "number",
-						"format": "double",
-						"nullable": true
-					},
-					"picUrl": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"positionInItemsList": {
+					"positionInBacklog": {
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/Int"
@@ -1080,20 +965,11 @@
 						],
 						"nullable": true
 					},
-					"positionInCategory": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Int"
-							}
-						],
-						"nullable": true
-					},
-					"category": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/CategoryCompleteOut"
-							}
-						],
+					"items": {
+						"items": {
+							"$ref": "#/components/schemas/ItemCompleteOut"
+						},
+						"type": "array",
 						"nullable": true
 					}
 				},
@@ -1101,7 +977,51 @@
 					"id",
 					"createdAt",
 					"updatedAt",
-					"category"
+					"backlogId",
+					"categoryName"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"BacklogCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"branchId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"categories": {
+						"items": {
+							"$ref": "#/components/schemas/CategoryCompleteOut"
+						},
+						"type": "array",
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"branchId"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1135,7 +1055,7 @@
 					"ingredients": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/DefaultString"
+								"$ref": "#/components/schemas/LongString"
 							}
 						],
 						"nullable": true
@@ -1145,10 +1065,10 @@
 						"format": "double",
 						"nullable": true
 					},
-					"picUrl": {
+					"picKey": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/DefaultString"
+								"$ref": "#/components/schemas/LongString"
 							}
 						],
 						"nullable": true
@@ -1186,6 +1106,38 @@
 		"contact": {}
 	},
 	"paths": {
+		"/s3/get-item-pic-url": {
+			"post": {
+				"operationId": "GeneratePutPresignedUrl",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GetItemPicUrlOut"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"S3"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/GetItemPicUrlIn"
+							}
+						}
+					}
+				}
+			}
+		},
 		"/restaurants": {
 			"post": {
 				"operationId": "CreateRestaurant",
@@ -1236,6 +1188,47 @@
 						}
 					}
 				}
+			}
+		},
+		"/restaurants/{restaurantId}": {
+			"get": {
+				"operationId": "GetRestaurant",
+				"responses": {
+					"200": {
+						"description": "Restaurant is retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RestaurantCompleteOut"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4041 RestaurantNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RestaurantNotFound"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Restaurant"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "restaurantId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
 			}
 		},
 		"/category-names": {
@@ -1313,6 +1306,84 @@
 				"parameters": []
 			}
 		},
+		"/categories/{categoryId}": {
+			"patch": {
+				"operationId": "UpdateItem",
+				"responses": {
+					"204": {
+						"description": "Category updated successfully. It doesn't retrieve anything.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Category"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "categoryId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateCategoryIn"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteItems",
+				"responses": {
+					"204": {
+						"description": "Category and its items deleted successfully.  It doesn't retrieve anything.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Category"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "categoryId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
+			}
+		},
 		"/backlog/{backlogId}/items": {
 			"post": {
 				"operationId": "CreateItem",
@@ -1382,7 +1453,7 @@
 							"application/json": {
 								"schema": {
 									"items": {
-										"$ref": "#/components/schemas/ItemListCompleteOut"
+										"$ref": "#/components/schemas/ItemCompleteOut"
 									},
 									"type": "array"
 								}
@@ -1411,7 +1482,7 @@
 				"operationId": "GeBacklog",
 				"responses": {
 					"200": {
-						"description": "Backlog is retrieved successfully",
+						"description": "Backlog is retrieved successfully.",
 						"content": {
 							"application/json": {
 								"schema": {

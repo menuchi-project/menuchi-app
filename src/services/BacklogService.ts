@@ -3,7 +3,6 @@ import {
   UpdateItemIn,
   ItemCompactIn,
   ItemCompleteOut,
-  ItemListCompleteOut,
 } from '../types/ItemTypes';
 import { UUID } from '../types/TypeAliases';
 import {
@@ -11,6 +10,7 @@ import {
   CategoryNameNotFound,
 } from '../exceptions/NotFoundError';
 import { BacklogCompleteOut } from '../types/RestaurantTypes';
+import S3Service from './S3Service';
 
 class BacklogService {
   private prisma: PrismaClient;
@@ -21,17 +21,21 @@ class BacklogService {
 
   async createItem(
     backlogId: UUID,
-    {
-      categoryNameId,
-      name,
-      ingredients,
-      price,
-      picUrl,
-      positionInItemsList,
-      positionInCategory,
-    }: ItemCompactIn
+    { categoryNameId, name, ingredients, price, picKey }: ItemCompactIn
   ): Promise<ItemCompleteOut | never> {
     return this.prisma.$transaction(async (tx) => {
+      const maxCategoryPosition = await tx.category.aggregate({
+        _max: {
+          positionInBacklog: true,
+        },
+        where: {
+          backlogId,
+        },
+      });
+
+      const positionInBacklog =
+        (maxCategoryPosition._max.positionInBacklog ?? 0) + 1;
+
       const category = await tx.category
         .upsert({
           where: {
@@ -44,6 +48,7 @@ class BacklogService {
           create: {
             backlogId: backlogId,
             categoryNameId: categoryNameId,
+            positionInBacklog,
           },
           include: {
             categoryName: true,
@@ -59,39 +64,64 @@ class BacklogService {
           throw error;
         });
 
-      const item = (await tx.item.create({
+      const maxItemPositions = await tx.item.aggregate({
+        _max: {
+          positionInItemsList: true,
+          positionInCategory: true,
+        },
+        where: {
+          categoryId: category.id,
+        },
+      });
+
+      const positionInItemsList =
+        (maxItemPositions._max.positionInItemsList ?? 0) + 1;
+      const positionInCategory =
+        (maxItemPositions._max.positionInCategory ?? 0) + 1;
+
+      const item = await tx.item.create({
         data: {
           categoryId: category.id,
           name,
           ingredients,
           price,
-          picUrl,
+          picKey,
           positionInItemsList,
           positionInCategory,
         },
-      })) as ItemCompleteOut;
+      });
 
-      item.categoryName = category.categoryName;
-
-      return item;
+      return {
+        ...item,
+        categoryName: category.categoryName?.name,
+      };
     });
   }
 
   async getBacklog(backlogId: UUID): Promise<BacklogCompleteOut | never> {
-    return this.prisma.backlog
+    const backlog = await this.prisma.backlog
       .findUniqueOrThrow({
         where: {
           id: backlogId,
         },
         include: {
           categories: {
+            where: {
+              deletedAt: null,
+            },
             include: {
               categoryName: true,
               items: {
                 where: {
                   deletedAt: null,
                 },
+                orderBy: {
+                  positionInCategory: 'asc',
+                },
               },
+            },
+            omit: {
+              categoryNameId: true,
             },
           },
         },
@@ -100,13 +130,32 @@ class BacklogService {
         if (error.message.includes('not found')) throw new BacklogNotFound();
         throw error;
       });
+
+    return {
+      ...backlog,
+      categories: await Promise.all(
+        backlog.categories.map(async (category) => ({
+          ...category,
+          categoryName: category.categoryName?.name ?? null,
+          items: await Promise.all(
+            category.items.map(async (item) => ({
+              ...item,
+              categoryName: category.categoryName?.name ?? null,
+              picUrl: await S3Service.generateGetPresignedUrl(item.picKey),
+              picKey: undefined,
+            }))
+          ),
+        }))
+      ),
+    };
   }
 
-  async getItems(backlogId: UUID): Promise<ItemListCompleteOut[]> {
-    return this.prisma.item.findMany({
+  async getItems(backlogId: UUID): Promise<ItemCompleteOut[]> {
+    const items = await this.prisma.item.findMany({
       where: {
         deletedAt: null,
         category: {
+          deletedAt: null,
           backlog: {
             id: backlogId,
           },
@@ -119,7 +168,20 @@ class BacklogService {
           },
         },
       },
+      orderBy: {
+        positionInItemsList: 'asc',
+      },
     });
+
+    return await Promise.all(
+      items.map(async (item) => ({
+        ...item,
+        categoryName: item.category?.categoryName?.name,
+        category: undefined,
+        picUrl: await S3Service.generateGetPresignedUrl(item.picKey),
+        picKey: undefined,
+      }))
+    );
   }
 
   async updateItem(itemId: UUID, itemDTO: UpdateItemIn) {
