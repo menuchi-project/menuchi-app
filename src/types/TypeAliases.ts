@@ -19,6 +19,7 @@ export type Username = string;
  * Must be 8-64 characters long, containing at least one uppercase letter,
  * one lowercase letter, one number, and one special character (@, $, !, %, *, ?, &).
  * @pattern ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,64}$
+ * @example P@ssword1234
  */
 export type StrongPassword = string;
 
@@ -32,8 +33,8 @@ export type Email = string;
 
 /**
  * Iran phone number format.
- * Supports formats: +989123456789, 09123456789
- * @pattern ^(\+98|0)?9\d{9}$ is not a valid phone number
+ * Supported format: 09123456789
+ * @pattern ^0?9\d{9}$ is not a valid phone number
  */
 export type IranPhoneNumber = string;
 

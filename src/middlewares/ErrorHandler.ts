@@ -72,16 +72,6 @@ export function errorPreprocessor(
     throw new ValidationDatabaseError(error.message);
   }
 
-  if (
-    error instanceof Prisma.PrismaClientInitializationError ||
-    Prisma.PrismaClientUnknownRequestError ||
-    Prisma.PrismaClientRustPanicError
-  ) {
-    throw new DatabaseError(undefined, undefined, undefined, [
-      { message: error.message },
-    ]);
-  }
-
   throw new MenuchiError(error.message, 500);
 }
 
@@ -91,8 +81,6 @@ export function errorHandler(
   res: Response,
   next: NextFunction
 ): void {
-  console.log(error);
-  
   res.status(error.status).json({
     code: error.code,
     message: error.message,

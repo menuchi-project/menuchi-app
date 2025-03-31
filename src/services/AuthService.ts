@@ -1,7 +1,10 @@
 import { PrismaClient } from '@prisma/client';
-import { UserCompactIn, UserCompleteOut } from '../types/UserTypes';
+import { UserCompactIn, UserCompleteOut, UserLogin } from '../types/UserTypes';
 import bcrypt from 'bcryptjs';
 import { RolesEnum } from '../types/Enums';
+import { UserNotFound } from '../exceptions/NotFoundError';
+import jwt from 'jsonwebtoken';
+import { UUID } from '../types/TypeAliases';
 
 class AuthService {
   private prisma: PrismaClient;
@@ -35,9 +38,44 @@ class AuthService {
     });
   }
 
+  async signin({ phoneNumber, password }: UserLogin): Promise<string | never> {
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: {
+        phoneNumber
+      },
+      include: {
+        roles: true
+      }
+    }).catch((error: Error) => {
+      if (error.message.includes('not found'))
+        throw new UserNotFound();
+      throw error;
+    });
+
+    const isCorrectPassword = await this.comparePassword(password, user?.password!);
+    if(!isCorrectPassword) throw new UserNotFound();
+
+    const roles = user.roles.map(role => role.role) as RolesEnum[];
+    const token = await this.generateAuthToken(user.id, roles);
+    return token;
+  }
+
   private async hashPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt(10);
     return bcrypt.hash(password, salt);
+  }
+
+  private async comparePassword(password: string, hash: string): Promise<boolean> {
+    return bcrypt.compare(password, hash);
+  }
+
+  private async generateAuthToken(userId: UUID, roles: RolesEnum[]) {
+    const payload = {
+      user: {
+        id: userId, roles
+      }
+    };
+    return jwt.sign(payload, process.env.JWT_PRIVATE_KEY!, { algorithm: 'HS256', expiresIn: '2d' });
   }
 }
 
