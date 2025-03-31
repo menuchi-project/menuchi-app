@@ -13,8 +13,13 @@ import { CategoryNameController } from './controllers/CategoryNameController';
 import { CategoryController } from './controllers/CategoryController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { BacklogController } from './controllers/BacklogController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { AuthController } from './controllers/AuhController';
+import { expressAuthentication } from './middlewares/Auth';
+// @ts-ignore - no great way to install types from subpackage
 import type { Request as ExRequest, Response as ExResponse, RequestHandler, Router } from 'express';
 
+const expressAuthenticationRecasted = expressAuthentication as (req: ExRequest, securityName: string, scopes?: string[], res?: ExResponse) => Promise<any>;
 
 
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -35,6 +40,29 @@ const models: TsoaRoute.Models = {
         "properties": {
             "itemPicUrl": {"ref":"URL","required":true},
             "itemPicKey": {"ref":"LongString","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ErrorDetail": {
+        "dataType": "refObject",
+        "properties": {
+            "field": {"dataType":"string"},
+            "message": {"dataType":"string","required":true},
+            "value": {"dataType":"string"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "S3ValidationError": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "message": {"dataType":"string","required":true},
+            "stack": {"dataType":"string"},
+            "status": {"dataType":"double","required":true},
+            "code": {"dataType":"double"},
+            "details": {"dataType":"array","array":{"dataType":"refObject","ref":"ErrorDetail"}},
         },
         "additionalProperties": false,
     },
@@ -129,16 +157,6 @@ const models: TsoaRoute.Models = {
             "avatarUrl": {"dataType":"union","subSchemas":[{"ref":"URL"},{"dataType":"enum","enums":[null]}]},
             "coverUrl": {"dataType":"union","subSchemas":[{"ref":"URL"},{"dataType":"enum","enums":[null]}]},
             "logoUrl": {"dataType":"union","subSchemas":[{"ref":"URL"},{"dataType":"enum","enums":[null]}]},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ErrorDetail": {
-        "dataType": "refObject",
-        "properties": {
-            "field": {"dataType":"string"},
-            "message": {"dataType":"string","required":true},
-            "value": {"dataType":"string"},
         },
         "additionalProperties": false,
     },
@@ -360,6 +378,64 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "IranPhoneNumber": {
+        "dataType": "refAlias",
+        "type": {"dataType":"string","validators":{"pattern":{"errorMsg":"is not a valid phone number","value":"^(\\+98|0)?9\\d{9}$"}}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Username": {
+        "dataType": "refAlias",
+        "type": {"dataType":"string","validators":{"pattern":{"value":"^[a-zA-Z0-9_-]{3,30}$"}}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Email": {
+        "dataType": "refAlias",
+        "type": {"dataType":"string","validators":{"pattern":{"errorMsg":"is not a valid email","value":"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"}}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UserCompleteOut": {
+        "dataType": "refObject",
+        "properties": {
+            "id": {"ref":"UUID","required":true},
+            "createdAt": {"dataType":"datetime","required":true},
+            "updatedAt": {"dataType":"datetime","required":true},
+            "deletedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}]},
+            "phoneNumber": {"dataType":"union","subSchemas":[{"ref":"IranPhoneNumber"},{"dataType":"enum","enums":[null]}]},
+            "username": {"dataType":"union","subSchemas":[{"ref":"Username"},{"dataType":"enum","enums":[null]}]},
+            "email": {"dataType":"union","subSchemas":[{"ref":"Email"},{"dataType":"enum","enums":[null]}]},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UserValidationError": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "message": {"dataType":"string","required":true},
+            "stack": {"dataType":"string"},
+            "status": {"dataType":"double","required":true},
+            "code": {"dataType":"double"},
+            "details": {"dataType":"array","array":{"dataType":"refObject","ref":"ErrorDetail"}},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "StrongPassword": {
+        "dataType": "refAlias",
+        "type": {"dataType":"string","validators":{"pattern":{"value":"^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,64}$"}}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UserCompactIn": {
+        "dataType": "refObject",
+        "properties": {
+            "phoneNumber": {"ref":"IranPhoneNumber","required":true},
+            "password": {"ref":"StrongPassword","required":true},
+            "username": {"ref":"Username"},
+            "email": {"ref":"Email"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
 const templateService = new ExpressTemplateService(models, {"noImplicitAdditionalProperties":"silently-remove-extras","bodyCoercion":true});
 
@@ -377,30 +453,30 @@ export function RegisterRoutes(app: Router) {
 
 
     
-        const argsS3Controller_generatePutPresignedUrl: Record<string, TsoaRoute.ParameterSchema> = {
+        const argsS3Controller_generatePutItemPicPresignedUrl: Record<string, TsoaRoute.ParameterSchema> = {
                 body: {"in":"body","name":"body","required":true,"ref":"GetItemPicUrlIn"},
         };
         app.post('/s3/get-item-pic-url',
             ...(fetchMiddlewares<RequestHandler>(S3Controller)),
-            ...(fetchMiddlewares<RequestHandler>(S3Controller.prototype.generatePutPresignedUrl)),
+            ...(fetchMiddlewares<RequestHandler>(S3Controller.prototype.generatePutItemPicPresignedUrl)),
 
-            async function S3Controller_generatePutPresignedUrl(request: ExRequest, response: ExResponse, next: any) {
+            async function S3Controller_generatePutItemPicPresignedUrl(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsS3Controller_generatePutPresignedUrl, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsS3Controller_generatePutItemPicPresignedUrl, request, response });
 
                 const controller = new S3Controller();
 
               await templateService.apiHandler({
-                methodName: 'generatePutPresignedUrl',
+                methodName: 'generatePutItemPicPresignedUrl',
                 controller,
                 response,
                 next,
                 validatedArgs,
-                successStatus: undefined,
+                successStatus: 201,
               });
             } catch (err) {
                 return next(err);
@@ -733,6 +809,36 @@ export function RegisterRoutes(app: Router) {
                 next,
                 validatedArgs,
                 successStatus: 204,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsAuthController_restaurantOwnerSignup: Record<string, TsoaRoute.ParameterSchema> = {
+                body: {"in":"body","name":"body","required":true,"ref":"UserCompactIn"},
+        };
+        app.post('/auth/res-signup',
+            ...(fetchMiddlewares<RequestHandler>(AuthController)),
+            ...(fetchMiddlewares<RequestHandler>(AuthController.prototype.restaurantOwnerSignup)),
+
+            async function AuthController_restaurantOwnerSignup(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsAuthController_restaurantOwnerSignup, request, response });
+
+                const controller = new AuthController();
+
+              await templateService.apiHandler({
+                methodName: 'restaurantOwnerSignup',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 201,
               });
             } catch (err) {
                 return next(err);

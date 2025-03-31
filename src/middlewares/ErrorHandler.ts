@@ -5,6 +5,8 @@ import {
   CategoryNameValidationError,
   ItemValidationError,
   RestaurantValidationError,
+  S3ValidationError,
+  UserValidationError,
   ValidationError,
 } from '../exceptions/ValidationError';
 import MenuchiError from '../exceptions/MenuchiError';
@@ -29,6 +31,14 @@ export function errorPreprocessor(
 
     if (path.includes('/items')) {
       throw new ItemValidationError(details);
+    }
+
+    if (path.includes('/s3')) {
+      throw new S3ValidationError(details);
+    }
+
+    if (path.includes('/auth')) {
+      throw new UserValidationError(details);
     }
 
     switch (path) {
@@ -81,6 +91,8 @@ export function errorHandler(
   res: Response,
   next: NextFunction
 ): void {
+  console.log(error);
+  
   res.status(error.status).json({
     code: error.code,
     message: error.message,

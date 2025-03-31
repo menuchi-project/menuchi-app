@@ -1,6 +1,6 @@
 import { Request } from "express";
 
-export function authorization(
+export function expressAuthentication(
   request: Request,
   securityName: string,
   scopes?: string[]

@@ -8,6 +8,21 @@
 export type UUID = string;
 
 /**
+ * Username format.
+ * Must be 3-30 characters long, containing only letters, numbers, underscores, and hyphens.
+ * @pattern ^[a-zA-Z0-9_-]{3,30}$
+ */
+export type Username = string;
+
+/**
+ * Strong password format.
+ * Must be 8-64 characters long, containing at least one uppercase letter,
+ * one lowercase letter, one number, and one special character (@, $, !, %, *, ?, &).
+ * @pattern ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,64}$
+ */
+export type StrongPassword = string;
+
+/**
  * Email address format.
  * @pattern ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ is not a valid email
  * @format email
@@ -16,19 +31,19 @@ export type UUID = string;
 export type Email = string;
 
 /**
+ * Iran phone number format.
+ * Supports formats: +989123456789, 09123456789
+ * @pattern ^(\+98|0)?9\d{9}$ is not a valid phone number
+ */
+export type IranPhoneNumber = string;
+
+/**
  * URL format.
  * @pattern ^(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$ is not a valid URL
  * @format uri
  * @example "https://example.com/example"
  */
 export type URL = string;
-
-/**
- * Iran phone number format.
- * Supports formats: +989123456789, 09123456789
- * @pattern ^(\+98|0)?9\d{9}$ is not a valid phone number
- */
-export type IranPhoneNumber = string;
 
 /**
  * @isString should be a string

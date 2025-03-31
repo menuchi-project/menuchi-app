@@ -39,8 +39,8 @@ model Role {
 }
 
 enum RolesEnum {
-  admin
-  normal
+  ADMIN
+  RESTAURANT_OWNER
 
   @@map("roles_enum")
 }

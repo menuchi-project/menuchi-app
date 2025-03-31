@@ -35,6 +35,58 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"ErrorDetail": {
+				"properties": {
+					"field": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"value": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"S3ValidationError": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"UUID": {
 				"type": "string",
 				"example": "52907745-7672-470e-a803-a2f8feb52944",
@@ -377,24 +429,6 @@
 					"updatedAt",
 					"name",
 					"displayName"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"ErrorDetail": {
-				"properties": {
-					"field": {
-						"type": "string"
-					},
-					"message": {
-						"type": "string"
-					},
-					"value": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"message"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1092,14 +1126,149 @@
 				},
 				"type": "object",
 				"additionalProperties": false
+			},
+			"IranPhoneNumber": {
+				"type": "string",
+				"description": "Iran phone number format.\nSupports formats: +989123456789, 09123456789",
+				"pattern": "^(\\+98|0)?9\\d{9}$"
+			},
+			"Username": {
+				"type": "string",
+				"description": "Username format.\nMust be 3-30 characters long, containing only letters, numbers, underscores, and hyphens.",
+				"pattern": "^[a-zA-Z0-9_-]{3,30}$"
+			},
+			"Email": {
+				"type": "string",
+				"example": "example@example.com",
+				"format": "email",
+				"description": "Email address format.",
+				"pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+			},
+			"UserCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"phoneNumber": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/IranPhoneNumber"
+							}
+						],
+						"nullable": true
+					},
+					"username": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Username"
+							}
+						],
+						"nullable": true
+					},
+					"email": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Email"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UserValidationError": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"StrongPassword": {
+				"type": "string",
+				"description": "Strong password format.\nMust be 8-64 characters long, containing at least one uppercase letter,\none lowercase letter, one number, and one special character (@, $, !, %, *, ?, &).",
+				"pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,64}$"
+			},
+			"UserCompactIn": {
+				"properties": {
+					"phoneNumber": {
+						"$ref": "#/components/schemas/IranPhoneNumber"
+					},
+					"password": {
+						"$ref": "#/components/schemas/StrongPassword"
+					},
+					"username": {
+						"$ref": "#/components/schemas/Username"
+					},
+					"email": {
+						"$ref": "#/components/schemas/Email"
+					}
+				},
+				"required": [
+					"phoneNumber",
+					"password"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
-		"securitySchemes": {}
+		"securitySchemes": {
+			"jwt": {
+				"type": "apiKey",
+				"name": "Authorization",
+				"in": "cookie"
+			}
+		}
 	},
 	"info": {
 		"title": "menuchi-node-backend",
 		"version": "1.0.0",
-		"description": "The NodeJS backend of Menuchi",
+		"description": "Menuchi API Documentation",
 		"license": {
 			"name": "ISC"
 		},
@@ -1108,14 +1277,24 @@
 	"paths": {
 		"/s3/get-item-pic-url": {
 			"post": {
-				"operationId": "GeneratePutPresignedUrl",
+				"operationId": "GeneratePutItemPicPresignedUrl",
 				"responses": {
-					"200": {
-						"description": "Ok",
+					"201": {
+						"description": "Item pic presigned url generated successfully.",
 						"content": {
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/GetItemPicUrlOut"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "4224 S3ValidationError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/S3ValidationError"
 								}
 							}
 						}
@@ -1535,6 +1714,16 @@
 								}
 							}
 						}
+					},
+					"422": {
+						"description": "4223 ItemValidationError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ItemValidationError"
+								}
+							}
+						}
 					}
 				},
 				"tags": [
@@ -1596,6 +1785,58 @@
 									"$ref": "#/components/schemas/UUID"
 								},
 								"type": "array"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/res-signup": {
+			"post": {
+				"operationId": "RestaurantOwnerSignup",
+				"responses": {
+					"201": {
+						"description": "User signed up successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UserCompleteOut"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "ConstraintsDatabaseError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ConstraintsDatabaseError"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "4225 UserValidationError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UserValidationError"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Auth"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UserCompactIn"
 							}
 						}
 					}

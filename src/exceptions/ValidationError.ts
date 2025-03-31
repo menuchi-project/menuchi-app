@@ -29,3 +29,15 @@ export class ItemValidationError extends ValidationError {
     super('Item validation failed', 422, 4223, details);
   }
 }
+
+export class S3ValidationError extends ValidationError {
+  constructor(details?: ErrorDetail[]) {
+    super('S3 validation failed', 422, 4224, details);
+  }
+}
+
+export class UserValidationError extends ValidationError {
+  constructor(details?: ErrorDetail[]) {
+    super('User validation failed', 422, 4225, details);
+  }
+}

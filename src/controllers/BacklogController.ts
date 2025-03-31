@@ -32,6 +32,7 @@ export class BacklogController extends Controller {
     return BacklogService.getItems(backlogId);
   }
 
+  @Response<ItemValidationError>(422, '4223 ItemValidationError')
   @SuccessResponse(204, 'Item updated successfully. It doesn\'t retrieve anything.')
   @Patch('/items/{itemId}')
   public async updateItem(@Path() itemId: UUID, @Body() body: UpdateItemIn): Promise<null> {
