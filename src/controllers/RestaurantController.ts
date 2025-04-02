@@ -1,14 +1,15 @@
-import { Body, Controller, Get, Path, Post, Response, Route, SuccessResponse, Tags } from "tsoa";
+import { Body, Get, Path, Post, Response, Route, SuccessResponse, Tags } from "tsoa";
 import RestaurantService from "../services/RestaurantService";
 import { RestaurantCompactIn, RestaurantCompleteOut } from "../types/RestaurantTypes";
 import { RestaurantValidationError } from "../exceptions/ValidationError";
 import { ConstraintsDatabaseError } from "../exceptions/DatabaseError";
 import { UUID } from "../types/TypeAliases";
 import { RestaurantNotFound } from "../exceptions/NotFoundError";
+import BaseController from "./BaseController";
 
 @Route('/restaurants')
 @Tags('Restaurant')
-export class RestaurantController extends Controller {
+export class RestaurantController extends BaseController {
   @Response<ConstraintsDatabaseError>(409, 'ConstraintsDatabaseError')
   @Response<RestaurantValidationError>(422, '4221 RestaurantValidationError')
   @SuccessResponse(201, 'Restaurant, a branch and its backlog created successfully.')

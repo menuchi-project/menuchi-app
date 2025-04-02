@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import { UserCompactIn, UserCompleteOut, UserLogin } from '../types/UserTypes';
+import { UserCompactIn, UserCompleteOut } from '../types/UserTypes';
+import { JWTPayload, UserLogin, UserSession } from "../types/AuthTypes";
 import bcrypt from 'bcryptjs';
 import { RolesEnum } from '../types/Enums';
 import { UserNotFound } from '../exceptions/NotFoundError';
@@ -38,13 +39,22 @@ class AuthService {
     });
   }
 
-  async signin({ phoneNumber, password }: UserLogin): Promise<string | never> {
+  async signin({ phoneNumber, password }: UserLogin): Promise<UserSession | never> {
     const user = await this.prisma.user.findUniqueOrThrow({
       where: {
         phoneNumber
       },
       include: {
-        roles: true
+        roles: true,
+        restaurants: {
+          include: {
+            branches: {
+              include: {
+                backlog: true
+              }
+            }
+          }
+        }
       }
     }).catch((error: Error) => {
       if (error.message.includes('not found'))
@@ -56,8 +66,21 @@ class AuthService {
     if(!isCorrectPassword) throw new UserNotFound();
 
     const roles = user.roles.map(role => role.role) as RolesEnum[];
-    const token = await this.generateAuthToken(user.id, roles);
-    return token;
+    const token = await this.generateAuthToken({ userId: user.id, roles });
+
+    return {
+      accessToken: token,
+      user: {
+        id: user.id,
+        restaurants: user.restaurants.map(restaurant => ({
+          id: restaurant.id,
+          branches: restaurant.branches.map(branch => ({
+            id: branch.id,
+            backlogId: branch.backlog?.id
+          }))
+        }))
+      }
+    };
   }
 
   private async hashPassword(password: string): Promise<string> {
@@ -69,12 +92,7 @@ class AuthService {
     return bcrypt.compare(password, hash);
   }
 
-  private async generateAuthToken(userId: UUID, roles: RolesEnum[]) {
-    const payload = {
-      user: {
-        id: userId, roles
-      }
-    };
+  private generateAuthToken(payload: JWTPayload): string {
     return jwt.sign(payload, process.env.JWT_PRIVATE_KEY!, { algorithm: 'HS256', expiresIn: '2d' });
   }
 }

@@ -1,11 +1,12 @@
-import { Body, Controller, Post, Response, Route, SuccessResponse, Tags } from "tsoa";
+import { Body, Post, Response, Route, SuccessResponse, Tags } from "tsoa";
 import S3Service from "../services/S3Service";
 import { GetItemPicUrlIn, GetItemPicUrlOut } from "../types/S3Types";
 import { S3ValidationError } from "../exceptions/ValidationError";
+import BaseController from "./BaseController";
 
 @Route('/s3')
 @Tags('S3')
-export class S3Controller extends Controller {
+export class S3Controller extends BaseController {
   @Response<S3ValidationError>(422, '4224 S3ValidationError')
   @SuccessResponse(201, 'Item pic presigned url generated successfully.')
   @Post('/get-item-pic-url')

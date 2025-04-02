@@ -1,6 +1,5 @@
 import {
   Body,
-  Controller,
   Post,
   Request,
   Response,
@@ -9,16 +8,18 @@ import {
   Tags,
 } from 'tsoa';
 import { ConstraintsDatabaseError } from '../exceptions/DatabaseError';
-import { UserCompactIn, UserCompleteOut, UserLogin } from '../types/UserTypes';
+import { UserCompactIn, UserCompleteOut } from '../types/UserTypes';
+import { UserLogin } from "../types/AuthTypes";
 import AuthService from '../services/AuthService';
 import { UserValidationError } from '../exceptions/ValidationError';
 import express from 'express';
 import { CookieNames } from '../types/Enums';
 import { UserNotFound } from '../exceptions/NotFoundError';
+import BaseController from "./BaseController";
 
 @Route('/auth')
 @Tags('Auth')
-export class AuthController extends Controller {
+export class AuthController extends BaseController {
   @Response<ConstraintsDatabaseError>(409, 'ConstraintsDatabaseError')
   @Response<UserValidationError>(422, '4225 UserValidationError')
   @SuccessResponse(201, 'User signed up successfully.')
@@ -36,14 +37,16 @@ export class AuthController extends Controller {
     @Body() body: UserLogin,
     @Request() req: express.Request
   ): Promise<boolean> {
-    const token = await AuthService.signin(body);
+    const { accessToken, user } = await AuthService.signin(body);
 
     this.setHeader(
       'Set-Cookie',
-      `${CookieNames.AccessToken}=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${2 * 24 * 3600}`
+      `${CookieNames.AccessToken}=${accessToken}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${2 * 24 * 3600}`
     );
 
-    req.session.accessToken = token;
+    req.session.accessToken = accessToken;
+    req.session.user = user;
+    req.session.lastAccessed = new Date();
 
     return true;
   }

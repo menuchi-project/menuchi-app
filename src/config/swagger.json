@@ -1330,6 +1330,32 @@
 		"contact": {}
 	},
 	"paths": {
+		"/users/profile": {
+			"get": {
+				"operationId": "GetProfile",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"User"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": []
+			}
+		},
 		"/s3/get-item-pic-url": {
 			"post": {
 				"operationId": "GeneratePutItemPicPresignedUrl",

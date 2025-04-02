@@ -1,11 +1,12 @@
-import { Body, Controller, Delete, Patch, Path, Route, SuccessResponse, Tags } from "tsoa";
+import { Body, Delete, Patch, Path, Route, SuccessResponse, Tags } from "tsoa";
 import { UUID } from "../types/TypeAliases";
 import { UpdateCategoryIn } from "../types/CategoryTypes";
 import CategoryService from "../services/CategoryService";
+import BaseController from "./BaseController";
 
 @Route('/categories')
 @Tags('Category')
-export class CategoryController extends Controller {
+export class CategoryController extends BaseController {
   @SuccessResponse(204, 'Category updated successfully. It doesn\'t retrieve anything.')
   @Patch('/{categoryId}')
   public async updateItem(@Path() categoryId: UUID, @Body() body: UpdateCategoryIn): Promise<null> {

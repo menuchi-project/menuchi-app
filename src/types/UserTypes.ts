@@ -13,8 +13,3 @@ export interface UserCompleteOut extends CompleteOut {
   username?: Username | null;
   email?: Email | null;
 }
-
-export interface UserLogin {
-  phoneNumber: IranPhoneNumber;
-  password: string;
-}

@@ -1,14 +1,15 @@
-import { Body, Controller, Delete, Get, Patch, Path, Post, Response, Route, SuccessResponse, Tags } from "tsoa";
+import { Body, Delete, Get, Patch, Path, Post, Response, Route, SuccessResponse, Tags } from "tsoa";
 import { UpdateItemIn, ItemCompactIn, ItemCompleteOut } from "../types/ItemTypes";
 import BacklogService from "../services/BacklogService";
 import { UUID } from "../types/TypeAliases";
 import { BacklogCompleteOut } from "../types/RestaurantTypes";
 import { ItemValidationError } from "../exceptions/ValidationError";
 import { BacklogNotFound, CategoryNameNotFound } from "../exceptions/NotFoundError";
+import BaseController from "./BaseController";
 
 @Route('/backlog')
 @Tags('Backlog')
-export class BacklogController extends Controller {
+export class BacklogController extends BaseController {
   @Response<CategoryNameNotFound>(404, '4042 CategoryNameNotFound')
   @Response<BacklogNotFound>(404, '4044 BacklogNotFound')
   @Response<ItemValidationError>(422, '4223 ItemValidationError')
