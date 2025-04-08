@@ -8,10 +8,13 @@ import { RestaurantNotFound } from "../exceptions/NotFoundError";
 import BaseController from "./BaseController";
 import { PermissionScope, RolesEnum, SessionUpdateScope } from "../types/Enums";
 import express from 'express';
+import { ForbiddenError, UnauthorizedError } from "../exceptions/AuthError";
 
 @Route('/restaurants')
 @Tags('Restaurant')
 export class RestaurantController extends BaseController {
+  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
+  @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<ConstraintsDatabaseError>(409, 'ConstraintsDatabaseError')
   @Response<RestaurantValidationError>(422, '4221 RestaurantValidationError')
   @SuccessResponse(201, 'Restaurant, a branch and its backlog created successfully.')
@@ -34,6 +37,8 @@ export class RestaurantController extends BaseController {
     return restaurant;
   }
 
+  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
+  @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<RestaurantNotFound>(404, '4041 RestaurantNotFound')
   @SuccessResponse(200, 'Restaurant is retrieved successfully.')
   @Security('', [RolesEnum.RestaurantOwner])

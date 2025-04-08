@@ -185,20 +185,30 @@ class BacklogService {
     );
   }
 
-  async updateItem(itemId: UUID, itemDTO: UpdateItemIn) {
+  async updateItem(backlogId: UUID, itemId: UUID, itemDTO: UpdateItemIn) {
     return this.prisma.item.update({
       where: {
         id: itemId,
+        category: {
+          backlog: {
+            id: backlogId
+          }
+        }
       },
       data: itemDTO,
     });
   }
 
-  async deleteItems(itemsId: UUID[]) {
+  async deleteItems(backlogId: UUID, itemsId: UUID[]) {
     return this.prisma.item.updateMany({
       where: {
         id: {
           in: itemsId,
+        },
+        category: {
+          backlog: {
+            id: backlogId
+          }
         },
         deletedAt: null,
       },
@@ -208,10 +218,13 @@ class BacklogService {
     });
   }
 
-  async updateCategory(categoryId: UUID, { positionInBacklog }: UpdateCategoryIn) {
+  async updateCategory(backlogId: UUID, categoryId: UUID, { positionInBacklog }: UpdateCategoryIn) {
     return this.prisma.category.update({
       where: {
-        id: categoryId
+        id: categoryId,
+        backlog: {
+          id: backlogId
+        }
       },
       data: {
         positionInBacklog
@@ -219,11 +232,14 @@ class BacklogService {
     });
   }
 
-  async deleteCategory(categoryId: UUID) {
+  async deleteCategory(backlogId: UUID, categoryId: UUID) {
     return this.prisma.$transaction(async (tx) => {
       await tx.category.update({
         where: {
-          id: categoryId
+          id: categoryId,
+          backlog: {
+            id: backlogId
+          }
         },
         data: {
           deletedAt: new Date()
@@ -232,7 +248,12 @@ class BacklogService {
 
       await tx.item.updateMany({
         where: {
-          categoryId
+          categoryId,
+          category: {
+            backlog: {
+              id: backlogId
+            }
+          }
         },
         data: {
           deletedAt: new Date()

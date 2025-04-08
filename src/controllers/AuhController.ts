@@ -24,9 +24,7 @@ export class AuthController extends BaseController {
   @Response<UserValidationError>(422, '4225 UserValidationError')
   @SuccessResponse(201, 'User signed up successfully.')
   @Post('/res-signup')
-  public async restaurantOwnerSignup(
-    @Body() body: UserCompactIn
-  ): Promise<UserCompleteOut> {
+  public async restaurantOwnerSignup(@Body() body: UserCompactIn): Promise<UserCompleteOut> {
     return AuthService.signup(body);
   }
 

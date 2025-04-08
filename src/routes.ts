@@ -161,6 +161,32 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ForbiddenError": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "message": {"dataType":"string","required":true},
+            "stack": {"dataType":"string"},
+            "status": {"dataType":"double","required":true},
+            "code": {"dataType":"double"},
+            "details": {"dataType":"array","array":{"dataType":"refObject","ref":"ErrorDetail"}},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UnauthorizedError": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "message": {"dataType":"string","required":true},
+            "stack": {"dataType":"string"},
+            "status": {"dataType":"double","required":true},
+            "code": {"dataType":"double"},
+            "details": {"dataType":"array","array":{"dataType":"refObject","ref":"ErrorDetail"}},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "ConstraintsDatabaseError": {
         "dataType": "refObject",
         "properties": {
@@ -508,8 +534,10 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsS3Controller_generatePutItemPicPresignedUrl: Record<string, TsoaRoute.ParameterSchema> = {
                 body: {"in":"body","name":"body","required":true,"ref":"GetItemPicUrlIn"},
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
         app.post('/s3/get-item-pic-url',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
             ...(fetchMiddlewares<RequestHandler>(S3Controller)),
             ...(fetchMiddlewares<RequestHandler>(S3Controller.prototype.generatePutItemPicPresignedUrl)),
 
@@ -604,6 +632,7 @@ export function RegisterRoutes(app: Router) {
                 body: {"in":"body","name":"body","required":true,"ref":"CategoryNameCompactIn"},
         };
         app.post('/category-names',
+            authenticateMiddleware([{"":["ADMIN"]}]),
             ...(fetchMiddlewares<RequestHandler>(CategoryNameController)),
             ...(fetchMiddlewares<RequestHandler>(CategoryNameController.prototype.createCategoryName)),
 
@@ -633,6 +662,7 @@ export function RegisterRoutes(app: Router) {
         const argsCategoryNameController_getAllCategoryNames: Record<string, TsoaRoute.ParameterSchema> = {
         };
         app.get('/category-names',
+            authenticateMiddleware([{"":["ADMIN","RESTAURANT_OWNER"]}]),
             ...(fetchMiddlewares<RequestHandler>(CategoryNameController)),
             ...(fetchMiddlewares<RequestHandler>(CategoryNameController.prototype.getAllCategoryNames)),
 
@@ -662,8 +692,10 @@ export function RegisterRoutes(app: Router) {
         const argsBacklogController_createItem: Record<string, TsoaRoute.ParameterSchema> = {
                 backlogId: {"in":"path","name":"backlogId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"ref":"ItemCompactIn"},
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
         app.post('/backlog/:backlogId/items',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
             ...(fetchMiddlewares<RequestHandler>(BacklogController)),
             ...(fetchMiddlewares<RequestHandler>(BacklogController.prototype.createItem)),
 
@@ -692,8 +724,10 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsBacklogController_geBacklog: Record<string, TsoaRoute.ParameterSchema> = {
                 backlogId: {"in":"path","name":"backlogId","required":true,"ref":"UUID"},
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
         app.get('/backlog/:backlogId',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
             ...(fetchMiddlewares<RequestHandler>(BacklogController)),
             ...(fetchMiddlewares<RequestHandler>(BacklogController.prototype.geBacklog)),
 
@@ -722,8 +756,10 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsBacklogController_getItems: Record<string, TsoaRoute.ParameterSchema> = {
                 backlogId: {"in":"path","name":"backlogId","required":true,"ref":"UUID"},
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
         app.get('/backlog/:backlogId/items',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
             ...(fetchMiddlewares<RequestHandler>(BacklogController)),
             ...(fetchMiddlewares<RequestHandler>(BacklogController.prototype.getItems)),
 
@@ -754,8 +790,10 @@ export function RegisterRoutes(app: Router) {
                 backlogId: {"in":"path","name":"backlogId","required":true,"ref":"UUID"},
                 itemId: {"in":"path","name":"itemId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"ref":"UpdateItemIn"},
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
         app.patch('/backlog/:backlogId/items/:itemId',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
             ...(fetchMiddlewares<RequestHandler>(BacklogController)),
             ...(fetchMiddlewares<RequestHandler>(BacklogController.prototype.updateItem)),
 
@@ -785,8 +823,10 @@ export function RegisterRoutes(app: Router) {
         const argsBacklogController_deleteItems: Record<string, TsoaRoute.ParameterSchema> = {
                 backlogId: {"in":"path","name":"backlogId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refAlias","ref":"UUID"}},
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
         app.delete('/backlog/:backlogId/items',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
             ...(fetchMiddlewares<RequestHandler>(BacklogController)),
             ...(fetchMiddlewares<RequestHandler>(BacklogController.prototype.deleteItems)),
 
@@ -817,8 +857,10 @@ export function RegisterRoutes(app: Router) {
                 backlogId: {"in":"path","name":"backlogId","required":true,"ref":"UUID"},
                 categoryId: {"in":"path","name":"categoryId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"ref":"UpdateCategoryIn"},
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
         app.patch('/backlog/:backlogId/categories/:categoryId',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
             ...(fetchMiddlewares<RequestHandler>(BacklogController)),
             ...(fetchMiddlewares<RequestHandler>(BacklogController.prototype.updateCategory)),
 
@@ -848,8 +890,10 @@ export function RegisterRoutes(app: Router) {
         const argsBacklogController_deleteCategory: Record<string, TsoaRoute.ParameterSchema> = {
                 backlogId: {"in":"path","name":"backlogId","required":true,"ref":"UUID"},
                 categoryId: {"in":"path","name":"categoryId","required":true,"ref":"UUID"},
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
         app.delete('/backlog/:backlogId/categories/:categoryId',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
             ...(fetchMiddlewares<RequestHandler>(BacklogController)),
             ...(fetchMiddlewares<RequestHandler>(BacklogController.prototype.deleteCategory)),
 

@@ -18,6 +18,7 @@ import {
 import { ErrorDetail } from '../types/ErrorTypes';
 import { Prisma } from '@prisma/client';
 import { NotFoundError } from '../exceptions/NotFoundError';
+import { ForbiddenError, UnauthorizedError } from '../exceptions/AuthError';
 
 export function errorPreprocessor(
   error: Error,
@@ -25,6 +26,10 @@ export function errorPreprocessor(
   res: Response,
   next: NextFunction
 ): void {
+  if (error instanceof UnauthorizedError || error instanceof ForbiddenError) {
+    throw error;
+  }
+
   if (error instanceof ValidateError) {
     const path = req.path;
     const details = validationErrorCleaner(error);
