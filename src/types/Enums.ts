@@ -7,3 +7,12 @@ export enum CookieNames {
   SessionId = 'session-id',
   AccessToken = 'access-token'
 }
+
+export enum PermissionScope {
+  Backlog,
+  Restaurant
+}
+
+export enum SessionUpdateScope {
+  Restaurant
+}

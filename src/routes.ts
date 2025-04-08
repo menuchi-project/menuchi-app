@@ -538,8 +538,10 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsRestaurantController_createRestaurant: Record<string, TsoaRoute.ParameterSchema> = {
                 body: {"in":"body","name":"body","required":true,"ref":"RestaurantCompactIn"},
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
         app.post('/restaurants',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
             ...(fetchMiddlewares<RequestHandler>(RestaurantController)),
             ...(fetchMiddlewares<RequestHandler>(RestaurantController.prototype.createRestaurant)),
 
@@ -568,8 +570,10 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsRestaurantController_getRestaurant: Record<string, TsoaRoute.ParameterSchema> = {
                 restaurantId: {"in":"path","name":"restaurantId","required":true,"ref":"UUID"},
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
         app.get('/restaurants/:restaurantId',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
             ...(fetchMiddlewares<RequestHandler>(RestaurantController)),
             ...(fetchMiddlewares<RequestHandler>(RestaurantController.prototype.getRestaurant)),
 

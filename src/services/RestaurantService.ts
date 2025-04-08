@@ -14,10 +14,12 @@ class RestaurantService {
   }
 
  async createRestaurant(
-    restaurantDTO: RestaurantCompactIn
+    restaurantDTO: RestaurantCompactIn,
+    managerId?: UUID
   ): Promise<RestaurantCompleteOut | never> {
     return this.prisma.restaurant.create({
       data: {
+        managerId,
         ...restaurantDTO,
         branches: {
           create: {

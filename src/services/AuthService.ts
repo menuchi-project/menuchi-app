@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { UserCompactIn, UserCompleteOut } from '../types/UserTypes';
-import { JWTPayload, UserLogin, UserSession } from "../types/AuthTypes";
+import { JWTPayload, UserLogin, ExpressSession } from "../types/AuthTypes";
 import bcrypt from 'bcryptjs';
 import { RolesEnum } from '../types/Enums';
 import { UserNotFound } from '../exceptions/NotFoundError';
@@ -39,7 +39,7 @@ class AuthService {
     });
   }
 
-  async signin({ phoneNumber, password }: UserLogin): Promise<UserSession | never> {
+  async signin({ phoneNumber, password }: UserLogin): Promise<ExpressSession | never> {
     const user = await this.prisma.user.findUniqueOrThrow({
       where: {
         phoneNumber

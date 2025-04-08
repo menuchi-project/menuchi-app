@@ -1436,7 +1436,13 @@
 				"tags": [
 					"Restaurant"
 				],
-				"security": [],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
 				"parameters": [],
 				"requestBody": {
 					"required": true,
@@ -1478,7 +1484,13 @@
 				"tags": [
 					"Restaurant"
 				],
-				"security": [],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",

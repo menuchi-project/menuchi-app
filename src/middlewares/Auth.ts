@@ -20,7 +20,6 @@ export function expressAuthentication(
       const payload = jwt.verify(accessToken, process.env.JWT_PRIVATE_KEY!) as JWTPayload;
       const hasAccess = (scopes as RolesEnum[]).some(element => payload.roles.includes(element));
       const isValidUser = request.session.user?.id === payload?.userId;
-      console.log(payload, hasAccess, isValidUser);
       if (!payload || !hasAccess || !isValidUser) throw new ForbiddenError();
       
       resolve(true);

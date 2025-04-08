@@ -6,18 +6,24 @@ export interface UserLogin {
   password: string;
 }
 
-export interface UserSession {
+export interface ExpressSession {
   accessToken: string;
-  user: {
-    id: UUID;
-    restaurants: {
-      id: UUID;
-      branches: {
-        id: UUID;
-        backlogId?: UUID
-      }[];
-    }[];
-  };
+  user: UserSession
+}
+
+export interface UserSession {
+  id: UUID;
+  restaurants: RestaurantSession[];
+};
+
+export interface RestaurantSession {
+  id: UUID;
+  branches: BranchSession[];
+}
+
+export interface BranchSession {
+  id: UUID;
+  backlogId?: UUID;
 }
 
 export interface JWTPayload {
