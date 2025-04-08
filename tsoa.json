@@ -7,7 +7,7 @@
   "spec": {
     "outputDirectory": "./src/config",
     "specVersion": 3,
-    "title": "Menuchi-API",
+    "name": "Menuchi-API",
     "description": "Menuchi API Documentation",
     "version": "1.0.0",
     "securityDefinitions": {

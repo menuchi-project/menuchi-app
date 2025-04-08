@@ -1389,7 +1389,7 @@
 		}
 	},
 	"info": {
-		"title": "menuchi-node-backend",
+		"title": "Menuchi-API",
 		"version": "1.0.0",
 		"description": "Menuchi API Documentation",
 		"license": {

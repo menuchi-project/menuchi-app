@@ -1,7 +1,7 @@
 {
-  "name": "menuchi-node-backend",
+  "name": "menuchi-app",
   "version": "1.0.0",
-  "description": "The NodeJS backend of Menuchi",
+  "description": "The backend of Menuchi",
   "main": "index.js",
   "scripts": {
     "dev": "npx tsoa spec-and-routes && ts-node --files ./src/index.ts",
