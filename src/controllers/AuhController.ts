@@ -48,4 +48,13 @@ export class AuthController extends BaseController {
 
     return true;
   }
+
+  @SuccessResponse(200, 'User logged out successfully.')
+  @Post('/logout')
+  public async logout(@Request() req: express.Request): Promise<boolean> {
+    req.session.destroy(() => {});
+    req.res?.clearCookie(CookieNames.AccessToken);
+    req.res?.clearCookie(CookieNames.SessionId);
+    return true;
+  }
 }
