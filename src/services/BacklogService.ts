@@ -11,6 +11,7 @@ import {
 } from '../exceptions/NotFoundError';
 import { BacklogCompleteOut } from '../types/RestaurantTypes';
 import S3Service from './S3Service';
+import { UpdateCategoryIn } from '../types/CategoryTypes';
 
 class BacklogService {
   private prisma: PrismaClient;
@@ -204,6 +205,39 @@ class BacklogService {
       data: {
         deletedAt: new Date(),
       },
+    });
+  }
+
+  async updateCategory(categoryId: UUID, { positionInBacklog }: UpdateCategoryIn) {
+    return this.prisma.category.update({
+      where: {
+        id: categoryId
+      },
+      data: {
+        positionInBacklog
+      }
+    });
+  }
+
+  async deleteCategory(categoryId: UUID) {
+    return this.prisma.$transaction(async (tx) => {
+      await tx.category.update({
+        where: {
+          id: categoryId
+        },
+        data: {
+          deletedAt: new Date()
+        }
+      });
+
+      await tx.item.updateMany({
+        where: {
+          categoryId
+        },
+        data: {
+          deletedAt: new Date()
+        }
+      });
     });
   }
 }

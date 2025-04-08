@@ -710,18 +710,6 @@
 				"type": "integer",
 				"format": "int32"
 			},
-			"UpdateCategoryIn": {
-				"properties": {
-					"positionInBacklog": {
-						"$ref": "#/components/schemas/Int"
-					}
-				},
-				"required": [
-					"positionInBacklog"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
 			"ItemCompleteOut": {
 				"properties": {
 					"id": {
@@ -1124,6 +1112,18 @@
 						"nullable": true
 					}
 				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UpdateCategoryIn": {
+				"properties": {
+					"positionInBacklog": {
+						"$ref": "#/components/schemas/Int"
+					}
+				},
+				"required": [
+					"positionInBacklog"
+				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -1566,84 +1566,6 @@
 				"parameters": []
 			}
 		},
-		"/categories/{categoryId}": {
-			"patch": {
-				"operationId": "UpdateItem",
-				"responses": {
-					"204": {
-						"description": "Category updated successfully. It doesn't retrieve anything.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "number",
-									"enum": [
-										null
-									],
-									"nullable": true
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Category"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "categoryId",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/UUID"
-						}
-					}
-				],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/UpdateCategoryIn"
-							}
-						}
-					}
-				}
-			},
-			"delete": {
-				"operationId": "DeleteItems",
-				"responses": {
-					"204": {
-						"description": "Category and its items deleted successfully.  It doesn't retrieve anything.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "number",
-									"enum": [
-										null
-									],
-									"nullable": true
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Category"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "categoryId",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/UUID"
-						}
-					}
-				]
-			}
-		},
 		"/backlog/{backlogId}/items": {
 			"post": {
 				"operationId": "CreateItem",
@@ -1735,6 +1657,52 @@
 						}
 					}
 				]
+			},
+			"delete": {
+				"operationId": "DeleteItems",
+				"responses": {
+					"204": {
+						"description": "Items deleted successfully.  It doesn't retrieve anything.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Backlog"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "backlogId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"items": {
+									"$ref": "#/components/schemas/UUID"
+								},
+								"type": "array"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/backlog/{backlogId}": {
@@ -1778,7 +1746,7 @@
 				]
 			}
 		},
-		"/backlog/items/{itemId}": {
+		"/backlog/{backlogId}/items/{itemId}": {
 			"patch": {
 				"operationId": "UpdateItem",
 				"responses": {
@@ -1814,6 +1782,14 @@
 				"parameters": [
 					{
 						"in": "path",
+						"name": "backlogId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					},
+					{
+						"in": "path",
 						"name": "itemId",
 						"required": true,
 						"schema": {
@@ -1833,12 +1809,12 @@
 				}
 			}
 		},
-		"/backlog/items": {
-			"delete": {
-				"operationId": "DeleteItems",
+		"/backlog/{backlogId}/categories/{categoryId}": {
+			"patch": {
+				"operationId": "UpdateCategory",
 				"responses": {
 					"204": {
-						"description": "Items deleted successfully.  It doesn't retrieve anything.",
+						"description": "Category updated successfully. It doesn't retrieve anything.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -1856,20 +1832,75 @@
 					"Backlog"
 				],
 				"security": [],
-				"parameters": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "backlogId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					},
+					{
+						"in": "path",
+						"name": "categoryId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
 				"requestBody": {
 					"required": true,
 					"content": {
 						"application/json": {
 							"schema": {
-								"items": {
-									"$ref": "#/components/schemas/UUID"
-								},
-								"type": "array"
+								"$ref": "#/components/schemas/UpdateCategoryIn"
 							}
 						}
 					}
 				}
+			},
+			"delete": {
+				"operationId": "DeleteCategory",
+				"responses": {
+					"204": {
+						"description": "Category and its items deleted successfully.  It doesn't retrieve anything.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Backlog"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "backlogId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					},
+					{
+						"in": "path",
+						"name": "categoryId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
 			}
 		},
 		"/auth/res-signup": {
