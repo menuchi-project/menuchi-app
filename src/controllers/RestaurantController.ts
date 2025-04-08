@@ -19,7 +19,18 @@ export class RestaurantController extends BaseController {
   @Post()
   public async createRestaurant(@Body() body: RestaurantCompactIn, @Request() req: express.Request): Promise<RestaurantCompleteOut> {
     const restaurant = await RestaurantService.createRestaurant(body, req.session.user?.id);
-    this.updateSession(req, SessionUpdateScope.Restaurant, restaurant.id);
+
+    const firstBranch = restaurant.branches?.[0];
+    this.updateSession(
+      req,
+      SessionUpdateScope.Restaurant,
+      restaurant.id,
+      {
+        id: firstBranch?.id,
+        backlogId: firstBranch?.backlog?.id
+      }
+    );
+    
     return restaurant;
   }
 

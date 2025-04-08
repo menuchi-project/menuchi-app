@@ -1,9 +1,10 @@
 import { Controller } from 'tsoa';
-import { UserSession } from '../types/AuthTypes';
+import { BranchSession, UserSession } from '../types/AuthTypes';
 import { UUID } from '../types/TypeAliases';
 import { PermissionScope, SessionUpdateScope } from '../types/Enums';
 import express from 'express';
 import { ForbiddenError } from '../exceptions/AuthError';
+import { RestaurantCompleteOut } from '../types/RestaurantTypes';
 
 export default class BaseController extends Controller {
   checkPermission(user?: UserSession, by?: PermissionScope, id?: UUID) {
@@ -30,11 +31,12 @@ export default class BaseController extends Controller {
   updateSession(
     req: express.Request,
     updateScope: SessionUpdateScope,
-    id: UUID
+    restaurantId: UUID,
+    branch: BranchSession
   ) {
     switch (updateScope) {
       case SessionUpdateScope.Restaurant:
-        req.session.user?.restaurants.push({ id, branches: [] });
+        req.session.user?.restaurants.push({ id: restaurantId, branches: [branch] });
         break;
     }
   }

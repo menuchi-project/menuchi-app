@@ -17,12 +17,12 @@ export interface UserSession {
 };
 
 export interface RestaurantSession {
-  id: UUID;
+  id?: UUID;
   branches: BranchSession[];
 }
 
 export interface BranchSession {
-  id: UUID;
+  id?: UUID;
   backlogId?: UUID;
 }
 
