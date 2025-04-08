@@ -9,6 +9,6 @@ export class UserController extends BaseController {
   @Security('', [RolesEnum.RestaurantOwner])
   @Get('/profile')
   public async getProfile(@Request() req: express.Request) {
-    return req.user;
+    return req.session.user;
   }
 }

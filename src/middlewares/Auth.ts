@@ -15,14 +15,14 @@ export function expressAuthentication(
     if (!accessToken || !request.session.accessToken) {
       throw new UnauthorizedError();
     }
-
+    
     if (accessToken === request.session.accessToken) {
       const payload = jwt.verify(accessToken, process.env.JWT_PRIVATE_KEY!) as JWTPayload;
       const hasAccess = (scopes as RolesEnum[]).some(element => payload.roles.includes(element));
       const isValidUser = request.session.user?.id === payload?.userId;
-      if (!payload || !hasAccess || isValidUser) throw new ForbiddenError();
+      console.log(payload, hasAccess, isValidUser);
+      if (!payload || !hasAccess || !isValidUser) throw new ForbiddenError();
       
-      request.session.destroy(console.log);
       resolve(true);
     } else throw new UnauthorizedError();
   });
