@@ -20,3 +20,9 @@ export class ForbiddenError extends AuthError {
     super('Access Denied. You are not authorized to perform this action.', 403);
   }
 }
+
+export class InvalidTokenError extends AuthError {
+  constructor() {
+    super('Invalid token.', 401);
+  }
+}

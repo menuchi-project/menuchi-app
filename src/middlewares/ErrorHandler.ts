@@ -18,7 +18,8 @@ import {
 import { ErrorDetail } from '../types/ErrorTypes';
 import { Prisma } from '@prisma/client';
 import { NotFoundError } from '../exceptions/NotFoundError';
-import { ForbiddenError, UnauthorizedError } from '../exceptions/AuthError';
+import { ForbiddenError, InvalidTokenError, UnauthorizedError } from '../exceptions/AuthError';
+import { JsonWebTokenError } from 'jsonwebtoken';
 
 export function errorPreprocessor(
   error: Error,
@@ -28,6 +29,10 @@ export function errorPreprocessor(
 ): void {
   if (error instanceof UnauthorizedError || error instanceof ForbiddenError) {
     throw error;
+  }
+
+  if (error instanceof JsonWebTokenError) {
+    throw new InvalidTokenError();
   }
 
   if (error instanceof ValidateError) {

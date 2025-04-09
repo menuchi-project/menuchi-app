@@ -35,6 +35,8 @@ export class AuthController extends BaseController {
     @Body() body: UserLogin,
     @Request() req: express.Request
   ): Promise<boolean> {
+    if (req.session.user) return true;
+
     const { accessToken, user } = await AuthService.signin(body);
 
     this.setHeader(
