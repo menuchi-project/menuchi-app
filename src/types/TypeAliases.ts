@@ -85,8 +85,8 @@ export type Slug = string;
 /**
  * Valid filename for images with allowed extensions.
  * Contains only English letters, numbers, hyphens, and underscores.
- * Must end with a valid image extension (.jpg, .jpeg, .png, .webp, .svg).
- * @pattern ^[a-zA-Z0-9-_]+\.(jpg|jpeg|png|webp|svg)$
+ * Must end with a valid image extension (.jpg, .jpeg, .png, .webp, .svg, .heic).
+ * @pattern ^[a-zA-Z0-9-_]+\.(jpg|jpeg|png|webp|svg|heic)$
  * @minLength 5 length must be between 5 and 255
  * @maxLength 255 length must be between 5 and 255
  * @format image-filename
