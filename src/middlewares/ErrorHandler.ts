@@ -20,6 +20,7 @@ import { Prisma } from '@prisma/client';
 import { NotFoundError } from '../exceptions/NotFoundError';
 import { ForbiddenError, InvalidTokenError, UnauthorizedError } from '../exceptions/AuthError';
 import { JsonWebTokenError } from 'jsonwebtoken';
+import { PrismaClientInitializationError } from '@prisma/client/runtime/library';
 
 export function errorPreprocessor(
   error: Error,
@@ -27,6 +28,10 @@ export function errorPreprocessor(
   res: Response,
   next: NextFunction
 ): void {
+  if (error instanceof PrismaClientInitializationError) {
+    throw new MenuchiError('Can\'t reach database server.', 500);
+  }
+
   if (error instanceof UnauthorizedError || error instanceof ForbiddenError) {
     throw error;
   }
