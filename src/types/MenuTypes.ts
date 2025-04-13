@@ -38,11 +38,6 @@ export interface MenuCategoryCompleteOut extends CompleteOut {
   positionInMenu: Int | null;
 }
 
-// export interface UpdateMenuCategoryIn {
-//   positionInMenu?: Int | null;
-//   items?: {
-//     id: UUID;
-//     positionInMenuCategory?: Int | null;
-//     isActive?: Boolean | null;
-//   }[];
-// }
+export interface UpdateMenuCategoryIn {
+  positionInMenu?: Int | null;
+}

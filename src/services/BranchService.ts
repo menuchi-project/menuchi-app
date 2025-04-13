@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { UUID } from '../types/TypeAliases';
-import { CylinderCompactIn, CylinderCompleteOut, MenuCategoryCompactIn, MenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut } from '../types/MenuTypes';
+import { CylinderCompactIn, CylinderCompleteOut, MenuCategoryCompactIn, MenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, UpdateMenuCategoryIn } from '../types/MenuTypes';
 
 class BranchService {
   private prisma: PrismaClient;
@@ -65,6 +65,25 @@ class BranchService {
           }
         }
       });
+    });
+  }
+
+  async updateMenuCategory(menuCategoryId: UUID, menuCategoryDTO: UpdateMenuCategoryIn) {
+    return this.prisma.menuCategory.update({
+      where: {
+        id: menuCategoryId
+      },
+      data: menuCategoryDTO
+    });
+  }
+
+  async deleteMenuCategory(menuCategoriesId: UUID[]) {
+    return this.prisma.menuCategory.deleteMany({
+      where: {
+        id: {
+          in: menuCategoriesId
+        }
+      }
     });
   }
 }

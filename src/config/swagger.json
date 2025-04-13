@@ -1105,6 +1105,20 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"UpdateMenuCategoryIn": {
+				"properties": {
+					"positionInMenu": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
 			"ItemCompleteOut": {
 				"properties": {
 					"id": {
@@ -1836,7 +1850,7 @@
 			"patch": {
 				"operationId": "UpdateMenu",
 				"responses": {
-					"200": {
+					"204": {
 						"description": "Menu updated successfully.",
 						"content": {
 							"application/json": {
@@ -2027,6 +2041,107 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/MenuCategoryCompactIn"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/branches/{branchId}/menus/menu-categories/{menuCategoryId}": {
+			"patch": {
+				"operationId": "UpdateMenuCategory",
+				"responses": {
+					"204": {
+						"description": "Menu Category updated successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Branch"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "branchId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					},
+					{
+						"in": "path",
+						"name": "menuCategoryId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateMenuCategoryIn"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/branches/{branchId}/menus/menu-categories": {
+			"delete": {
+				"operationId": "DeleteMenuCategory",
+				"responses": {
+					"204": {
+						"description": "Menu Categories deleted successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Branch"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "branchId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"items": {
+									"$ref": "#/components/schemas/UUID"
+								},
+								"type": "array"
 							}
 						}
 					}
