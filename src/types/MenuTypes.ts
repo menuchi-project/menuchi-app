@@ -7,3 +7,9 @@ export interface MenuCompleteOut extends CompleteOut {
   favicon: DefaultString | null;
   isPublished: Boolean | null;
 }
+
+export interface MenuCompactIn {
+  name?: DefaultString | null;
+  favicon?: DefaultString | null;
+  isPublished?: Boolean | null;
+}

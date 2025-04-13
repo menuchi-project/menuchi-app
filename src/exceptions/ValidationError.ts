@@ -29,3 +29,9 @@ export class ItemValidationError extends ValidationError {
     super('Item validation failed', 422, 4223, details);
   }
 }
+
+export class MenuValidationError extends ValidationError {
+  constructor(details?: ErrorDetail[]) {
+    super('Item validation failed', 422, 4245, details);
+  }
+}

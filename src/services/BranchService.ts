@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { UUID } from '../types/TypeAliases';
-import { MenuCompleteOut } from '../types/MenuTypes';
+import { MenuCompactIn, MenuCompleteOut } from '../types/MenuTypes';
 
 class BranchService {
   private prisma: PrismaClient;
@@ -14,6 +14,15 @@ class BranchService {
       data: {
         branchId
       }
+    });
+  }
+
+  async updateMenu(menuId: UUID, menuDTO: MenuCompactIn) {
+    return this.prisma.menu.update({
+      where: {
+        id: menuId
+      },
+      data: menuDTO
     });
   }
 }

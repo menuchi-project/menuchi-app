@@ -751,6 +751,70 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"MenuValidationError": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"MenuCompactIn": {
+				"properties": {
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"favicon": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"isPublished": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
 			"ItemCompleteOut": {
 				"properties": {
 					"id": {
@@ -1447,7 +1511,7 @@
 				]
 			}
 		},
-		"/branches/{branchId}/create-menu": {
+		"/branches/{branchId}/menus": {
 			"post": {
 				"operationId": "CreateMenu",
 				"responses": {
@@ -1476,6 +1540,69 @@
 						}
 					}
 				]
+			}
+		},
+		"/branches/{branchId}/menus/{menuId}": {
+			"patch": {
+				"operationId": "UpdateMenu",
+				"responses": {
+					"200": {
+						"description": "Menu created successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "4225 MenuValidationError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuValidationError"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Branch"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "branchId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					},
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/MenuCompactIn"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/backlog/{backlogId}/items": {

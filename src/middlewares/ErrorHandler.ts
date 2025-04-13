@@ -4,6 +4,7 @@ import { validationErrorCleaner } from '../utils/utils';
 import {
   CategoryNameValidationError,
   ItemValidationError,
+  MenuValidationError,
   RestaurantValidationError,
   ValidationError,
 } from '../exceptions/ValidationError';
@@ -29,6 +30,10 @@ export function errorPreprocessor(
 
     if (path.includes('/items')) {
       throw new ItemValidationError(details);
+    }
+
+    if (path.includes('/menus')) {
+      throw new MenuValidationError(details);
     }
 
     switch (path) {

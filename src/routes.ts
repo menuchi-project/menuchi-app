@@ -263,6 +263,29 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "MenuValidationError": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "message": {"dataType":"string","required":true},
+            "stack": {"dataType":"string"},
+            "status": {"dataType":"double","required":true},
+            "code": {"dataType":"double"},
+            "details": {"dataType":"array","array":{"dataType":"refObject","ref":"ErrorDetail"}},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "MenuCompactIn": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+            "favicon": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+            "isPublished": {"dataType":"union","subSchemas":[{"ref":"Boolean"},{"dataType":"enum","enums":[null]}]},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "ItemCompleteOut": {
         "dataType": "refObject",
         "properties": {
@@ -607,7 +630,7 @@ export function RegisterRoutes(app: Router) {
         const argsBranchController_createMenu: Record<string, TsoaRoute.ParameterSchema> = {
                 branchId: {"in":"path","name":"branchId","required":true,"ref":"UUID"},
         };
-        app.post('/branches/:branchId/create-menu',
+        app.post('/branches/:branchId/menus',
             ...(fetchMiddlewares<RequestHandler>(BranchController)),
             ...(fetchMiddlewares<RequestHandler>(BranchController.prototype.createMenu)),
 
@@ -628,6 +651,38 @@ export function RegisterRoutes(app: Router) {
                 next,
                 validatedArgs,
                 successStatus: 201,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsBranchController_updateMenu: Record<string, TsoaRoute.ParameterSchema> = {
+                branchId: {"in":"path","name":"branchId","required":true,"ref":"UUID"},
+                menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
+                body: {"in":"body","name":"body","required":true,"ref":"MenuCompactIn"},
+        };
+        app.patch('/branches/:branchId/menus/:menuId',
+            ...(fetchMiddlewares<RequestHandler>(BranchController)),
+            ...(fetchMiddlewares<RequestHandler>(BranchController.prototype.updateMenu)),
+
+            async function BranchController_updateMenu(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsBranchController_updateMenu, request, response });
+
+                const controller = new BranchController();
+
+              await templateService.apiHandler({
+                methodName: 'updateMenu',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 200,
               });
             } catch (err) {
                 return next(err);
