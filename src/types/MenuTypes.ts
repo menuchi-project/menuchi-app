@@ -1,5 +1,5 @@
-import { CompleteOut } from "./BaseTypes";
-import { Boolean, DefaultString, UUID } from "./TypeAliases";
+import { CompleteOut } from './BaseTypes';
+import { Boolean, DefaultString, Int, UUID } from './TypeAliases';
 
 export interface MenuCompleteOut extends CompleteOut {
   branchId: UUID | null;
@@ -25,3 +25,24 @@ export interface CylinderCompactIn {
 }
 
 export interface CylinderCompleteOut extends CylinderCompactIn, CompleteOut {}
+
+export interface MenuCategoryCompactIn {
+  categoryId: UUID;
+  cylinderId: UUID;
+  items: UUID[];
+}
+
+export interface MenuCategoryCompleteOut extends CompleteOut {
+  categoryId: UUID | null;
+  cylinderId: UUID | null;
+  positionInMenu: Int | null;
+}
+
+// export interface UpdateMenuCategoryIn {
+//   positionInMenu?: Int | null;
+//   items?: {
+//     id: UUID;
+//     positionInMenuCategory?: Int | null;
+//     isActive?: Boolean | null;
+//   }[];
+// }

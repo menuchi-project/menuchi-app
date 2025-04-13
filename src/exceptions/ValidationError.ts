@@ -41,3 +41,9 @@ export class CylinderValidationError extends ValidationError {
     super('Cylinder validation failed', 422, 4246, details);
   }
 }
+
+export class MenuCategoryValidationError extends ValidationError {
+  constructor(details: ErrorDetail[] = [{ message: 'At least one item must be selected.' }]) {
+    super('Menu Category validation failed', 422, 4247, details);
+  }
+}

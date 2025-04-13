@@ -5,6 +5,7 @@ import {
   CategoryNameValidationError,
   CylinderValidationError,
   ItemValidationError,
+  MenuCategoryValidationError,
   MenuValidationError,
   RestaurantValidationError,
   ValidationError,
@@ -43,6 +44,10 @@ export function errorPreprocessor(
 
     if (path.includes('/cylinders')) {
       throw new CylinderValidationError(details);
+    }
+
+    if (path.includes('/menu-categories')) {
+      throw new MenuCategoryValidationError();
     }
 
     switch (path) {

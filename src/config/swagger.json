@@ -994,6 +994,117 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"MenuCategoryCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"categoryId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"cylinderId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"positionInMenu": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"categoryId",
+					"cylinderId",
+					"positionInMenu"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"MenuCategoryValidationError": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"MenuCategoryCompactIn": {
+				"properties": {
+					"categoryId": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"cylinderId": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"items": {
+						"items": {
+							"$ref": "#/components/schemas/UUID"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"categoryId",
+					"cylinderId",
+					"items"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"ItemCompleteOut": {
 				"properties": {
 					"id": {
@@ -1786,7 +1897,7 @@
 		},
 		"/branches/{branchId}/menus/{menuId}/cylinders": {
 			"post": {
-				"operationId": "AddCylinder",
+				"operationId": "CreateCylinder",
 				"responses": {
 					"201": {
 						"description": "Cylinder created successfully.",
@@ -1794,6 +1905,16 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/CylinderCompleteOut"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "ConstraintsDatabaseError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ConstraintsDatabaseError"
 								}
 							}
 						}
@@ -1837,6 +1958,75 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/CylinderCompactIn"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/branches/{branchId}/menus/{menuId}/menu-categories": {
+			"post": {
+				"operationId": "CreateMenuCategory",
+				"responses": {
+					"201": {
+						"description": "Menu Category created successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuCategoryCompleteOut"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "ConstraintsDatabaseError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ConstraintsDatabaseError"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "4227 MenuCategoryValidationError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuCategoryValidationError"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Branch"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "branchId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					},
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/MenuCategoryCompactIn"
 							}
 						}
 					}
