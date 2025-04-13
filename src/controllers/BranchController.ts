@@ -96,6 +96,7 @@ export class BranchController {
     await BranchService.deleteMenuItem(body);
     return null;
   }
+  
   @SuccessResponse(204, 'Menu Item hide/unhide successfully.')
   @Patch('/{branchId}/menus/menu-items/{menuItemId}/hide/{isHide}')
   async hideMenuItem(
