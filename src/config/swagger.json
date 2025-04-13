@@ -91,15 +91,15 @@
 				"type": "string",
 				"example": "52907745-7672-470e-a803-a2f8feb52944",
 				"format": "uuid",
-				"description": "Stringified UUIDv4.\nSee [RFC 4112](https://tools.ietf.org/html/rfc4122)",
+				"description": "Stringified UUIDv4.\r\nSee [RFC 4112](https://tools.ietf.org/html/rfc4122)",
 				"pattern": "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}"
 			},
 			"ImageFilename": {
 				"type": "string",
 				"example": "my-image.jpg",
 				"format": "image-filename",
-				"description": "Valid filename for images with allowed extensions.\nContains only English letters, numbers, hyphens, and underscores.\nMust end with a valid image extension (.jpg, .jpeg, .png, .webp, .svg).",
-				"pattern": "^[a-zA-Z0-9-_]+\\.(jpg|jpeg|png|webp|svg)$",
+				"description": "Valid filename for images with allowed extensions.\r\nContains only English letters, numbers, hyphens, and underscores.\r\nMust end with a valid image extension (.jpg, .jpeg, .png, .webp, .svg, .heic).",
+				"pattern": "^[a-zA-Z0-9-_]+\\.(jpg|jpeg|png|webp|svg|heic)$",
 				"minLength": 5,
 				"maxLength": 255
 			},
@@ -133,7 +133,7 @@
 				"type": "string",
 				"example": "my-name",
 				"format": "slug",
-				"description": "URL-friendly string identifier.\nContains only English letters, numbers, and hyphens.",
+				"description": "URL-friendly string identifier.\r\nContains only English letters, numbers, and hyphens.",
 				"pattern": "^[a-zA-Z0-9-]+$",
 				"minLength": 2,
 				"maxLength": 50
@@ -1197,12 +1197,12 @@
 			},
 			"IranPhoneNumber": {
 				"type": "string",
-				"description": "Iran phone number format.\nSupported format: 09123456789",
+				"description": "Iran phone number format.\r\nSupported format: 09123456789",
 				"pattern": "^0?9\\d{9}$"
 			},
 			"Username": {
 				"type": "string",
-				"description": "Username format.\nMust be 3-30 characters long, containing only letters, numbers, underscores, and hyphens.",
+				"description": "Username format.\r\nMust be 3-30 characters long, containing only letters, numbers, underscores, and hyphens.",
 				"pattern": "^[a-zA-Z0-9_-]{3,30}$"
 			},
 			"Email": {
@@ -1299,7 +1299,7 @@
 			},
 			"StrongPassword": {
 				"type": "string",
-				"description": "Strong password format.\nMust be 8-64 characters long, containing at least one uppercase letter,\none lowercase letter, one number, and one special character (@, $, !, %, *, ?, &).",
+				"description": "Strong password format.\r\nMust be 8-64 characters long, containing at least one uppercase letter,\r\none lowercase letter, one number, and one special character (@, $, !, %, *, ?, &).",
 				"pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,64}$"
 			},
 			"UserCompactIn": {
