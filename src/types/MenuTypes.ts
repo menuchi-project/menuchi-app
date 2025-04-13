@@ -13,3 +13,15 @@ export interface MenuCompactIn {
   favicon?: DefaultString | null;
   isPublished?: Boolean | null;
 }
+
+export interface CylinderCompactIn {
+  sat?: Boolean | null;
+  sun?: Boolean | null;
+  mon?: Boolean | null;
+  tue?: Boolean | null;
+  wed?: Boolean | null;
+  thu?: Boolean | null;
+  fri?: Boolean | null;
+}
+
+export interface CylinderCompleteOut extends CylinderCompactIn, CompleteOut {}

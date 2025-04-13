@@ -32,6 +32,12 @@ export class ItemValidationError extends ValidationError {
 
 export class MenuValidationError extends ValidationError {
   constructor(details?: ErrorDetail[]) {
-    super('Item validation failed', 422, 4245, details);
+    super('Menu validation failed', 422, 4245, details);
+  }
+}
+
+export class CylinderValidationError extends ValidationError {
+  constructor(details: ErrorDetail[] = [{ message: 'At least one day must be selected.' }]) {
+    super('Cylinder validation failed', 422, 4246, details);
   }
 }
