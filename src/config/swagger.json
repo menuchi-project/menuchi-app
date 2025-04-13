@@ -1119,6 +1119,20 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"UpdateMenuItemIn": {
+				"properties": {
+					"positionInMenuCategory": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
 			"ItemCompleteOut": {
 				"properties": {
 					"id": {
@@ -2106,6 +2120,107 @@
 				"responses": {
 					"204": {
 						"description": "Menu Categories deleted successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Branch"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "branchId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"items": {
+									"$ref": "#/components/schemas/UUID"
+								},
+								"type": "array"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/branches/{branchId}/menus/menu-items/{menuCategoryId}": {
+			"patch": {
+				"operationId": "UpdateMenuItem",
+				"responses": {
+					"204": {
+						"description": "Menu Item updated successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Branch"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "branchId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					},
+					{
+						"in": "path",
+						"name": "menuCategoryId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateMenuItemIn"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/branches/{branchId}/menus/menu-items": {
+			"delete": {
+				"operationId": "DeleteMenuItem",
+				"responses": {
+					"204": {
+						"description": "Menu Items deleted successfully.",
 						"content": {
 							"application/json": {
 								"schema": {

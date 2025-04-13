@@ -1,7 +1,7 @@
 import { Body, Delete, Patch, Path, Post, Response, Route, SuccessResponse, Tags } from "tsoa";
 import { UUID } from "../types/TypeAliases";
 import BranchService from "../services/BranchService";
-import { CylinderCompactIn, CylinderCompleteOut, MenuCategoryCompactIn, MenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, UpdateMenuCategoryIn } from "../types/MenuTypes";
+import { CylinderCompactIn, CylinderCompleteOut, MenuCategoryCompactIn, MenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, UpdateMenuCategoryIn, UpdateMenuItemIn } from "../types/MenuTypes";
 import { CylinderValidationError, MenuCategoryValidationError, MenuValidationError } from "../exceptions/ValidationError";
 import { ConstraintsDatabaseError } from "../exceptions/DatabaseError";
 
@@ -73,6 +73,27 @@ export class BranchController {
     @Body() body: UUID[]
   ): Promise<null> {
     await BranchService.deleteMenuCategory(body);
+    return null;
+  }
+
+  @SuccessResponse(204, 'Menu Item updated successfully.')
+  @Patch('/{branchId}/menus/menu-items/{menuCategoryId}')
+  async updateMenuItem(
+    @Path() branchId: UUID,
+    @Path() menuCategoryId: UUID,
+    @Body() body: UpdateMenuItemIn
+  ): Promise<null> {
+    await BranchService.updateMenuItem(menuCategoryId, body);
+    return null;
+  }
+
+  @SuccessResponse(204, 'Menu Items deleted successfully.')
+  @Delete('/{branchId}/menus/menu-items') 
+  async deleteMenuItem(
+    @Path() branchId: UUID,
+    @Body() body: UUID[]
+  ): Promise<null> {
+    await BranchService.deleteMenuItem(body);
     return null;
   }
 }

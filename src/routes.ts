@@ -376,6 +376,14 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UpdateMenuItemIn": {
+        "dataType": "refObject",
+        "properties": {
+            "positionInMenuCategory": {"dataType":"union","subSchemas":[{"ref":"Int"},{"dataType":"enum","enums":[null]}]},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "ItemCompleteOut": {
         "dataType": "refObject",
         "properties": {
@@ -895,6 +903,69 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'deleteMenuCategory',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 204,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsBranchController_updateMenuItem: Record<string, TsoaRoute.ParameterSchema> = {
+                branchId: {"in":"path","name":"branchId","required":true,"ref":"UUID"},
+                menuCategoryId: {"in":"path","name":"menuCategoryId","required":true,"ref":"UUID"},
+                body: {"in":"body","name":"body","required":true,"ref":"UpdateMenuItemIn"},
+        };
+        app.patch('/branches/:branchId/menus/menu-items/:menuCategoryId',
+            ...(fetchMiddlewares<RequestHandler>(BranchController)),
+            ...(fetchMiddlewares<RequestHandler>(BranchController.prototype.updateMenuItem)),
+
+            async function BranchController_updateMenuItem(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsBranchController_updateMenuItem, request, response });
+
+                const controller = new BranchController();
+
+              await templateService.apiHandler({
+                methodName: 'updateMenuItem',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 204,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsBranchController_deleteMenuItem: Record<string, TsoaRoute.ParameterSchema> = {
+                branchId: {"in":"path","name":"branchId","required":true,"ref":"UUID"},
+                body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refAlias","ref":"UUID"}},
+        };
+        app.delete('/branches/:branchId/menus/menu-items',
+            ...(fetchMiddlewares<RequestHandler>(BranchController)),
+            ...(fetchMiddlewares<RequestHandler>(BranchController.prototype.deleteMenuItem)),
+
+            async function BranchController_deleteMenuItem(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsBranchController_deleteMenuItem, request, response });
+
+                const controller = new BranchController();
+
+              await templateService.apiHandler({
+                methodName: 'deleteMenuItem',
                 controller,
                 response,
                 next,

@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { UUID } from '../types/TypeAliases';
-import { CylinderCompactIn, CylinderCompleteOut, MenuCategoryCompactIn, MenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, UpdateMenuCategoryIn } from '../types/MenuTypes';
+import { CylinderCompactIn, CylinderCompleteOut, MenuCategoryCompactIn, MenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, UpdateMenuCategoryIn, UpdateMenuItemIn } from '../types/MenuTypes';
 
 class BranchService {
   private prisma: PrismaClient;
@@ -78,11 +78,49 @@ class BranchService {
   }
 
   async deleteMenuCategory(menuCategoriesId: UUID[]) {
-    return this.prisma.menuCategory.deleteMany({
+    return this.prisma.$transaction(async (tx) => {
+      await tx.menuCategory.deleteMany({
+        where: {
+          id: {
+            in: menuCategoriesId
+          }
+        }
+      });
+
+      await tx.item.updateMany({
+        where: {
+          menuCategoryId: {
+            in: menuCategoriesId
+          }
+        },
+        data: {
+          positionInMenuCategory: null,
+          isActive: null
+        }
+      });
+    });
+  }
+
+  async updateMenuItem(menuItemId: UUID, menuItemDTO: UpdateMenuItemIn) {
+    return this.prisma.item.update({
+      where: {
+        id: menuItemId
+      },
+      data: menuItemDTO
+    });
+  }
+
+  async deleteMenuItem(menuItemsId: UUID[]) {
+    return this.prisma.item.updateMany({
       where: {
         id: {
-          in: menuCategoriesId
+          in: menuItemsId
         }
+      },
+      data: {
+        menuCategoryId: null,
+        positionInMenuCategory: null,
+        isActive: null
       }
     });
   }

@@ -41,3 +41,7 @@ export interface MenuCategoryCompleteOut extends CompleteOut {
 export interface UpdateMenuCategoryIn {
   positionInMenu?: Int | null;
 }
+
+export interface UpdateMenuItemIn {
+  positionInMenuCategory?: Int | null;
+}
