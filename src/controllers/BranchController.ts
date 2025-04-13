@@ -15,7 +15,7 @@ export class BranchController {
   }
 
   @Response<MenuValidationError>(422, '4225 MenuValidationError')
-  @SuccessResponse(200, 'Menu updated successfully.')
+  @SuccessResponse(204, 'Menu updated successfully.')
   @Patch('/{branchId}/menus/{menuId}')
   async updateMenu(
     @Path() branchId: UUID,
