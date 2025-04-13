@@ -250,13 +250,13 @@ model Cylinder {
   id             String         @id @default(uuid()) @db.Uuid
   menuId         String?        @map("menu_id") @db.Uuid
   menu           Menu?          @relation(fields: [menuId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  sat            Boolean?        @default(false)
-  sun            Boolean?        @default(false)
-  mon            Boolean?        @default(false)
-  tue            Boolean?        @default(false)
-  wed            Boolean?        @default(false)
-  thu            Boolean?        @default(false)
-  fri            Boolean?        @default(false)
+  sat            Boolean?       @default(false)
+  sun            Boolean?       @default(false)
+  mon            Boolean?       @default(false)
+  tue            Boolean?       @default(false)
+  wed            Boolean?       @default(false)
+  thu            Boolean?       @default(false)
+  fri            Boolean?       @default(false)
   menuCategories MenuCategory[]
   createdAt      DateTime       @default(now()) @map("created_at")
   updatedAt      DateTime       @updatedAt @map("updated_at")

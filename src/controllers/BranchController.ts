@@ -1,8 +1,9 @@
-import { Body, Patch, Path, Post, Response, Route, SuccessResponse, Tags } from "tsoa";
+import { Body, Patch, Path, Post, Res, Response, Route, SuccessResponse, Tags } from "tsoa";
 import { UUID } from "../types/TypeAliases";
 import BranchService from "../services/BranchService";
 import { CylinderCompactIn, CylinderCompleteOut, MenuCompactIn, MenuCompleteOut } from "../types/MenuTypes";
 import { CylinderValidationError, MenuValidationError } from "../exceptions/ValidationError";
+import { ConstraintsDatabaseError } from "../exceptions/DatabaseError";
 
 @Route('/branches')
 @Tags('Branch')
@@ -25,6 +26,7 @@ export class BranchController {
     return null;
   }
 
+  @Response<ConstraintsDatabaseError>(409, 'ConstraintsDatabaseError')
   @Response<CylinderValidationError>(422, '4226 CylinderValidationError')
   @SuccessResponse(201, 'Cylinder created successfully.')
   @Post('/{branchId}/menus/{menuId}/cylinders')
