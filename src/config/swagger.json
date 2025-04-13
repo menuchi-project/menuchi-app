@@ -39,14 +39,14 @@
 				"type": "string",
 				"example": "52907745-7672-470e-a803-a2f8feb52944",
 				"format": "uuid",
-				"description": "Stringified UUIDv4.\nSee [RFC 4112](https://tools.ietf.org/html/rfc4122)",
+				"description": "Stringified UUIDv4.\r\nSee [RFC 4112](https://tools.ietf.org/html/rfc4122)",
 				"pattern": "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}"
 			},
 			"ImageFilename": {
 				"type": "string",
 				"example": "my-image.jpg",
 				"format": "image-filename",
-				"description": "Valid filename for images with allowed extensions.\nContains only English letters, numbers, hyphens, and underscores.\nMust end with a valid image extension (.jpg, .jpeg, .png, .webp, .svg).",
+				"description": "Valid filename for images with allowed extensions.\r\nContains only English letters, numbers, hyphens, and underscores.\r\nMust end with a valid image extension (.jpg, .jpeg, .png, .webp, .svg).",
 				"pattern": "^[a-zA-Z0-9-_]+\\.(jpg|jpeg|png|webp|svg)$",
 				"minLength": 5,
 				"maxLength": 255
@@ -81,7 +81,7 @@
 				"type": "string",
 				"example": "my-name",
 				"format": "slug",
-				"description": "URL-friendly string identifier.\nContains only English letters, numbers, and hyphens.",
+				"description": "URL-friendly string identifier.\r\nContains only English letters, numbers, and hyphens.",
 				"pattern": "^[a-zA-Z0-9-]+$",
 				"minLength": 2,
 				"maxLength": 50
@@ -684,6 +684,69 @@
 				},
 				"required": [
 					"positionInBacklog"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"MenuCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"branchId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"favicon": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"isPublished": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"branchId",
+					"name",
+					"favicon",
+					"isPublished"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1376,6 +1439,37 @@
 					{
 						"in": "path",
 						"name": "categoryId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
+			}
+		},
+		"/branches/{branchId}/create-menu": {
+			"post": {
+				"operationId": "CreateMenu",
+				"responses": {
+					"201": {
+						"description": "Menu created successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuCompleteOut"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Branch"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "branchId",
 						"required": true,
 						"schema": {
 							"$ref": "#/components/schemas/UUID"

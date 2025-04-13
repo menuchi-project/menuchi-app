@@ -231,7 +231,7 @@ model Item {
   name                   String?
   ingredients            String?       @db.Text
   price                  Float?
-  picUrl                 String?       @map("pic_url")
+  picKey                 String?       @map("pic_key")
   positionInItemsList    Int?          @map("position_in_items_list")
   positionInCategory     Int?          @map("position_in_category")
   positionInMenuCategory Int?          @map("position_in_menu_categories")
