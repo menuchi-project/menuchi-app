@@ -124,6 +124,17 @@ class BranchService {
       }
     });
   }
+
+  async hideMenuItem(menuItemId: UUID, isActive: boolean) {
+    return this.prisma.item.update({
+      where: {
+        id: menuItemId
+      },
+      data: {
+        isActive
+      }
+    });
+  }
 }
 
 export default new BranchService();

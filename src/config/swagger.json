@@ -2162,7 +2162,7 @@
 				}
 			}
 		},
-		"/branches/{branchId}/menus/menu-items/{menuCategoryId}": {
+		"/branches/{branchId}/menus/menu-items/{menuItemId}": {
 			"patch": {
 				"operationId": "UpdateMenuItem",
 				"responses": {
@@ -2196,7 +2196,7 @@
 					},
 					{
 						"in": "path",
-						"name": "menuCategoryId",
+						"name": "menuItemId",
 						"required": true,
 						"schema": {
 							"$ref": "#/components/schemas/UUID"
@@ -2261,6 +2261,57 @@
 						}
 					}
 				}
+			}
+		},
+		"/branches/{branchId}/menus/menu-items/{menuItemId}/hide/{isHide}": {
+			"patch": {
+				"operationId": "HideMenuItem",
+				"responses": {
+					"204": {
+						"description": "Menu Item hide/unhide successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Branch"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "branchId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					},
+					{
+						"in": "path",
+						"name": "menuItemId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					},
+					{
+						"in": "path",
+						"name": "isHide",
+						"required": true,
+						"schema": {
+							"type": "boolean"
+						}
+					}
+				]
 			}
 		},
 		"/backlog/{backlogId}/items": {

@@ -916,10 +916,10 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsBranchController_updateMenuItem: Record<string, TsoaRoute.ParameterSchema> = {
                 branchId: {"in":"path","name":"branchId","required":true,"ref":"UUID"},
-                menuCategoryId: {"in":"path","name":"menuCategoryId","required":true,"ref":"UUID"},
+                menuItemId: {"in":"path","name":"menuItemId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"ref":"UpdateMenuItemIn"},
         };
-        app.patch('/branches/:branchId/menus/menu-items/:menuCategoryId',
+        app.patch('/branches/:branchId/menus/menu-items/:menuItemId',
             ...(fetchMiddlewares<RequestHandler>(BranchController)),
             ...(fetchMiddlewares<RequestHandler>(BranchController.prototype.updateMenuItem)),
 
@@ -966,6 +966,38 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'deleteMenuItem',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 204,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsBranchController_hideMenuItem: Record<string, TsoaRoute.ParameterSchema> = {
+                branchId: {"in":"path","name":"branchId","required":true,"ref":"UUID"},
+                menuItemId: {"in":"path","name":"menuItemId","required":true,"ref":"UUID"},
+                isHide: {"in":"path","name":"isHide","required":true,"dataType":"boolean"},
+        };
+        app.patch('/branches/:branchId/menus/menu-items/:menuItemId/hide/:isHide',
+            ...(fetchMiddlewares<RequestHandler>(BranchController)),
+            ...(fetchMiddlewares<RequestHandler>(BranchController.prototype.hideMenuItem)),
+
+            async function BranchController_hideMenuItem(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsBranchController_hideMenuItem, request, response });
+
+                const controller = new BranchController();
+
+              await templateService.apiHandler({
+                methodName: 'hideMenuItem',
                 controller,
                 response,
                 next,

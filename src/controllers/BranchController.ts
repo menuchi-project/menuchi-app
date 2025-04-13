@@ -77,13 +77,13 @@ export class BranchController {
   }
 
   @SuccessResponse(204, 'Menu Item updated successfully.')
-  @Patch('/{branchId}/menus/menu-items/{menuCategoryId}')
+  @Patch('/{branchId}/menus/menu-items/{menuItemId}')
   async updateMenuItem(
     @Path() branchId: UUID,
-    @Path() menuCategoryId: UUID,
+    @Path() menuItemId: UUID,
     @Body() body: UpdateMenuItemIn
   ): Promise<null> {
-    await BranchService.updateMenuItem(menuCategoryId, body);
+    await BranchService.updateMenuItem(menuItemId, body);
     return null;
   }
 
@@ -94,6 +94,16 @@ export class BranchController {
     @Body() body: UUID[]
   ): Promise<null> {
     await BranchService.deleteMenuItem(body);
+    return null;
+  }
+  @SuccessResponse(204, 'Menu Item hide/unhide successfully.')
+  @Patch('/{branchId}/menus/menu-items/{menuItemId}/hide/{isHide}')
+  async hideMenuItem(
+    @Path() branchId: UUID,
+    @Path() menuItemId: UUID,
+    @Path() isHide: boolean
+  ): Promise<null> {
+    await BranchService.hideMenuItem(menuItemId, !isHide);
     return null;
   }
 }
