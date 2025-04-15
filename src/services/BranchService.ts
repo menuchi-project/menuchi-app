@@ -1,6 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { UUID } from '../types/TypeAliases';
-import { CylinderCompactIn, CylinderCompleteOut, MenuCategoryCompactIn, MenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, UpdateMenuCategoryIn, UpdateMenuItemIn } from '../types/MenuTypes';
+import { CylinderCompactIn, CylinderCompleteOut, MenuCategoryCompactIn, MenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut } from '../types/MenuTypes';
+import MenuchiError from '../exceptions/MenuchiError';
+import { CategoryNotFound, CylinderNotFound, MenuNotFound } from '../exceptions/NotFoundError';
 
 class BranchService {
   private prisma: PrismaClient;
@@ -32,6 +34,10 @@ class BranchService {
         menuId,
         ...cylinderDTO
       }
+    }).catch((error: Error) => {
+      if (error.message.includes('cylinders_menu_id_fkey (index)'))
+        throw new MenuNotFound();
+      throw error;
     });
   }
 
@@ -57,32 +63,55 @@ class BranchService {
 
       const positionInMenu = (maxPositionInMenu._max.positionInMenu ?? 0) + 1;
 
+      await tx.$executeRaw`
+        UPDATE "items"
+        SET "position_in_menu_categories" = CASE "id"
+          ${Prisma.join(items.map((itemId, index) => Prisma.sql`WHEN ${itemId}::uuid THEN ${index + 1}`), ' ')}
+        ELSE "position_in_menu_categories"
+        END
+        WHERE "id" IN (${Prisma.join(items.map(id => Prisma.sql`${id}::uuid`))})
+      `;
+
       return tx.menuCategory.create({
         data: {
           categoryId, cylinderId, positionInMenu,
           items: {
-            connect: items.map(itemId => ({ id: itemId }))
+            connect: items.map((itemId, index) => ({ id: itemId, positionInMenuCategory: index + 1 }))
           }
         }
+      }).catch((error: Error) => {
+        if (error.message.includes('menu_categories_menu_id_fkey (index)'))
+          throw new MenuNotFound();
+        if (error.message.includes('menu_categories_cylinder_id_fkey (index)'))
+          throw new CylinderNotFound();
+        if (error.message.includes('menu_categories_category_id_fkey'))
+          throw new CategoryNotFound();
+        throw error;
       });
     });
   }
 
-  async updateMenuCategory(menuCategoryId: UUID, menuCategoryDTO: UpdateMenuCategoryIn) {
-    return this.prisma.menuCategory.update({
-      where: {
-        id: menuCategoryId
-      },
-      data: menuCategoryDTO
-    });
+  async reorderMenuCategories(menuId: UUID, menuCategoriesId: UUID[]) {
+    await this.isValidMenuCategoriesId(menuId, menuCategoriesId);
+    return this.prisma.$executeRaw`
+      UPDATE "menu_categories"
+      SET "position_in_menu" = CASE "id"
+        ${Prisma.join(menuCategoriesId.map((menuCategory, index) => Prisma.sql`WHEN ${menuCategory}::uuid THEN ${index + 1}`), ' ')}
+      ELSE "position_in_menu"
+      END
+      WHERE "id" IN (${Prisma.join(menuCategoriesId.map(id => Prisma.sql`${id}::uuid`))})
+    `;
   }
 
-  async deleteMenuCategory(menuCategoriesId: UUID[]) {
+  async deleteMenuCategory(menuId: UUID, menuCategoriesId: UUID[]) {
     return this.prisma.$transaction(async (tx) => {
       await tx.menuCategory.deleteMany({
         where: {
           id: {
             in: menuCategoriesId
+          },
+          cylinder: {
+            menuId
           }
         }
       });
@@ -91,50 +120,106 @@ class BranchService {
         where: {
           menuCategoryId: {
             in: menuCategoriesId
+          },
+          menuCategory: {
+            cylinder: {
+              menuId
+            }
           }
         },
         data: {
           positionInMenuCategory: null,
-          isActive: null
+          isActive: true
         }
       });
     });
   }
 
-  async updateMenuItem(menuItemId: UUID, menuItemDTO: UpdateMenuItemIn) {
-    return this.prisma.item.update({
-      where: {
-        id: menuItemId
-      },
-      data: menuItemDTO
-    });
+  async reorderMenuItems(menuId: UUID, menuItemsId: UUID[]) {
+    await this.isValidMenuItemsId(menuId, menuItemsId);
+    return this.prisma.$executeRaw`
+      UPDATE "items"
+      SET "position_in_menu_categories" = CASE "id"
+        ${Prisma.join(menuItemsId.map((menuItem, index) => Prisma.sql`WHEN ${menuItem}::uuid THEN ${index + 1}`), ' ')}
+      ELSE "position_in_menu_categories"
+      END
+      WHERE "id" IN (${Prisma.join(menuItemsId.map(id => Prisma.sql`${id}::uuid`))})
+    `;
   }
 
-  async deleteMenuItem(menuItemsId: UUID[]) {
+  async deleteMenuItems(menuId: UUID, menuItemsId: UUID[]) {
     return this.prisma.item.updateMany({
       where: {
         id: {
           in: menuItemsId
+        },
+        menuCategory: {
+          cylinder: {
+            menuId
+          }
         }
       },
       data: {
         menuCategoryId: null,
         positionInMenuCategory: null,
-        isActive: null
+        isActive: true
       }
     });
   }
 
-  async hideMenuItem(menuItemId: UUID, isActive: boolean) {
+  async hideMenuItem(menuId: UUID, menuItemId: UUID, isActive: boolean) {
     return this.prisma.item.update({
       where: {
-        id: menuItemId
+        id: menuItemId,
+        menuCategory: {
+          cylinder: {
+            menuId
+          }
+        }
       },
       data: {
         isActive
       }
     });
   }
+
+  private async isValidMenuItemsId(menuId: UUID, itemsId: UUID[]): Promise<void | never> {
+      const items = await this.prisma.item.findMany({
+        where: {
+          deletedAt: null,
+          menuCategory: {
+            cylinder: {
+              menuId
+            }
+          }
+        },
+        select: {
+          id: true
+        }
+      });
+      
+      const isValidQuery = (items.length === itemsId.length) &&
+              items.every(item => itemsId.some(itemId => itemId === item.id ));
+      if (!isValidQuery) throw new MenuchiError('All menu items IDs must be in the request.', 400);
+  }
+
+  private async isValidMenuCategoriesId(menuId: UUID, menuCategoriesId: UUID[]): Promise<void | never> {
+    const menuCategories = await this.prisma.menuCategory.findMany({
+      where: {
+        deletedAt: null,
+        cylinder: {
+          menuId
+        }
+      },
+      select: {
+        id: true
+      }
+    });
+    
+    const isValidQuery = (menuCategories.length === menuCategoriesId.length) &&
+            menuCategories.every(menuCategory => menuCategoriesId.some(menuCategoryId => menuCategoryId === menuCategory.id ));
+    if (!isValidQuery) throw new MenuchiError('All menu category IDs must be in the request.', 400);
+}
 }
 
 export default new BranchService();

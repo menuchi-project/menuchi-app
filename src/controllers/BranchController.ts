@@ -1,9 +1,11 @@
 import { Body, Delete, Patch, Path, Post, Response, Route, SuccessResponse, Tags } from "tsoa";
 import { UUID } from "../types/TypeAliases";
 import BranchService from "../services/BranchService";
-import { CylinderCompactIn, CylinderCompleteOut, MenuCategoryCompactIn, MenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, UpdateMenuCategoryIn, UpdateMenuItemIn } from "../types/MenuTypes";
+import { CylinderCompactIn, CylinderCompleteOut, MenuCategoryCompactIn, MenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut } from "../types/MenuTypes";
 import { CylinderValidationError, MenuCategoryValidationError, MenuValidationError } from "../exceptions/ValidationError";
 import { ConstraintsDatabaseError } from "../exceptions/DatabaseError";
+import MenuchiError from "../exceptions/MenuchiError";
+import { CategoryNotFound, CylinderNotFound, MenuNotFound } from "../exceptions/NotFoundError";
 
 @Route('/branches')
 @Tags('Branch')
@@ -14,6 +16,7 @@ export class BranchController {
     return BranchService.createMenu(branchId);
   }
 
+  @Response<MenuNotFound>(404, '4045 MenuNotFound')
   @Response<MenuValidationError>(422, '4225 MenuValidationError')
   @SuccessResponse(204, 'Menu updated successfully.')
   @Patch('/{branchId}/menus/{menuId}')
@@ -26,6 +29,9 @@ export class BranchController {
     return null;
   }
 
+  @Response<CylinderNotFound>(404, '4046 CylinderNotFound')
+  @Response<CategoryNotFound>(404, '4048 CategoryNotFound')
+  @Response<MenuNotFound>(404, '4045 MenuNotFound')
   @Response<ConstraintsDatabaseError>(409, 'ConstraintsDatabaseError')
   @Response<CylinderValidationError>(422, '4226 CylinderValidationError')
   @SuccessResponse(201, 'Cylinder created successfully.')
@@ -44,7 +50,7 @@ export class BranchController {
   @Response<ConstraintsDatabaseError>(409, 'ConstraintsDatabaseError')
   @Response<MenuCategoryValidationError>(422, '4227 MenuCategoryValidationError')
   @SuccessResponse(201, 'Menu Category created successfully.')
-  @Post('/{branchId}/menus/{menuId}/menu-categories')
+  @Post('/{branchId}/menus/{menuId}/categories')
   async createMenuCategory(
     @Path() branchId: UUID,
     @Path() menuId: UUID,
@@ -55,56 +61,59 @@ export class BranchController {
     return BranchService.createMenuCategory(menuId, body);
   }
 
-  @SuccessResponse(204, 'Menu Category updated successfully.')
-  @Patch('/{branchId}/menus/menu-categories/{menuCategoryId}')
-  async updateMenuCategory(
+  @Response<MenuchiError>(400, 'All menu item IDs must be in the request.')
+  @SuccessResponse(204, 'Menu item orders in the list updated successfully.')
+  @Patch('/{branchId}/menus/{menuId}/categories')
+  async reorderMenuItems(
     @Path() branchId: UUID,
-    @Path() menuCategoryId: UUID,
-    @Body() body: UpdateMenuCategoryIn
-  ): Promise<null> {
-    await BranchService.updateMenuCategory(menuCategoryId, body);
-    return null;
+    @Path() menuId: UUID,
+    @Body() body: UUID[]
+  ): Promise<number> {
+    return BranchService.reorderMenuItems(menuId, body);
   }
 
   @SuccessResponse(204, 'Menu Categories deleted successfully.')
-  @Delete('/{branchId}/menus/menu-categories') 
+  @Delete('/{branchId}/menus/{menuId}/categories') 
   async deleteMenuCategory(
     @Path() branchId: UUID,
+    @Path() menuId: UUID,
     @Body() body: UUID[]
   ): Promise<null> {
-    await BranchService.deleteMenuCategory(body);
+    await BranchService.deleteMenuCategory(menuId, body);
     return null;
   }
 
-  @SuccessResponse(204, 'Menu Item updated successfully.')
-  @Patch('/{branchId}/menus/menu-items/{menuItemId}')
-  async updateMenuItem(
+  @Response<MenuchiError>(400, 'All menu category IDs must be in the request.')
+  @SuccessResponse(204, 'Menu category orders in the list updated successfully.')
+  @Patch('/{branchId}/menus/{menuId}/items')
+  async reorderMenuCategories(
     @Path() branchId: UUID,
+    @Path() menuId: UUID,
+    @Body() body: UUID[]
+  ): Promise<number> {
+    return BranchService.reorderMenuCategories(menuId, body);
+  }
+
+  @SuccessResponse(204, 'Menu Item hide/unhide successfully.')
+  @Patch('/{branchId}/menus/{menuId}/items/{menuItemId}/hide/{isHide}')
+  async hideMenuItem(
+    @Path() branchId: UUID,
+    @Path() menuId: UUID,
     @Path() menuItemId: UUID,
-    @Body() body: UpdateMenuItemIn
+    @Path() isHide: boolean
   ): Promise<null> {
-    await BranchService.updateMenuItem(menuItemId, body);
+    await BranchService.hideMenuItem(menuId, menuItemId, !isHide);
     return null;
   }
 
   @SuccessResponse(204, 'Menu Items deleted successfully.')
-  @Delete('/{branchId}/menus/menu-items') 
+  @Delete('/{branchId}/menus/{menuId}/items') 
   async deleteMenuItem(
     @Path() branchId: UUID,
+    @Path() menuId: UUID,
     @Body() body: UUID[]
   ): Promise<null> {
-    await BranchService.deleteMenuItem(body);
-    return null;
-  }
-  
-  @SuccessResponse(204, 'Menu Item hide/unhide successfully.')
-  @Patch('/{branchId}/menus/menu-items/{menuItemId}/hide/{isHide}')
-  async hideMenuItem(
-    @Path() branchId: UUID,
-    @Path() menuItemId: UUID,
-    @Path() isHide: boolean
-  ): Promise<null> {
-    await BranchService.hideMenuItem(menuItemId, !isHide);
+    await BranchService.deleteMenuItems(menuId, body);
     return null;
   }
 }

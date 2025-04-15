@@ -769,6 +769,40 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"MenuNotFound": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"MenuValidationError": {
 				"properties": {
 					"name": {
@@ -912,6 +946,74 @@
 					"id",
 					"createdAt",
 					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CylinderNotFound": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CategoryNotFound": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1124,34 +1226,6 @@
 					"cylinderId",
 					"items"
 				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"UpdateMenuCategoryIn": {
-				"properties": {
-					"positionInMenu": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Int"
-							}
-						],
-						"nullable": true
-					}
-				},
-				"type": "object",
-				"additionalProperties": false
-			},
-			"UpdateMenuItemIn": {
-				"properties": {
-					"positionInMenuCategory": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Int"
-							}
-						],
-						"nullable": true
-					}
-				},
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -1887,6 +1961,16 @@
 							}
 						}
 					},
+					"404": {
+						"description": "4045 MenuNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuNotFound"
+								}
+							}
+						}
+					},
 					"422": {
 						"description": "4225 MenuValidationError",
 						"content": {
@@ -1946,6 +2030,16 @@
 							}
 						}
 					},
+					"404": {
+						"description": "4045 MenuNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuNotFound"
+								}
+							}
+						}
+					},
 					"409": {
 						"description": "ConstraintsDatabaseError",
 						"content": {
@@ -2001,7 +2095,7 @@
 				}
 			}
 		},
-		"/branches/{branchId}/menus/{menuId}/menu-categories": {
+		"/branches/{branchId}/menus/{menuId}/categories": {
 			"post": {
 				"operationId": "CreateMenuCategory",
 				"responses": {
@@ -2068,22 +2162,27 @@
 						}
 					}
 				}
-			}
-		},
-		"/branches/{branchId}/menus/menu-categories/{menuCategoryId}": {
+			},
 			"patch": {
-				"operationId": "UpdateMenuCategory",
+				"operationId": "ReorderMenuItems",
 				"responses": {
 					"204": {
-						"description": "Menu Category updated successfully.",
+						"description": "Menu item orders in the list updated successfully.",
 						"content": {
 							"application/json": {
 								"schema": {
 									"type": "number",
-									"enum": [
-										null
-									],
-									"nullable": true
+									"format": "double"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "All menu item IDs must be in the request.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuchiError"
 								}
 							}
 						}
@@ -2104,7 +2203,7 @@
 					},
 					{
 						"in": "path",
-						"name": "menuCategoryId",
+						"name": "menuId",
 						"required": true,
 						"schema": {
 							"$ref": "#/components/schemas/UUID"
@@ -2116,14 +2215,15 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/UpdateMenuCategoryIn"
+								"items": {
+									"$ref": "#/components/schemas/UUID"
+								},
+								"type": "array"
 							}
 						}
 					}
 				}
-			}
-		},
-		"/branches/{branchId}/menus/menu-categories": {
+			},
 			"delete": {
 				"operationId": "DeleteMenuCategory",
 				"responses": {
@@ -2154,6 +2254,14 @@
 						"schema": {
 							"$ref": "#/components/schemas/UUID"
 						}
+					},
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
 					}
 				],
 				"requestBody": {
@@ -2171,20 +2279,27 @@
 				}
 			}
 		},
-		"/branches/{branchId}/menus/menu-items/{menuItemId}": {
+		"/branches/{branchId}/menus/{menuId}/items": {
 			"patch": {
-				"operationId": "UpdateMenuItem",
+				"operationId": "ReorderMenuCategories",
 				"responses": {
 					"204": {
-						"description": "Menu Item updated successfully.",
+						"description": "Menu category orders in the list updated successfully.",
 						"content": {
 							"application/json": {
 								"schema": {
 									"type": "number",
-									"enum": [
-										null
-									],
-									"nullable": true
+									"format": "double"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "All menu category IDs must be in the request.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuchiError"
 								}
 							}
 						}
@@ -2205,7 +2320,7 @@
 					},
 					{
 						"in": "path",
-						"name": "menuItemId",
+						"name": "menuId",
 						"required": true,
 						"schema": {
 							"$ref": "#/components/schemas/UUID"
@@ -2217,14 +2332,15 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/UpdateMenuItemIn"
+								"items": {
+									"$ref": "#/components/schemas/UUID"
+								},
+								"type": "array"
 							}
 						}
 					}
 				}
-			}
-		},
-		"/branches/{branchId}/menus/menu-items": {
+			},
 			"delete": {
 				"operationId": "DeleteMenuItem",
 				"responses": {
@@ -2255,6 +2371,14 @@
 						"schema": {
 							"$ref": "#/components/schemas/UUID"
 						}
+					},
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
 					}
 				],
 				"requestBody": {
@@ -2272,7 +2396,7 @@
 				}
 			}
 		},
-		"/branches/{branchId}/menus/menu-items/{menuItemId}/hide/{isHide}": {
+		"/branches/{branchId}/menus/{menuId}/items/{menuItemId}/hide/{isHide}": {
 			"patch": {
 				"operationId": "HideMenuItem",
 				"responses": {
@@ -2299,6 +2423,14 @@
 					{
 						"in": "path",
 						"name": "branchId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					},
+					{
+						"in": "path",
+						"name": "menuId",
 						"required": true,
 						"schema": {
 							"$ref": "#/components/schemas/UUID"

@@ -37,11 +37,3 @@ export interface MenuCategoryCompleteOut extends CompleteOut {
   cylinderId: UUID | null;
   positionInMenu: Int | null;
 }
-
-export interface UpdateMenuCategoryIn {
-  positionInMenu?: Int | null;
-}
-
-export interface UpdateMenuItemIn {
-  positionInMenuCategory?: Int | null;
-}

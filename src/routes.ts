@@ -263,6 +263,19 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "MenuNotFound": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "message": {"dataType":"string","required":true},
+            "stack": {"dataType":"string"},
+            "status": {"dataType":"double","required":true},
+            "code": {"dataType":"double"},
+            "details": {"dataType":"array","array":{"dataType":"refObject","ref":"ErrorDetail"}},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "MenuValidationError": {
         "dataType": "refObject",
         "properties": {
@@ -300,6 +313,32 @@ const models: TsoaRoute.Models = {
             "createdAt": {"dataType":"datetime","required":true},
             "updatedAt": {"dataType":"datetime","required":true},
             "deletedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}]},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CylinderNotFound": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "message": {"dataType":"string","required":true},
+            "stack": {"dataType":"string"},
+            "status": {"dataType":"double","required":true},
+            "code": {"dataType":"double"},
+            "details": {"dataType":"array","array":{"dataType":"refObject","ref":"ErrorDetail"}},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CategoryNotFound": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "message": {"dataType":"string","required":true},
+            "stack": {"dataType":"string"},
+            "status": {"dataType":"double","required":true},
+            "code": {"dataType":"double"},
+            "details": {"dataType":"array","array":{"dataType":"refObject","ref":"ErrorDetail"}},
         },
         "additionalProperties": false,
     },
@@ -369,22 +408,6 @@ const models: TsoaRoute.Models = {
             "categoryId": {"ref":"UUID","required":true},
             "cylinderId": {"ref":"UUID","required":true},
             "items": {"dataType":"array","array":{"dataType":"refAlias","ref":"UUID"},"required":true},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "UpdateMenuCategoryIn": {
-        "dataType": "refObject",
-        "properties": {
-            "positionInMenu": {"dataType":"union","subSchemas":[{"ref":"Int"},{"dataType":"enum","enums":[null]}]},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "UpdateMenuItemIn": {
-        "dataType": "refObject",
-        "properties": {
-            "positionInMenuCategory": {"dataType":"union","subSchemas":[{"ref":"Int"},{"dataType":"enum","enums":[null]}]},
         },
         "additionalProperties": false,
     },
@@ -826,7 +849,7 @@ export function RegisterRoutes(app: Router) {
                 menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"ref":"MenuCategoryCompactIn"},
         };
-        app.post('/branches/:branchId/menus/:menuId/menu-categories',
+        app.post('/branches/:branchId/menus/:menuId/categories',
             ...(fetchMiddlewares<RequestHandler>(BranchController)),
             ...(fetchMiddlewares<RequestHandler>(BranchController.prototype.createMenuCategory)),
 
@@ -853,27 +876,27 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsBranchController_updateMenuCategory: Record<string, TsoaRoute.ParameterSchema> = {
+        const argsBranchController_reorderMenuItems: Record<string, TsoaRoute.ParameterSchema> = {
                 branchId: {"in":"path","name":"branchId","required":true,"ref":"UUID"},
-                menuCategoryId: {"in":"path","name":"menuCategoryId","required":true,"ref":"UUID"},
-                body: {"in":"body","name":"body","required":true,"ref":"UpdateMenuCategoryIn"},
+                menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
+                body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refAlias","ref":"UUID"}},
         };
-        app.patch('/branches/:branchId/menus/menu-categories/:menuCategoryId',
+        app.patch('/branches/:branchId/menus/:menuId/categories',
             ...(fetchMiddlewares<RequestHandler>(BranchController)),
-            ...(fetchMiddlewares<RequestHandler>(BranchController.prototype.updateMenuCategory)),
+            ...(fetchMiddlewares<RequestHandler>(BranchController.prototype.reorderMenuItems)),
 
-            async function BranchController_updateMenuCategory(request: ExRequest, response: ExResponse, next: any) {
+            async function BranchController_reorderMenuItems(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsBranchController_updateMenuCategory, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsBranchController_reorderMenuItems, request, response });
 
                 const controller = new BranchController();
 
               await templateService.apiHandler({
-                methodName: 'updateMenuCategory',
+                methodName: 'reorderMenuItems',
                 controller,
                 response,
                 next,
@@ -887,9 +910,10 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsBranchController_deleteMenuCategory: Record<string, TsoaRoute.ParameterSchema> = {
                 branchId: {"in":"path","name":"branchId","required":true,"ref":"UUID"},
+                menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refAlias","ref":"UUID"}},
         };
-        app.delete('/branches/:branchId/menus/menu-categories',
+        app.delete('/branches/:branchId/menus/:menuId/categories',
             ...(fetchMiddlewares<RequestHandler>(BranchController)),
             ...(fetchMiddlewares<RequestHandler>(BranchController.prototype.deleteMenuCategory)),
 
@@ -916,58 +940,27 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsBranchController_updateMenuItem: Record<string, TsoaRoute.ParameterSchema> = {
+        const argsBranchController_reorderMenuCategories: Record<string, TsoaRoute.ParameterSchema> = {
                 branchId: {"in":"path","name":"branchId","required":true,"ref":"UUID"},
-                menuItemId: {"in":"path","name":"menuItemId","required":true,"ref":"UUID"},
-                body: {"in":"body","name":"body","required":true,"ref":"UpdateMenuItemIn"},
-        };
-        app.patch('/branches/:branchId/menus/menu-items/:menuItemId',
-            ...(fetchMiddlewares<RequestHandler>(BranchController)),
-            ...(fetchMiddlewares<RequestHandler>(BranchController.prototype.updateMenuItem)),
-
-            async function BranchController_updateMenuItem(request: ExRequest, response: ExResponse, next: any) {
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsBranchController_updateMenuItem, request, response });
-
-                const controller = new BranchController();
-
-              await templateService.apiHandler({
-                methodName: 'updateMenuItem',
-                controller,
-                response,
-                next,
-                validatedArgs,
-                successStatus: 204,
-              });
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsBranchController_deleteMenuItem: Record<string, TsoaRoute.ParameterSchema> = {
-                branchId: {"in":"path","name":"branchId","required":true,"ref":"UUID"},
+                menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refAlias","ref":"UUID"}},
         };
-        app.delete('/branches/:branchId/menus/menu-items',
+        app.patch('/branches/:branchId/menus/:menuId/items',
             ...(fetchMiddlewares<RequestHandler>(BranchController)),
-            ...(fetchMiddlewares<RequestHandler>(BranchController.prototype.deleteMenuItem)),
+            ...(fetchMiddlewares<RequestHandler>(BranchController.prototype.reorderMenuCategories)),
 
-            async function BranchController_deleteMenuItem(request: ExRequest, response: ExResponse, next: any) {
+            async function BranchController_reorderMenuCategories(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsBranchController_deleteMenuItem, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsBranchController_reorderMenuCategories, request, response });
 
                 const controller = new BranchController();
 
               await templateService.apiHandler({
-                methodName: 'deleteMenuItem',
+                methodName: 'reorderMenuCategories',
                 controller,
                 response,
                 next,
@@ -981,10 +974,11 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsBranchController_hideMenuItem: Record<string, TsoaRoute.ParameterSchema> = {
                 branchId: {"in":"path","name":"branchId","required":true,"ref":"UUID"},
+                menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
                 menuItemId: {"in":"path","name":"menuItemId","required":true,"ref":"UUID"},
                 isHide: {"in":"path","name":"isHide","required":true,"dataType":"boolean"},
         };
-        app.patch('/branches/:branchId/menus/menu-items/:menuItemId/hide/:isHide',
+        app.patch('/branches/:branchId/menus/:menuId/items/:menuItemId/hide/:isHide',
             ...(fetchMiddlewares<RequestHandler>(BranchController)),
             ...(fetchMiddlewares<RequestHandler>(BranchController.prototype.hideMenuItem)),
 
@@ -1000,6 +994,38 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'hideMenuItem',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 204,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsBranchController_deleteMenuItem: Record<string, TsoaRoute.ParameterSchema> = {
+                branchId: {"in":"path","name":"branchId","required":true,"ref":"UUID"},
+                menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
+                body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refAlias","ref":"UUID"}},
+        };
+        app.delete('/branches/:branchId/menus/:menuId/items',
+            ...(fetchMiddlewares<RequestHandler>(BranchController)),
+            ...(fetchMiddlewares<RequestHandler>(BranchController.prototype.deleteMenuItem)),
+
+            async function BranchController_deleteMenuItem(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsBranchController_deleteMenuItem, request, response });
+
+                const controller = new BranchController();
+
+              await templateService.apiHandler({
+                methodName: 'deleteMenuItem',
                 controller,
                 response,
                 next,
