@@ -672,18 +672,36 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"Int": {
-				"type": "integer",
-				"format": "int32"
-			},
-			"UpdateCategoryIn": {
+			"MenuchiError": {
 				"properties": {
-					"positionInBacklog": {
-						"$ref": "#/components/schemas/Int"
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
 					}
 				},
 				"required": [
-					"positionInBacklog"
+					"name",
+					"message",
+					"status"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -993,6 +1011,10 @@
 				},
 				"type": "object",
 				"additionalProperties": false
+			},
+			"Int": {
+				"type": "integer",
+				"format": "int32"
 			},
 			"MenuCategoryCompleteOut": {
 				"properties": {
@@ -1517,22 +1539,6 @@
 							}
 						],
 						"nullable": true
-					},
-					"positionInItemsList": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Int"
-							}
-						],
-						"nullable": true
-					},
-					"positionInCategory": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Int"
-							}
-						],
-						"nullable": true
 					}
 				},
 				"type": "object",
@@ -1751,20 +1757,27 @@
 				"parameters": []
 			}
 		},
-		"/categories/{categoryId}": {
+		"/categories/reorder-categories": {
 			"patch": {
-				"operationId": "UpdateItem",
+				"operationId": "ReorderItemsInList",
 				"responses": {
 					"204": {
-						"description": "Category updated successfully. It doesn't retrieve anything.",
+						"description": "Category orders in the backlog updated successfully.",
 						"content": {
 							"application/json": {
 								"schema": {
 									"type": "number",
-									"enum": [
-										null
-									],
-									"nullable": true
+									"format": "double"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "All category IDs must be in the request.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuchiError"
 								}
 							}
 						}
@@ -1774,27 +1787,23 @@
 					"Category"
 				],
 				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "categoryId",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/UUID"
-						}
-					}
-				],
+				"parameters": [],
 				"requestBody": {
 					"required": true,
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/UpdateCategoryIn"
+								"items": {
+									"$ref": "#/components/schemas/UUID"
+								},
+								"type": "array"
 							}
 						}
 					}
 				}
-			},
+			}
+		},
+		"/categories/{categoryId}": {
 			"delete": {
 				"operationId": "DeleteItems",
 				"responses": {
@@ -2493,12 +2502,122 @@
 				}
 			}
 		},
+		"/backlog/{backlogId}/reorder-items/in-category": {
+			"patch": {
+				"operationId": "ReorderItemsInCategory",
+				"responses": {
+					"204": {
+						"description": "Item orders in the category updated successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"format": "double"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "All item IDs must be in the request.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuchiError"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Backlog"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "backlogId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"items": {
+									"$ref": "#/components/schemas/UUID"
+								},
+								"type": "array"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/backlog/{backlogId}/reorder-items/in-list": {
+			"patch": {
+				"operationId": "ReorderItemsInList",
+				"responses": {
+					"204": {
+						"description": "Item orders in the list updated successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"format": "double"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "All item IDs must be in the request.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuchiError"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Backlog"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "backlogId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"items": {
+									"$ref": "#/components/schemas/UUID"
+								},
+								"type": "array"
+							}
+						}
+					}
+				}
+			}
+		},
 		"/backlog/items": {
 			"delete": {
 				"operationId": "DeleteItems",
 				"responses": {
 					"204": {
-						"description": "Items deleted successfully.  It doesn't retrieve anything.",
+						"description": "Items deleted successfully. It doesn't retrieve anything.",
 						"content": {
 							"application/json": {
 								"schema": {

@@ -28,6 +28,4 @@ export interface UpdateItemIn {
   ingredients?: LongString | null;
   price?: number | null;
   picKey?: LongString | null;
-  positionInItemsList?: Int | null;
-  positionInCategory?: Int | null;
 }

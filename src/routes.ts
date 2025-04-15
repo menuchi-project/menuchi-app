@@ -235,15 +235,15 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Int": {
-        "dataType": "refAlias",
-        "type": {"dataType":"integer","validators":{"isInt":{"errorMsg":"number should be integer"}}},
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "UpdateCategoryIn": {
+    "MenuchiError": {
         "dataType": "refObject",
         "properties": {
-            "positionInBacklog": {"ref":"Int","required":true},
+            "name": {"dataType":"string","required":true},
+            "message": {"dataType":"string","required":true},
+            "stack": {"dataType":"string"},
+            "status": {"dataType":"double","required":true},
+            "code": {"dataType":"double"},
+            "details": {"dataType":"array","array":{"dataType":"refObject","ref":"ErrorDetail"}},
         },
         "additionalProperties": false,
     },
@@ -329,6 +329,11 @@ const models: TsoaRoute.Models = {
             "fri": {"dataType":"union","subSchemas":[{"ref":"Boolean"},{"dataType":"enum","enums":[null]}]},
         },
         "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Int": {
+        "dataType": "refAlias",
+        "type": {"dataType":"integer","validators":{"isInt":{"errorMsg":"number should be integer"}}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "MenuCategoryCompleteOut": {
@@ -492,8 +497,6 @@ const models: TsoaRoute.Models = {
             "ingredients": {"dataType":"union","subSchemas":[{"ref":"LongString"},{"dataType":"enum","enums":[null]}]},
             "price": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}]},
             "picKey": {"dataType":"union","subSchemas":[{"ref":"LongString"},{"dataType":"enum","enums":[null]}]},
-            "positionInItemsList": {"dataType":"union","subSchemas":[{"ref":"Int"},{"dataType":"enum","enums":[null]}]},
-            "positionInCategory": {"dataType":"union","subSchemas":[{"ref":"Int"},{"dataType":"enum","enums":[null]}]},
         },
         "additionalProperties": false,
     },
@@ -664,26 +667,25 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsCategoryController_updateItem: Record<string, TsoaRoute.ParameterSchema> = {
-                categoryId: {"in":"path","name":"categoryId","required":true,"ref":"UUID"},
-                body: {"in":"body","name":"body","required":true,"ref":"UpdateCategoryIn"},
+        const argsCategoryController_reorderItemsInList: Record<string, TsoaRoute.ParameterSchema> = {
+                body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refAlias","ref":"UUID"}},
         };
-        app.patch('/categories/:categoryId',
+        app.patch('/categories/reorder-categories',
             ...(fetchMiddlewares<RequestHandler>(CategoryController)),
-            ...(fetchMiddlewares<RequestHandler>(CategoryController.prototype.updateItem)),
+            ...(fetchMiddlewares<RequestHandler>(CategoryController.prototype.reorderItemsInList)),
 
-            async function CategoryController_updateItem(request: ExRequest, response: ExResponse, next: any) {
+            async function CategoryController_reorderItemsInList(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsCategoryController_updateItem, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsCategoryController_reorderItemsInList, request, response });
 
                 const controller = new CategoryController();
 
               await templateService.apiHandler({
-                methodName: 'updateItem',
+                methodName: 'reorderItemsInList',
                 controller,
                 response,
                 next,
@@ -1120,6 +1122,68 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'updateItem',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 204,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsBacklogController_reorderItemsInCategory: Record<string, TsoaRoute.ParameterSchema> = {
+                backlogId: {"in":"path","name":"backlogId","required":true,"ref":"UUID"},
+                body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refAlias","ref":"UUID"}},
+        };
+        app.patch('/backlog/:backlogId/reorder-items/in-category',
+            ...(fetchMiddlewares<RequestHandler>(BacklogController)),
+            ...(fetchMiddlewares<RequestHandler>(BacklogController.prototype.reorderItemsInCategory)),
+
+            async function BacklogController_reorderItemsInCategory(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsBacklogController_reorderItemsInCategory, request, response });
+
+                const controller = new BacklogController();
+
+              await templateService.apiHandler({
+                methodName: 'reorderItemsInCategory',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 204,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsBacklogController_reorderItemsInList: Record<string, TsoaRoute.ParameterSchema> = {
+                backlogId: {"in":"path","name":"backlogId","required":true,"ref":"UUID"},
+                body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refAlias","ref":"UUID"}},
+        };
+        app.patch('/backlog/:backlogId/reorder-items/in-list',
+            ...(fetchMiddlewares<RequestHandler>(BacklogController)),
+            ...(fetchMiddlewares<RequestHandler>(BacklogController.prototype.reorderItemsInList)),
+
+            async function BacklogController_reorderItemsInList(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsBacklogController_reorderItemsInList, request, response });
+
+                const controller = new BacklogController();
+
+              await templateService.apiHandler({
+                methodName: 'reorderItemsInList',
                 controller,
                 response,
                 next,
