@@ -5,6 +5,7 @@ import MenuchiError from '../exceptions/MenuchiError';
 import { BranchNotFound, CategoryNotFound, CylinderNotFound, MenuNotFound } from '../exceptions/NotFoundError';
 import S3Service from './S3Service';
 import { BacklogCompleteOut } from '../types/RestaurantTypes';
+import { error } from 'console';
 
 class BranchService {
   private prisma: PrismaClient;
@@ -18,6 +19,11 @@ class BranchService {
       data: {
         branchId
       }
+    })
+    .catch((error: Error) => {
+      if (error.message.includes('menus_branch_id_fkey (index)'))
+        throw new BranchNotFound();
+      throw error;
     });
   }
 
@@ -27,6 +33,11 @@ class BranchService {
         id: menuId
       },
       data: menuDTO
+    })
+    .catch((error: Error) => {
+      if (error.message.includes('not found'))
+        throw new MenuNotFound();
+      throw error;
     });
   }
 
@@ -61,6 +72,10 @@ class BranchService {
             menuId
           }
         }
+      }).catch((error: Error) => {
+        if (error.message.includes('cylinders_menu_id_fkey (index)'))
+          throw new MenuNotFound();
+        throw error;
       });
 
       const positionInMenu = (maxPositionInMenu._max.positionInMenu ?? 0) + 1;

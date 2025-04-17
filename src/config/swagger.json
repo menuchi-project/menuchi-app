@@ -2233,6 +2233,16 @@
 								}
 							}
 						}
+					},
+					"404": {
+						"description": "4049 BranchNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BranchNotFound"
+								}
+							}
+						}
 					}
 				},
 				"tags": [

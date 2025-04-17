@@ -18,6 +18,7 @@ export class BranchController {
     return BranchService.getBacklog(branchId, search);
   }
 
+  @Response<BranchNotFound>(404, '4049 BranchNotFound')
   @SuccessResponse(201, 'Menu created successfully.')
   @Post('/{branchId}/menus')
   async createMenu(@Path() branchId: UUID): Promise<CreateMenuCompleteOut> {
