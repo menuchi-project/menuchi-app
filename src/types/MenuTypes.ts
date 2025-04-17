@@ -1,17 +1,18 @@
 import { CompleteOut } from './BaseTypes';
+import { ItemCompleteOut } from './ItemTypes';
 import { Boolean, DefaultString, Int, UUID } from './TypeAliases';
-
-export interface MenuCompleteOut extends CompleteOut {
-  branchId: UUID | null;
-  name: DefaultString | null;
-  favicon: DefaultString | null;
-  isPublished: Boolean | null;
-}
 
 export interface MenuCompactIn {
   name?: DefaultString | null;
   favicon?: DefaultString | null;
   isPublished?: Boolean | null;
+}
+
+export interface CreateMenuCompleteOut extends CompleteOut {
+  branchId: UUID | null;
+  name: DefaultString | null;
+  favicon: DefaultString | null;
+  isPublished: Boolean | null;
 }
 
 export interface CylinderCompactIn {
@@ -24,7 +25,7 @@ export interface CylinderCompactIn {
   fri?: Boolean | null;
 }
 
-export interface CylinderCompleteOut extends CylinderCompactIn, CompleteOut {}
+export interface CreateCylinderCompleteOut extends CompleteOut, CylinderCompactIn {}
 
 export interface MenuCategoryCompactIn {
   categoryId: UUID;
@@ -32,8 +33,20 @@ export interface MenuCategoryCompactIn {
   items: UUID[];
 }
 
-export interface MenuCategoryCompleteOut extends CompleteOut {
+export interface CreateMenuCategoryCompleteOut extends CompleteOut {
   categoryId: UUID | null;
   cylinderId: UUID | null;
   positionInMenu: Int | null;
+}
+
+interface CylinderCompleteOut extends CreateCylinderCompleteOut {
+  menuCategories: MenuCategoryCompleteOut[] | null;
+}
+
+interface MenuCategoryCompleteOut extends CreateMenuCategoryCompleteOut {
+  items: ItemCompleteOut[] | null;
+}
+
+export interface MenuCompleteOut extends CreateMenuCompleteOut {
+  cylinders: CylinderCompleteOut[] | null;
 }

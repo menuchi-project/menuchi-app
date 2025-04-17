@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { UUID } from '../types/TypeAliases';
-import { CylinderCompactIn, CylinderCompleteOut, MenuCategoryCompactIn, MenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut } from '../types/MenuTypes';
+import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, CreateMenuCompleteOut, MenuCompleteOut } from '../types/MenuTypes';
 import MenuchiError from '../exceptions/MenuchiError';
 import { BranchNotFound, CategoryNotFound, CylinderNotFound, MenuNotFound } from '../exceptions/NotFoundError';
 import S3Service from './S3Service';
@@ -13,7 +13,7 @@ class BranchService {
     this.prisma = new PrismaClient();
   }
 
-  async createMenu(branchId: UUID): Promise<MenuCompleteOut | never> {
+  async createMenu(branchId: UUID): Promise<CreateMenuCompleteOut | never> {
     return this.prisma.menu.create({
       data: {
         branchId
@@ -30,7 +30,7 @@ class BranchService {
     });
   }
 
-  async createCylinder(menuId: UUID, cylinderDTO: CylinderCompactIn): Promise<CylinderCompleteOut | never> {
+  async createCylinder(menuId: UUID, cylinderDTO: CylinderCompactIn): Promise<CreateCylinderCompleteOut | never> {
     return this.prisma.cylinder.create({
       data: {
         menuId,
@@ -50,7 +50,7 @@ class BranchService {
       cylinderId,
       items 
     }: MenuCategoryCompactIn
-  ): Promise<MenuCategoryCompleteOut | never> {
+  ): Promise<CreateMenuCategoryCompleteOut | never> {
     return this.prisma.$transaction(async (tx) => {
       const maxPositionInMenu = await tx.menuCategory.aggregate({
         _max: {
@@ -280,6 +280,30 @@ class BranchService {
           }))
         ),
       };
+  }
+
+  async getMenu(menuId: UUID): Promise<MenuCompleteOut | never> {
+    return this.prisma.menu.findUniqueOrThrow({
+      where: {
+        id: menuId
+      },
+      include: {
+        cylinders: {
+          include: {
+            menuCategories: {
+              include: {
+                items: true
+              }
+            }
+          }
+        }
+      }
+    })
+    .catch((error: Error) => {
+      if (error.message.includes('not found'))
+        throw new MenuNotFound();
+      throw error;
+    });
   }
 }
 

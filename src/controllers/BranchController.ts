@@ -1,7 +1,7 @@
 import { Body, Delete, Get, Patch, Path, Post, Query, Response, Route, SuccessResponse, Tags } from "tsoa";
 import { DefaultString, UUID } from "../types/TypeAliases";
 import BranchService from "../services/BranchService";
-import { CylinderCompactIn, CylinderCompleteOut, MenuCategoryCompactIn, MenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut } from "../types/MenuTypes";
+import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, CreateMenuCompleteOut, MenuCompleteOut } from "../types/MenuTypes";
 import { CylinderValidationError, MenuCategoryValidationError, MenuValidationError } from "../exceptions/ValidationError";
 import { ConstraintsDatabaseError } from "../exceptions/DatabaseError";
 import MenuchiError from "../exceptions/MenuchiError";
@@ -20,8 +20,15 @@ export class BranchController {
 
   @SuccessResponse(201, 'Menu created successfully.')
   @Post('/{branchId}/menus')
-  async createMenu(@Path() branchId: UUID): Promise<MenuCompleteOut> {
+  async createMenu(@Path() branchId: UUID): Promise<CreateMenuCompleteOut> {
     return BranchService.createMenu(branchId);
+  }
+
+  @Response<MenuNotFound>(404, '4045 MenuNotFound')
+  @SuccessResponse(200, 'Menu is retrieved successfully.')
+  @Get('/{branchId}/menu/{menuId}')
+  public async getMenu(@Path() branchId: UUID, @Path() menuId: UUID): Promise<MenuCompleteOut> {
+    return BranchService.getMenu(menuId);
   }
 
   @Response<MenuNotFound>(404, '4045 MenuNotFound')
@@ -48,7 +55,7 @@ export class BranchController {
     @Path() branchId: UUID,
     @Path() menuId: UUID,
     @Body() body: CylinderCompactIn
-  ): Promise<CylinderCompleteOut> {
+  ): Promise<CreateCylinderCompleteOut> {
     const isValid = Object.values(body).some(value => value);
     if (!isValid) throw new CylinderValidationError();
 
@@ -63,7 +70,7 @@ export class BranchController {
     @Path() branchId: UUID,
     @Path() menuId: UUID,
     @Body() body: MenuCategoryCompactIn
-  ): Promise<MenuCategoryCompleteOut> {
+  ): Promise<CreateMenuCategoryCompleteOut> {
     if (body.items.length < 1) throw new MenuCategoryValidationError();
 
     return BranchService.createMenuCategory(menuId, body);
