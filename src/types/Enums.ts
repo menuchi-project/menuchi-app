@@ -10,7 +10,8 @@ export enum CookieNames {
 
 export enum PermissionScope {
   Backlog,
-  Restaurant
+  Restaurant,
+  Branch
 }
 
 export enum SessionUpdateScope {

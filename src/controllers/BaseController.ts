@@ -4,21 +4,25 @@ import { UUID } from '../types/TypeAliases';
 import { PermissionScope, SessionUpdateScope } from '../types/Enums';
 import express from 'express';
 import { ForbiddenError } from '../exceptions/AuthError';
-import { RestaurantCompleteOut } from '../types/RestaurantTypes';
 
 export default class BaseController extends Controller {
   checkPermission(user?: UserSession, by?: PermissionScope, id?: UUID) {
     let isOk: boolean;
 
     switch (by) {
+      case PermissionScope.Restaurant:
+        isOk = user?.restaurants.some((restaurant) => restaurant.id === id) ? true : false;
+        break;
+
+      case PermissionScope.Branch:
+        isOk = user?.restaurants.some((restaurant) =>
+          restaurant.branches.some((branch) => branch.id === id)
+        ) ? true : false;
+
       case PermissionScope.Backlog:
         isOk = user?.restaurants.some((restaurant) =>
           restaurant.branches.some((branch) => branch.backlogId === id)
         ) ? true : false;
-        break;
-
-      case PermissionScope.Restaurant:
-        isOk = user?.restaurants.some((restaurant) => restaurant.id === id) ? true : false;
         break;
 
       default:
