@@ -22,6 +22,7 @@ export function expressAuthentication(
       const isValidUser = request.session.user?.id === payload?.userId;
       if (!payload || !hasAccess || !isValidUser) throw new ForbiddenError();
       
+      request.session.lastAccessed = new Date();
       resolve(true);
     } else throw new UnauthorizedError();
   });
