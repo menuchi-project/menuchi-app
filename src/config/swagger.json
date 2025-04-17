@@ -706,6 +706,243 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"Int": {
+				"type": "integer",
+				"format": "int32"
+			},
+			"ItemCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"categoryId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"categoryName": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"subCategoryId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"ingredients": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/LongString"
+							}
+						],
+						"nullable": true
+					},
+					"price": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"picUrl": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/URL"
+							}
+						],
+						"nullable": true
+					},
+					"positionInItemsList": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					},
+					"positionInCategory": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CategoryCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"backlogId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"categoryName": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"positionInBacklog": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					},
+					"items": {
+						"items": {
+							"$ref": "#/components/schemas/ItemCompleteOut"
+						},
+						"type": "array",
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"backlogId",
+					"categoryName"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"BacklogCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"branchId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"categories": {
+						"items": {
+							"$ref": "#/components/schemas/CategoryCompleteOut"
+						},
+						"type": "array",
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"branchId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"BranchNotFound": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"MenuCompleteOut": {
 				"properties": {
 					"id": {
@@ -1114,10 +1351,6 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"Int": {
-				"type": "integer",
-				"format": "int32"
-			},
 			"MenuCategoryCompleteOut": {
 				"properties": {
 					"id": {
@@ -1225,102 +1458,6 @@
 					"categoryId",
 					"cylinderId",
 					"items"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"ItemCompleteOut": {
-				"properties": {
-					"id": {
-						"$ref": "#/components/schemas/UUID"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"deletedAt": {
-						"type": "string",
-						"format": "date-time",
-						"nullable": true
-					},
-					"categoryId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/UUID"
-							}
-						],
-						"nullable": true
-					},
-					"categoryName": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"subCategoryId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/UUID"
-							}
-						],
-						"nullable": true
-					},
-					"name": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"ingredients": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/LongString"
-							}
-						],
-						"nullable": true
-					},
-					"price": {
-						"type": "number",
-						"format": "double",
-						"nullable": true
-					},
-					"picUrl": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/URL"
-							}
-						],
-						"nullable": true
-					},
-					"positionInItemsList": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Int"
-							}
-						],
-						"nullable": true
-					},
-					"positionInCategory": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Int"
-							}
-						],
-						"nullable": true
-					}
-				},
-				"required": [
-					"id",
-					"createdAt",
-					"updatedAt"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1460,109 +1597,6 @@
 				"required": [
 					"categoryNameId",
 					"name"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"CategoryCompleteOut": {
-				"properties": {
-					"id": {
-						"$ref": "#/components/schemas/UUID"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"deletedAt": {
-						"type": "string",
-						"format": "date-time",
-						"nullable": true
-					},
-					"backlogId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/UUID"
-							}
-						],
-						"nullable": true
-					},
-					"categoryName": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"positionInBacklog": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Int"
-							}
-						],
-						"nullable": true
-					},
-					"items": {
-						"items": {
-							"$ref": "#/components/schemas/ItemCompleteOut"
-						},
-						"type": "array",
-						"nullable": true
-					}
-				},
-				"required": [
-					"id",
-					"createdAt",
-					"updatedAt",
-					"backlogId",
-					"categoryName"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"BacklogCompleteOut": {
-				"properties": {
-					"id": {
-						"$ref": "#/components/schemas/UUID"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"deletedAt": {
-						"type": "string",
-						"format": "date-time",
-						"nullable": true
-					},
-					"branchId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/UUID"
-							}
-						],
-						"nullable": true
-					},
-					"categories": {
-						"items": {
-							"$ref": "#/components/schemas/CategoryCompleteOut"
-						},
-						"type": "array",
-						"nullable": true
-					}
-				},
-				"required": [
-					"id",
-					"createdAt",
-					"updatedAt",
-					"branchId"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1907,6 +1941,55 @@
 						"required": true,
 						"schema": {
 							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
+			}
+		},
+		"/branches/{branchId}/backlog": {
+			"get": {
+				"operationId": "GeBacklog",
+				"responses": {
+					"200": {
+						"description": "Backlog is retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BacklogCompleteOut"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4049 BranchNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BranchNotFound"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Branch"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "branchId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					},
+					{
+						"in": "query",
+						"name": "search",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/DefaultString"
 						}
 					}
 				]

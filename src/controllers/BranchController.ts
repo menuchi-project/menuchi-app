@@ -1,15 +1,23 @@
-import { Body, Delete, Patch, Path, Post, Response, Route, SuccessResponse, Tags } from "tsoa";
-import { UUID } from "../types/TypeAliases";
+import { Body, Delete, Get, Patch, Path, Post, Query, Response, Route, SuccessResponse, Tags } from "tsoa";
+import { DefaultString, UUID } from "../types/TypeAliases";
 import BranchService from "../services/BranchService";
 import { CylinderCompactIn, CylinderCompleteOut, MenuCategoryCompactIn, MenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut } from "../types/MenuTypes";
 import { CylinderValidationError, MenuCategoryValidationError, MenuValidationError } from "../exceptions/ValidationError";
 import { ConstraintsDatabaseError } from "../exceptions/DatabaseError";
 import MenuchiError from "../exceptions/MenuchiError";
-import { CategoryNotFound, CylinderNotFound, MenuNotFound } from "../exceptions/NotFoundError";
+import { BranchNotFound, CategoryNotFound, CylinderNotFound, MenuNotFound } from "../exceptions/NotFoundError";
+import { BacklogCompleteOut } from "../types/RestaurantTypes";
 
 @Route('/branches')
 @Tags('Branch')
 export class BranchController {
+  @Response<BranchNotFound>(404, '4049 BranchNotFound')
+  @SuccessResponse(200, 'Backlog is retrieved successfully.')
+  @Get('/{branchId}/backlog')
+  public async geBacklog(@Path() branchId: UUID, @Query() search?: DefaultString): Promise<BacklogCompleteOut> {
+    return BranchService.getBacklog(branchId, search);
+  }
+
   @SuccessResponse(201, 'Menu created successfully.')
   @Post('/{branchId}/menus')
   async createMenu(@Path() branchId: UUID): Promise<MenuCompleteOut> {

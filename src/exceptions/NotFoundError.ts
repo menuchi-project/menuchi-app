@@ -47,3 +47,9 @@ export class CategoryNotFound extends NotFoundError {
     super('Category with the given id not found', 404, 4048);
   }
 }
+
+export class BranchNotFound extends NotFoundError {
+  constructor() {
+    super('Branch with the given id not found', 404, 4049);
+  }
+}

@@ -58,7 +58,7 @@ export function errorPreprocessor(
         throw new CategoryNameValidationError(details);
         break;
       default:
-        throw new ValidationError();
+        throw new ValidationError(...[,,,], details);
     }
   }
 

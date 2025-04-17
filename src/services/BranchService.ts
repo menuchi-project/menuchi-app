@@ -2,7 +2,9 @@ import { Prisma, PrismaClient } from '@prisma/client';
 import { UUID } from '../types/TypeAliases';
 import { CylinderCompactIn, CylinderCompleteOut, MenuCategoryCompactIn, MenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut } from '../types/MenuTypes';
 import MenuchiError from '../exceptions/MenuchiError';
-import { CategoryNotFound, CylinderNotFound, MenuNotFound } from '../exceptions/NotFoundError';
+import { BranchNotFound, CategoryNotFound, CylinderNotFound, MenuNotFound } from '../exceptions/NotFoundError';
+import S3Service from './S3Service';
+import { BacklogCompleteOut } from '../types/RestaurantTypes';
 
 class BranchService {
   private prisma: PrismaClient;
@@ -219,7 +221,66 @@ class BranchService {
     const isValidQuery = (menuCategories.length === menuCategoriesId.length) &&
             menuCategories.every(menuCategory => menuCategoriesId.some(menuCategoryId => menuCategoryId === menuCategory.id ));
     if (!isValidQuery) throw new MenuchiError('All menu category IDs must be in the request.', 400);
-}
+  }
+
+  async getBacklog(branchId: UUID, search = ''): Promise<BacklogCompleteOut | never> {
+      const backlog = await this.prisma.backlog
+        .findUniqueOrThrow({
+          where: {
+            branchId,
+          },
+          include: {
+            categories: {
+              where: {
+                deletedAt: null,
+                categoryName: {
+                  name: {
+                    contains: search,
+                    mode: 'insensitive'
+                  }
+                }
+              },
+              include: {
+                categoryName: true,
+                items: {
+                  where: {
+                    deletedAt: null,
+                  },
+                  orderBy: {
+                    positionInCategory: 'asc',
+                  },
+                },
+              },
+              omit: {
+                categoryNameId: true,
+              },
+            },
+          },
+        })
+        .catch((error: Error) => {
+          if (error.message.includes('not found'))
+            throw new BranchNotFound();
+          throw error;
+        });
+  
+      return {
+        ...backlog,
+        categories: await Promise.all(
+          backlog.categories.map(async (category) => ({
+            ...category,
+            categoryName: category.categoryName?.name ?? null,
+            items: await Promise.all(
+              category.items.map(async (item) => ({
+                ...item,
+                categoryName: category.categoryName?.name ?? null,
+                picUrl: await S3Service.generateGetPresignedUrl(item.picKey),
+                picKey: undefined,
+              }))
+            ),
+          }))
+        ),
+      };
+  }
 }
 
 export default new BranchService();
