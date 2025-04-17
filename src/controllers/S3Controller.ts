@@ -5,10 +5,13 @@ import { S3ValidationError } from "../exceptions/ValidationError";
 import BaseController from "./BaseController";
 import { PermissionScope, RolesEnum } from "../types/Enums";
 import express from 'express';
+import { ForbiddenError, UnauthorizedError } from "../exceptions/AuthError";
 
 @Route('/s3')
 @Tags('S3')
 export class S3Controller extends BaseController {
+  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
+  @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<S3ValidationError>(422, '4224 S3ValidationError')
   @SuccessResponse(201, 'Item pic presigned url generated successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
