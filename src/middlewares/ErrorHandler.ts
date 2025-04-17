@@ -3,7 +3,10 @@ import { ValidateError } from 'tsoa';
 import { validationErrorCleaner } from '../utils/utils';
 import {
   CategoryNameValidationError,
+  CylinderValidationError,
   ItemValidationError,
+  MenuCategoryValidationError,
+  MenuValidationError,
   RestaurantValidationError,
   ValidationError,
 } from '../exceptions/ValidationError';
@@ -23,12 +26,28 @@ export function errorPreprocessor(
   res: Response,
   next: NextFunction
 ): void {
+  if (error instanceof MenuchiError) {
+    throw error;
+  }
+
   if (error instanceof ValidateError) {
     const path = req.path;
     const details = validationErrorCleaner(error);
 
     if (path.includes('/items')) {
       throw new ItemValidationError(details);
+    }
+
+    if (path.includes('/menus')) {
+      throw new MenuValidationError(details);
+    }
+
+    if (path.includes('/cylinders')) {
+      throw new CylinderValidationError(details);
+    }
+
+    if (path.includes('/menu-categories')) {
+      throw new MenuCategoryValidationError();
     }
 
     switch (path) {
@@ -39,7 +58,7 @@ export function errorPreprocessor(
         throw new CategoryNameValidationError(details);
         break;
       default:
-        throw new ValidationError();
+        throw new ValidationError(...[,,,], details);
     }
   }
 
@@ -52,10 +71,6 @@ export function errorPreprocessor(
 
     const detail: ErrorDetail[] = [{ field, message }];
     throw new ConstraintsDatabaseError(detail);
-  }
-
-  if (error instanceof NotFoundError) {
-    throw error;
   }
 
   if (error instanceof Prisma.PrismaClientValidationError) {

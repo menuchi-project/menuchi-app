@@ -5,6 +5,7 @@ import { UUID } from "../types/TypeAliases";
 import { BacklogCompleteOut } from "../types/RestaurantTypes";
 import { ItemValidationError } from "../exceptions/ValidationError";
 import { BacklogNotFound, CategoryNameNotFound } from "../exceptions/NotFoundError";
+import MenuchiError from "../exceptions/MenuchiError";
 
 @Route('/backlog')
 @Tags('Backlog')
@@ -39,7 +40,21 @@ export class BacklogController extends Controller {
     return null
   }
 
-  @SuccessResponse(204, 'Items deleted successfully.  It doesn\'t retrieve anything.')
+  @Response<MenuchiError>(400, 'All item IDs must be in the request.')
+  @SuccessResponse(204, 'Item orders in the category updated successfully.')
+  @Patch('/{backlogId}/reorder-items/in-category')
+  public async reorderItemsInCategory(@Path() backlogId: UUID, @Body() body: UUID[]): Promise<number> {
+    return BacklogService.reorderItemsInCategory(backlogId, body);
+  }
+
+  @Response<MenuchiError>(400, 'All item IDs must be in the request.')
+  @SuccessResponse(204, 'Item orders in the list updated successfully.')
+  @Patch('/{backlogId}/reorder-items/in-list')
+  public async reorderItemsInList(@Path() backlogId: UUID, @Body() body: UUID[]): Promise<number> {
+    return BacklogService.reorderItemsInList(backlogId, body);
+  }
+
+  @SuccessResponse(204, 'Items deleted successfully. It doesn\'t retrieve anything.')
   @Delete('/items')
   public async deleteItems(@Body() body: UUID[]): Promise<null> {
     await BacklogService.deleteItems(body);

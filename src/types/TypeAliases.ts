@@ -52,6 +52,7 @@ export type Int = number;
 
 /**
  * @isBoolean should be boolean
+ * @example true
  */
 export type Boolean = boolean;
 

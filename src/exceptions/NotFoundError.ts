@@ -29,3 +29,27 @@ export class RestaurantNotFound extends NotFoundError {
     super('Restaurant with the given id not found', 404, 4041);
   }
 }
+
+export class MenuNotFound extends NotFoundError {
+  constructor() {
+    super('Menu with the given id not found', 404, 4045);
+  }
+}
+
+export class CylinderNotFound extends NotFoundError {
+  constructor() {
+    super('Cylinder with the given id not found', 404, 4046);
+  }
+}
+
+export class CategoryNotFound extends NotFoundError {
+  constructor() {
+    super('Category with the given id not found', 404, 4048);
+  }
+}
+
+export class BranchNotFound extends NotFoundError {
+  constructor() {
+    super('Branch with the given id not found', 404, 4049);
+  }
+}
