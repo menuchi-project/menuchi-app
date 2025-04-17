@@ -5,7 +5,6 @@ import bcrypt from 'bcryptjs';
 import { RolesEnum } from '../types/Enums';
 import { UserNotFound } from '../exceptions/NotFoundError';
 import jwt from 'jsonwebtoken';
-import { UUID } from '../types/TypeAliases';
 
 class AuthService {
   private prisma: PrismaClient;

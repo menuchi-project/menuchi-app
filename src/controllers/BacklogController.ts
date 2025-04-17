@@ -6,10 +6,10 @@ import { BacklogCompleteOut } from "../types/RestaurantTypes";
 import { ItemValidationError } from "../exceptions/ValidationError";
 import { BacklogNotFound, CategoryNameNotFound } from "../exceptions/NotFoundError";
 import BaseController from "./BaseController";
-import { UpdateCategoryIn } from "../types/CategoryTypes";
 import express from 'express';
 import { PermissionScope, RolesEnum } from "../types/Enums";
 import { ForbiddenError, UnauthorizedError } from "../exceptions/AuthError";
+import MenuchiError from "../exceptions/MenuchiError";
 
 @Route('/backlog')
 @Tags('Backlog')
@@ -67,52 +67,27 @@ export class BacklogController extends BaseController {
   ): Promise<null> {
     this.checkPermission(req.session.user, PermissionScope.Backlog, backlogId);
     await BacklogService.updateItem(backlogId, itemId, body);
-    return null
+    return null;
   }
 
-  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
-  @Response<UnauthorizedError>(401, 'Unauthorized user.')
-  @SuccessResponse(204, 'Items deleted successfully.  It doesn\'t retrieve anything.')
-  @Security('', [RolesEnum.RestaurantOwner])
+  @Response<MenuchiError>(400, 'All item IDs must be in the request.')
+  @SuccessResponse(204, 'Item orders in the category updated successfully.')
+  @Patch('/{backlogId}/reorder-items/in-category')
+  public async reorderItemsInCategory(@Path() backlogId: UUID, @Body() body: UUID[]): Promise<number> {
+    return BacklogService.reorderItemsInCategory(backlogId, body);
+  }
+
+  @Response<MenuchiError>(400, 'All item IDs must be in the request.')
+  @SuccessResponse(204, 'Item orders in the list updated successfully.')
+  @Patch('/{backlogId}/reorder-items/in-list')
+  public async reorderItemsInList(@Path() backlogId: UUID, @Body() body: UUID[]): Promise<number> {
+    return BacklogService.reorderItemsInList(backlogId, body);
+  }
+
+  @SuccessResponse(204, 'Items deleted successfully. It doesn\'t retrieve anything.')
   @Delete('/{backlogId}/items')
-  public async deleteItems(
-    @Path() backlogId: UUID,
-    @Body() body: UUID[],
-    @Request() req: express.Request
-  ): Promise<null> {
-    this.checkPermission(req.session.user, PermissionScope.Backlog, backlogId);
+  public async deleteItems(@Path() backlogId: UUID, @Body() body: UUID[]): Promise<null> {
     await BacklogService.deleteItems(backlogId, body);
-    return null;
-  }
-
-  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
-  @Response<UnauthorizedError>(401, 'Unauthorized user.')
-  @SuccessResponse(204, 'Category updated successfully. It doesn\'t retrieve anything.')
-  @Security('', [RolesEnum.RestaurantOwner])
-  @Patch('/{backlogId}/categories/{categoryId}')
-  public async updateCategory(
-    @Path() backlogId: UUID,
-    @Path() categoryId: UUID,
-    @Body() body: UpdateCategoryIn,
-    @Request() req: express.Request
-  ): Promise<null> {
-    this.checkPermission(req.session.user, PermissionScope.Backlog, backlogId);
-    await BacklogService.updateCategory(backlogId, categoryId, body);
-    return null;
-  }
-
-  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
-  @Response<UnauthorizedError>(401, 'Unauthorized user.')
-  @SuccessResponse(204, 'Category and its items deleted successfully.  It doesn\'t retrieve anything.')
-  @Security('', [RolesEnum.RestaurantOwner])
-  @Delete('/{backlogId}/categories/{categoryId}')
-  public async deleteCategory(
-    @Path() backlogId: UUID,
-    @Path() categoryId: UUID,
-    @Request() req: express.Request
-  ): Promise<null> {
-    this.checkPermission(req.session.user, PermissionScope.Backlog, backlogId);
-    await BacklogService.deleteCategory(backlogId, categoryId);
     return null;
   }
 }

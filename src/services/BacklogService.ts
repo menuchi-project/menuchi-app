@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import {
   UpdateItemIn,
   ItemCompactIn,
@@ -11,7 +11,7 @@ import {
 } from '../exceptions/NotFoundError';
 import { BacklogCompleteOut } from '../types/RestaurantTypes';
 import S3Service from './S3Service';
-import { UpdateCategoryIn } from '../types/CategoryTypes';
+import MenuchiError from '../exceptions/MenuchiError';
 
 class BacklogService {
   private prisma: PrismaClient;
@@ -218,18 +218,49 @@ class BacklogService {
     });
   }
 
-  async updateCategory(backlogId: UUID, categoryId: UUID, { positionInBacklog }: UpdateCategoryIn) {
-    return this.prisma.category.update({
+  async reorderItemsInCategory(backlogId: UUID, itemsId: UUID[]) {
+    await this.isValidItemsId(backlogId, itemsId);
+    return this.prisma.$executeRaw`
+      UPDATE "items"
+      SET "position_in_category" = CASE "id"
+        ${Prisma.join(itemsId.map((itemId, index) => Prisma.sql`WHEN ${itemId}::uuid THEN ${index + 1}`), ' ')}
+      ELSE "position_in_category"
+      END
+      WHERE "id" IN (${Prisma.join(itemsId.map(id => Prisma.sql`${id}::uuid`))})
+    `;
+  }
+
+  async reorderItemsInList(backlogId: UUID, itemsId: UUID[]) {
+    await this.isValidItemsId(backlogId, itemsId);
+    return this.prisma.$executeRaw`
+      UPDATE "items"
+      SET "position_in_items_list" = CASE "id"
+        ${Prisma.join(itemsId.map((itemId, index) => Prisma.sql`WHEN ${itemId}::uuid THEN ${index + 1}`), ' ')}
+      ELSE "position_in_items_list"
+      END
+      WHERE "id" IN (${Prisma.join(itemsId.map(id => Prisma.sql`${id}::uuid`))})
+    `;
+  }
+
+  private async isValidItemsId(backlogId: UUID, itemsId: UUID[]): Promise<void | never> {
+    const items = await this.prisma.item.findMany({
       where: {
-        id: categoryId,
-        backlog: {
-          id: backlogId
-        }
+        deletedAt: null,
+        category: {
+          deletedAt: null,
+          backlog: {
+            id: backlogId,
+          },
+        },
       },
-      data: {
-        positionInBacklog
+      select: {
+        id: true
       }
     });
+    
+    const isValidQuery = (items.length === itemsId.length) &&
+            items.every(item => itemsId.some(itemId => itemId === item.id ));
+    if (!isValidQuery) throw new MenuchiError('All item IDs must be in the request.', 400);
   }
 
   async deleteCategory(backlogId: UUID, categoryId: UUID) {
