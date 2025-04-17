@@ -49,7 +49,8 @@ class AuthService {
           include: {
             branches: {
               include: {
-                backlog: true
+                backlog: true,
+                menus: true
               }
             }
           }
@@ -75,7 +76,8 @@ class AuthService {
           id: restaurant.id,
           branches: restaurant.branches.map(branch => ({
             id: branch.id,
-            backlogId: branch.backlog?.id
+            backlogId: branch.backlog?.id,
+            menus: branch.menus.map(menu => menu.id)
           }))
         }))
       }

@@ -14,10 +14,10 @@ class RedisClient {
       },
     });
 
-    this.instance.on('error', (err) => {
+    this.instance.on('error', (err: Error) => {
       if (!this.isConnectionSuccess) return;
       this.isConnectionSuccess = false;
-      console.log('Redis Client Error: ', err.message);
+      console.log('Redis Client Error.', err.message);
     });
 
     this.instance.on('connect', () => console.log('Redis Connected.'));

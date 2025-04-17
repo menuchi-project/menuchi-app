@@ -1,8 +1,7 @@
 import { Controller } from 'tsoa';
-import { BranchSession, UserSession } from '../types/AuthTypes';
+import { MenuUpdateSession, RestaurantUpdateSession, SessionUpdate, UserSession } from '../types/AuthTypes';
 import { UUID } from '../types/TypeAliases';
 import { PermissionScope, SessionUpdateScope } from '../types/Enums';
-import express from 'express';
 import { ForbiddenError } from '../exceptions/AuthError';
 
 export default class BaseController extends Controller {
@@ -18,11 +17,19 @@ export default class BaseController extends Controller {
         isOk = user?.restaurants.some((restaurant) =>
           restaurant.branches.some((branch) => branch.id === id)
         ) ? true : false;
+        break;
 
       case PermissionScope.Backlog:
         isOk = user?.restaurants.some((restaurant) =>
           restaurant.branches.some((branch) => branch.backlogId === id)
         ) ? true : false;
+        break;
+
+      case PermissionScope.Menu:
+        isOk = user?.restaurants.some((restaurant) =>
+          restaurant.branches.some((branch) => 
+            branch.menus?.some(menuId => menuId === id)
+        )) ? true : false;
         break;
 
       default:
@@ -33,15 +40,33 @@ export default class BaseController extends Controller {
   }
 
   updateSession(
-    req: express.Request,
-    updateScope: SessionUpdateScope,
-    restaurantId: UUID,
-    branch: BranchSession
+    scope: SessionUpdateScope,
+    update: SessionUpdate
   ) {
-    switch (updateScope) {
+    const { userSession } = update;  
+    if (!userSession) return;
+
+    switch (scope) {
       case SessionUpdateScope.Restaurant:
-        req.session.user?.restaurants.push({ id: restaurantId, branches: [branch] });
+        const restaurantUpdate = update as RestaurantUpdateSession;
+        userSession.restaurants.push({ 
+          id: restaurantUpdate.restaurantId, 
+          branches: [restaurantUpdate.branch] 
+        });
         break;
+      
+      case SessionUpdateScope.Menu:
+        const menuUpdate = update as MenuUpdateSession;
+        const restaurant = userSession.restaurants.find(r => r.id === menuUpdate.restaurantId);
+        const branch = restaurant?.branches.find(b => b.id === menuUpdate.branchId);
+
+        if (branch) {
+          if (!branch.menus) {
+            branch.menus = [];
+          }
+          branch.menus.push(menuUpdate.menuId);
+        }
+       break;
     }
   }
 }

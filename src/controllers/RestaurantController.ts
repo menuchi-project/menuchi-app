@@ -9,6 +9,7 @@ import BaseController from "./BaseController";
 import { PermissionScope, RolesEnum, SessionUpdateScope } from "../types/Enums";
 import express from 'express';
 import { ForbiddenError, UnauthorizedError } from "../exceptions/AuthError";
+import { RestaurantUpdateSession } from "../types/AuthTypes";
 
 @Route('/restaurants')
 @Tags('Restaurant')
@@ -23,16 +24,15 @@ export class RestaurantController extends BaseController {
   public async createRestaurant(@Body() body: RestaurantCompactIn, @Request() req: express.Request): Promise<RestaurantCompleteOut> {
     const restaurant = await RestaurantService.createRestaurant(body, req.session.user?.id);
 
-    const firstBranch = restaurant.branches?.[0];
-    this.updateSession(
-      req,
-      SessionUpdateScope.Restaurant,
-      restaurant.id,
-      {
-        id: firstBranch?.id,
-        backlogId: firstBranch?.backlog?.id
+    const updateSession = {
+      userSession: req.session.user,
+      restaurantId: restaurant.id,
+      branch: {
+        id: restaurant.branches?.[0].id,
+        backlogId: restaurant.branches?.[0].backlog?.id
       }
-    );
+    } as RestaurantUpdateSession;
+    this.updateSession(SessionUpdateScope.Restaurant, updateSession);
     
     return restaurant;
   }
