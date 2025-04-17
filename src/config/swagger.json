@@ -69,6 +69,92 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"ErrorDetail": {
+				"properties": {
+					"field": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"value": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ForbiddenError": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UnauthorizedError": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"URL": {
 				"type": "string",
 				"example": "https://example.com/example",
@@ -93,24 +179,6 @@
 				"required": [
 					"itemPicUrl",
 					"itemPicKey"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"ErrorDetail": {
-				"properties": {
-					"field": {
-						"type": "string"
-					},
-					"message": {
-						"type": "string"
-					},
-					"value": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"message"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -485,74 +553,6 @@
 					"updatedAt",
 					"name",
 					"displayName"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"ForbiddenError": {
-				"properties": {
-					"name": {
-						"type": "string"
-					},
-					"message": {
-						"type": "string"
-					},
-					"stack": {
-						"type": "string"
-					},
-					"status": {
-						"type": "number",
-						"format": "double"
-					},
-					"code": {
-						"type": "number",
-						"format": "double"
-					},
-					"details": {
-						"items": {
-							"$ref": "#/components/schemas/ErrorDetail"
-						},
-						"type": "array"
-					}
-				},
-				"required": [
-					"name",
-					"message",
-					"status"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"UnauthorizedError": {
-				"properties": {
-					"name": {
-						"type": "string"
-					},
-					"message": {
-						"type": "string"
-					},
-					"stack": {
-						"type": "string"
-					},
-					"status": {
-						"type": "number",
-						"format": "double"
-					},
-					"code": {
-						"type": "number",
-						"format": "double"
-					},
-					"details": {
-						"items": {
-							"$ref": "#/components/schemas/ErrorDetail"
-						},
-						"type": "array"
-					}
-				},
-				"required": [
-					"name",
-					"message",
-					"status"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -2294,11 +2294,31 @@
 				"operationId": "GetProfile",
 				"responses": {
 					"200": {
-						"description": "Ok",
+						"description": "Authorized user profile retrieved successfully.",
 						"content": {
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/UserSession"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
 								}
 							}
 						}
@@ -2327,6 +2347,26 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/GetItemPicUrlOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
 								}
 							}
 						}
@@ -2512,7 +2552,7 @@
 		},
 		"/menus/backlog/{backlogId}": {
 			"get": {
-				"operationId": "GeBacklog",
+				"operationId": "GetBacklog",
 				"responses": {
 					"200": {
 						"description": "Backlog is retrieved successfully.",

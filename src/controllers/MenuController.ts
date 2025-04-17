@@ -22,7 +22,7 @@ export class MenuController extends BaseController {
   @SuccessResponse(200, 'Backlog is retrieved successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Get('/backlog/{backlogId}')
-  public async geBacklog(
+  public async getBacklog(
     @Path() backlogId: UUID,
     @Request() req: express.Request,
     @Query() search?: DefaultString
