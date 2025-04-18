@@ -12,6 +12,8 @@ networks:
 volumes:
   menuchi_data:
     name: menuchi_data
+  redis-broker-data:
+    name: redis-broker-data
 
 services:
   menuchi.api:
@@ -61,7 +63,7 @@ services:
     restart: always
     stop_grace_period: 20s
     env_file:
-      - ./.docker/env_vars/.env.dev
+      - ./.docker/.dev.env
     volumes:
       - "redis-broker-data:/data:rw"
     ports:
