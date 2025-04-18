@@ -1,39 +1,48 @@
 {
-  "name": "menuchi-node-backend",
+  "name": "menuchi-app",
   "version": "1.0.0",
-  "description": "The NodeJS backend of Menuchi",
+  "description": "The backend of Menuchi",
   "main": "index.js",
   "scripts": {
-    "dev": "npx tsoa spec-and-routes && ts-node ./src/index.ts",
+    "dev": "npx tsoa spec-and-routes && ts-node --files ./src/index.ts",
     "start": "node ./build/index.js",
-    "migrate": "npx prisma migrate dev --schema=./src/db/schema.prisma"
+    "db-push": "npx prisma db push --schema=./src/db/schema.prisma"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/menuchi-project/node-backend.git"
+    "url": "git+https://github.com/menuchi-project/menuchi-app"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/menuchi-project/node-backend/issues"
+    "url": "https://github.com/menuchi-project/menuchi-app/issues"
   },
-  "homepage": "https://github.com/menuchi-project/node-backend#readme",
+  "homepage": "https://github.com/menuchi-project/menuchi-app#readme",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.777.0",
     "@aws-sdk/s3-request-presigner": "^3.777.0",
     "@prisma/client": "^6.5.0",
+    "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/express-session": "^1.18.1",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.13.10",
     "@types/swagger-ui-express": "^4.1.8",
+    "bcryptjs": "^3.0.2",
+    "connect-redis": "^8.0.2",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "prisma": "^6.5.0",
+    "redis": "^4.7.0",
     "reflect-metadata": "^0.2.2",
     "swagger-ui-express": "^5.0.1",
     "tsoa": "^6.6.0",

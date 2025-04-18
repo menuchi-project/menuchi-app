@@ -30,6 +30,18 @@ export class ItemValidationError extends ValidationError {
   }
 }
 
+export class S3ValidationError extends ValidationError {
+  constructor(details?: ErrorDetail[]) {
+    super('S3 validation failed', 422, 4224, details);
+  }
+}
+
+export class UserValidationError extends ValidationError {
+  constructor(details?: ErrorDetail[]) {
+    super('User validation failed', 422, 4225, details);
+  }
+}
+
 export class MenuValidationError extends ValidationError {
   constructor(details?: ErrorDetail[]) {
     super('Menu validation failed', 422, 4225, details);

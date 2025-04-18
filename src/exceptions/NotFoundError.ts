@@ -1,14 +1,12 @@
-import { ErrorDetail } from '../types/ErrorTypes';
 import MenuchiError from './MenuchiError';
 
 export class NotFoundError extends MenuchiError {
   constructor(
     message: string = 'Not found error',
     status: number = 404,
-    code?: number,
-    details?: ErrorDetail[]
+    code?: number
   ) {
-    super(message, status, code, details);
+    super(message, status, code);
   }
 }
 
@@ -27,6 +25,12 @@ export class CategoryNameNotFound extends NotFoundError {
 export class RestaurantNotFound extends NotFoundError {
   constructor() {
     super('Restaurant with the given id not found', 404, 4041);
+  }
+}
+
+export class UserNotFound extends NotFoundError {
+  constructor() {
+    super('User with the given id not found', 404, 4045);
   }
 }
 

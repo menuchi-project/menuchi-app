@@ -1,30 +1,37 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { UUID } from '../types/TypeAliases';
-import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, CreateMenuCompleteOut, MenuCompleteOut } from '../types/MenuTypes';
+import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, CreateMenuCompleteOut, MenuCompleteOut, CreateMenuCompactIn } from '../types/MenuTypes';
 import MenuchiError from '../exceptions/MenuchiError';
 import { BranchNotFound, CategoryNotFound, CylinderNotFound, MenuNotFound } from '../exceptions/NotFoundError';
 import S3Service from './S3Service';
 import { BacklogCompleteOut } from '../types/RestaurantTypes';
-import { error } from 'console';
 
-class BranchService {
+class MenuService {
   private prisma: PrismaClient;
 
   constructor() {
     this.prisma = new PrismaClient();
   }
 
-  async createMenu(branchId: UUID): Promise<CreateMenuCompleteOut | never> {
-    return this.prisma.menu.create({
-      data: {
-        branchId
+  async createMenu(body: CreateMenuCompactIn): Promise<CreateMenuCompleteOut | never> {
+    const newMenu = await this.prisma.menu.create({
+      data: body,
+      include: {
+        branch: true
       }
-    })
-    .catch((error: Error) => {
+    }).catch((error: Error) => {
       if (error.message.includes('menus_branch_id_fkey (index)'))
         throw new BranchNotFound();
       throw error;
     });
+
+    const restaurantId = newMenu.branch?.restaurantId;
+    newMenu.branch = null;
+
+    return {
+      ...newMenu,
+      restaurantId: restaurantId
+    };
   }
 
   async updateMenu(menuId: UUID, menuDTO: MenuCompactIn) {
@@ -80,16 +87,26 @@ class BranchService {
 
       const positionInMenu = (maxPositionInMenu._max.positionInMenu ?? 0) + 1;
 
-      await tx.$executeRaw`
-        UPDATE "items"
-        SET "position_in_menu_categories" = CASE "id"
-          ${Prisma.join(items.map((itemId, index) => Prisma.sql`WHEN ${itemId}::uuid THEN ${index + 1}`), ' ')}
-        ELSE "position_in_menu_categories"
-        END
-        WHERE "id" IN (${Prisma.join(items.map(id => Prisma.sql`${id}::uuid`))})
-      `;
+      await tx.category.findUniqueOrThrow({
+        where: {
+          id: categoryId,
+          backlog: {
+            branch: {
+              menus: {
+                some: {
+                  id: menuId
+                }
+              }
+            }
+          }
+        }
+      }).catch((error: Error) => {
+          if (error.message.includes('not found'))
+            throw new CategoryNotFound();
+          throw error;
+      });
 
-      return tx.menuCategory.create({
+      const newMenuCategory = await tx.menuCategory.create({
         data: {
           categoryId, cylinderId, positionInMenu,
           items: {
@@ -105,6 +122,17 @@ class BranchService {
           throw new CategoryNotFound();
         throw error;
       });
+
+      await tx.$executeRaw`
+        UPDATE "items"
+        SET "position_in_menu_categories" = CASE "id"
+          ${Prisma.join(items.map((itemId, index) => Prisma.sql`WHEN ${itemId}::uuid THEN ${index + 1}`), ' ')}
+        ELSE "position_in_menu_categories"
+        END
+        WHERE "id" IN (${Prisma.join(items.map(id => Prisma.sql`${id}::uuid`))})
+      `;
+
+      return newMenuCategory;
     });
   }
 
@@ -238,11 +266,11 @@ class BranchService {
     if (!isValidQuery) throw new MenuchiError('All menu category IDs must be in the request.', 400);
   }
 
-  async getBacklog(branchId: UUID, search = ''): Promise<BacklogCompleteOut | never> {
+  async getBacklog(backlogId: UUID, search = ''): Promise<BacklogCompleteOut | never> {
       const backlog = await this.prisma.backlog
         .findUniqueOrThrow({
           where: {
-            branchId,
+            id: backlogId,
           },
           include: {
             categories: {
@@ -322,4 +350,4 @@ class BranchService {
   }
 }
 
-export default new BranchService();
+export default new MenuService();

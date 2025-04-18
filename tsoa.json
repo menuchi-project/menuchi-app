@@ -1,12 +1,31 @@
 {
   "entryFile": "./src/index.ts",
   "noImplicitAdditionalProperties": "silently-remove-extras",
-  "controllerPathGlobs": ["./src/controllers/*Controller.ts"],
+  "controllerPathGlobs": [
+    "./src/controllers/*Controller.ts"
+  ],
   "spec": {
     "outputDirectory": "./src/config",
-    "specVersion": 3
+    "specVersion": 3,
+    "name": "Menuchi-API",
+    "description": "Menuchi API Documentation",
+    "version": "1.0.0",
+    "securityDefinitions": {
+      "SessionAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "session-id" 
+      },
+      "JWTAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "access-token"
+      }
+    }
   },
   "routes": {
-    "routesDir": "./src"
+    "routesDir": "./src",
+    "middleware": "express",
+    "authenticationModule": "./src/middlewares/Auth.ts"
   }
 }

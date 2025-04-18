@@ -2,6 +2,10 @@ import { CompleteOut } from './BaseTypes';
 import { ItemCompleteOut } from './ItemTypes';
 import { Boolean, DefaultString, Int, UUID } from './TypeAliases';
 
+export interface CreateMenuCompactIn extends MenuCompactIn {
+  branchId: UUID;
+}
+
 export interface MenuCompactIn {
   name?: DefaultString | null;
   favicon?: DefaultString | null;
@@ -13,6 +17,7 @@ export interface CreateMenuCompleteOut extends CompleteOut {
   name: DefaultString | null;
   favicon: DefaultString | null;
   isPublished: Boolean | null;
+  restaurantId?: DefaultString | null;
 }
 
 export interface CylinderCompactIn {

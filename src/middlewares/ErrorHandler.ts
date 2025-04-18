@@ -8,6 +8,8 @@ import {
   MenuCategoryValidationError,
   MenuValidationError,
   RestaurantValidationError,
+  S3ValidationError,
+  UserValidationError,
   ValidationError,
 } from '../exceptions/ValidationError';
 import MenuchiError from '../exceptions/MenuchiError';
@@ -19,6 +21,9 @@ import {
 import { ErrorDetail } from '../types/ErrorTypes';
 import { Prisma } from '@prisma/client';
 import { NotFoundError } from '../exceptions/NotFoundError';
+import { ForbiddenError, InvalidTokenError, UnauthorizedError } from '../exceptions/AuthError';
+import { JsonWebTokenError } from 'jsonwebtoken';
+import { PrismaClientInitializationError } from '@prisma/client/runtime/library';
 
 export function errorPreprocessor(
   error: Error,
@@ -28,6 +33,14 @@ export function errorPreprocessor(
 ): void {
   if (error instanceof MenuchiError) {
     throw error;
+  }
+
+  if (error instanceof PrismaClientInitializationError) {
+    throw new MenuchiError('Can\'t reach database server.', 500);
+  }
+
+  if (error instanceof JsonWebTokenError) {
+    throw new InvalidTokenError();
   }
 
   if (error instanceof ValidateError) {
@@ -48,6 +61,14 @@ export function errorPreprocessor(
 
     if (path.includes('/menu-categories')) {
       throw new MenuCategoryValidationError();
+    }
+
+    if (path.includes('/s3')) {
+      throw new S3ValidationError(details);
+    }
+
+    if (path.includes('/auth')) {
+      throw new UserValidationError(details);
     }
 
     switch (path) {
@@ -75,16 +96,6 @@ export function errorPreprocessor(
 
   if (error instanceof Prisma.PrismaClientValidationError) {
     throw new ValidationDatabaseError(error.message);
-  }
-
-  if (
-    error instanceof Prisma.PrismaClientInitializationError ||
-    Prisma.PrismaClientUnknownRequestError ||
-    Prisma.PrismaClientRustPanicError
-  ) {
-    throw new DatabaseError(undefined, undefined, undefined, [
-      { message: error.message },
-    ]);
   }
 
   throw new MenuchiError(error.message, 500);
