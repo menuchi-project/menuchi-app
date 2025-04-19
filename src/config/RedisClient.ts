@@ -8,10 +8,7 @@ class RedisClient {
     if (this.instance) return this.instance;
 
     this.instance = createClient({
-      socket: {
-        host: process.env.REDIS_HOST,
-        port: Number(process.env.REDIS_PORT),
-      },
+      url: process.env.REDIS_URL
     });
 
     this.instance.on('error', (err: Error) => {
@@ -20,7 +17,7 @@ class RedisClient {
       console.log('Redis Client Error.', err.message);
     });
 
-    this.instance.on('connect', () => console.log('Redis Connected.'));
+    this.instance.once('connect', () => console.log('Redis Connected.'));
 
     this.instance.connect();
     return this.instance;
