@@ -3,6 +3,7 @@ import {
   UpdateItemIn,
   ItemCompactIn,
   ItemCompleteOut,
+  CreateItemCompleteOut,
 } from '../types/ItemTypes';
 import { UUID } from '../types/TypeAliases';
 import {
@@ -23,7 +24,7 @@ class BacklogService {
   async createItem(
     backlogId: UUID,
     { categoryNameId, name, ingredients, price, picKey }: ItemCompactIn
-  ): Promise<ItemCompleteOut | never> {
+  ): Promise<CreateItemCompleteOut | never> {
     return this.prisma.$transaction(async (tx) => {
       const maxCategoryPosition = await tx.category.aggregate({
         _max: {

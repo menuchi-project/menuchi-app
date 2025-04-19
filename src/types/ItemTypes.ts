@@ -9,6 +9,18 @@ export interface ItemCompactIn {
   picKey?: LongString | null;
 }
 
+export interface CreateItemCompleteOut extends CompleteOut {
+  categoryId?: UUID | null;
+  categoryName?: DefaultString | null;
+  subCategoryId?: UUID | null;
+  name?: DefaultString | null;
+  ingredients?: LongString | null;
+  price?: number | null;
+  picKey?: URL | null;
+  positionInItemsList?: Int | null;
+  positionInCategory?: Int | null;
+}
+
 export interface ItemCompleteOut extends CompleteOut {
   categoryId?: UUID | null;
   categoryName?: DefaultString | null;

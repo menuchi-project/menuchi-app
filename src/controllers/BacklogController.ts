@@ -1,5 +1,5 @@
 import { Body, Delete, Get, Patch, Path, Post, Request, Response, Route, Security, SuccessResponse, Tags } from "tsoa";
-import { UpdateItemIn, ItemCompactIn, ItemCompleteOut } from "../types/ItemTypes";
+import { UpdateItemIn, ItemCompactIn, ItemCompleteOut, CreateItemCompleteOut } from "../types/ItemTypes";
 import BacklogService from "../services/BacklogService";
 import { UUID } from "../types/TypeAliases";
 import { BacklogCompleteOut } from "../types/RestaurantTypes";
@@ -10,6 +10,7 @@ import express from 'express';
 import { PermissionScope, RolesEnum } from "../types/Enums";
 import { ForbiddenError, UnauthorizedError } from "../exceptions/AuthError";
 import MenuchiError from "../exceptions/MenuchiError";
+import RedisClient from "../config/RedisClient";
 
 @Route('/backlog')
 @Tags('Backlog')
@@ -26,9 +27,17 @@ export class BacklogController extends BaseController {
     @Path() backlogId: UUID,
     @Body() body: ItemCompactIn,
     @Request() req: express.Request
-  ): Promise<ItemCompleteOut> {
+  ): Promise<CreateItemCompleteOut> {
     this.checkPermission(req.session.user, PermissionScope.Backlog, backlogId);
-    return BacklogService.createItem(backlogId, body);
+
+    const item = await BacklogService.createItem(backlogId, body);
+    if (item.picKey) {
+      const streamName = process.env.TRANSFORMERS_STREAM!;
+      const event = { image_key: item.picKey ?? '' };
+      await RedisClient.xAdd(streamName, '*', event);
+    }
+
+    return item;
   }
 
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
