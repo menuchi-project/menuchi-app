@@ -13,6 +13,7 @@ import {
 import { BacklogCompleteOut } from '../types/RestaurantTypes';
 import S3Service from './S3Service';
 import MenuchiError from '../exceptions/MenuchiError';
+import RedisClient from '../config/RedisClient';
 
 class BacklogService {
   private prisma: PrismaClient;
@@ -92,6 +93,10 @@ class BacklogService {
           positionInCategory,
         },
       });
+
+      const streamName = process.env.TRANSFORMERS_STREAM!;
+      const event = { image_key: item.picKey ?? '' };
+      await RedisClient.xAdd(streamName, '*', event);
 
       return {
         ...item,
