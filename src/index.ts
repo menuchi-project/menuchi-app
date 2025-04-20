@@ -13,7 +13,7 @@ import cookieParser from 'cookie-parser';
 dotenv.config();
 const app = express();
 
-app.use(cors({ origin: '*' }));
+app.use(cors({ origin: 'http://localhost:4200', credentials: true }));
 app.use(morgan(':date[web] | :url <:method, :status> | :response-time[3]ms'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
