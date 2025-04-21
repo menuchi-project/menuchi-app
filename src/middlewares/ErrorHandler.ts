@@ -107,6 +107,7 @@ export function errorHandler(
   res: Response,
   next: NextFunction
 ): void {
+  console.error(error);
   res.status(error.status).json({
     code: error.code,
     message: error.message,
