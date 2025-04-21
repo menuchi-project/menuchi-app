@@ -35,6 +35,7 @@ class BacklogService {
           backlogId,
         },
       });
+      console.log('maxCategory');
 
       const positionInBacklog =
         (maxCategoryPosition._max.positionInBacklog ?? 0) + 1;
@@ -66,7 +67,8 @@ class BacklogService {
             throw new CategoryNameNotFound();
           throw error;
         });
-
+      
+      console.log('category');
       const maxItemPositions = await tx.item.aggregate({
         _max: {
           positionInItemsList: true,
@@ -93,10 +95,6 @@ class BacklogService {
           positionInCategory,
         },
       });
-
-      const streamName = process.env.TRANSFORMERS_STREAM!;
-      const event = { image_key: item.picKey ?? '' };
-      await RedisClient.xAdd(streamName, '*', event);
 
       return {
         ...item,
