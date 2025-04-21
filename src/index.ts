@@ -26,5 +26,5 @@ app.use(errorPreprocessor)
 app.use(errorHandler);
 app.use(notFoundHandler);
 
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => console.log(`Listening on port ${PORT}.`));
+const PORT = Number(process.env.PORT!);
+app.listen(PORT, '0.0.0.0', () => console.log(`Listening on port ${PORT}.`));
