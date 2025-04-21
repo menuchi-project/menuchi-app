@@ -37,4 +37,4 @@ COPY --from=build /app/build ./build
 ENTRYPOINT ["./entrypoint.sh"]
 RUN chmod 755 ./entrypoint.sh
 
-CMD ["npm", "start"]
+CMD ["npm", "start", "-H", "0.0.0.0"]
