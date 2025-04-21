@@ -83,7 +83,8 @@ class BacklogService {
         (maxItemPositions._max.positionInItemsList ?? 0) + 1;
       const positionInCategory =
         (maxItemPositions._max.positionInCategory ?? 0) + 1;
-
+      console.log(positionInItemsList, positionInCategory);
+      
       const item = await tx.item.create({
         data: {
           categoryId: category.id,
@@ -95,7 +96,8 @@ class BacklogService {
           positionInCategory,
         },
       });
-
+      console.log(item);
+      
       return {
         ...item,
         categoryName: category.categoryName?.name,

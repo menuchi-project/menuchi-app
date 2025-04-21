@@ -31,12 +31,18 @@ export class BacklogController extends BaseController {
     this.checkPermission(req.session.user, PermissionScope.Backlog, backlogId);
 
     const item = await BacklogService.createItem(backlogId, body);
+    console.log(item)
+
     if (item.picKey) {
       const streamName = process.env.TRANSFORMERS_STREAM!;
+      console.log(streamName);
       const event = { image_key: item.picKey ?? '' };
+      console.log(event);
       await RedisClient.xAdd(streamName, '*', event);
+      console.log("After Redis");
     }
-
+    
+    console.log("after after redis");
     return item;
   }
 
