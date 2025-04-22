@@ -2420,6 +2420,7 @@
 						}
 					}
 				},
+				"description": "Retrieves the profile of the currently authorized user.",
 				"tags": [
 					"User"
 				],
@@ -2478,6 +2479,7 @@
 						}
 					}
 				},
+				"description": "Generates a pre-signed URL for uploading an item picture to S3.",
 				"tags": [
 					"S3"
 				],
@@ -2556,6 +2558,7 @@
 						}
 					}
 				},
+				"description": "Creates a new restaurant along with its first branch and backlog.",
 				"tags": [
 					"Restaurant"
 				],
@@ -2624,6 +2627,7 @@
 						}
 					}
 				},
+				"description": "Retrieves full details of a specific restaurant by its ID.",
 				"tags": [
 					"Restaurant"
 				],
@@ -2691,6 +2695,7 @@
 						}
 					}
 				},
+				"description": "Retrieves a backlog by ID.",
 				"tags": [
 					"Menu"
 				],
@@ -2766,6 +2771,7 @@
 						}
 					}
 				},
+				"description": "Creates a new menu.",
 				"tags": [
 					"Menu"
 				],
@@ -2834,6 +2840,7 @@
 						}
 					}
 				},
+				"description": "Retrieves a menu by ID.",
 				"tags": [
 					"Menu"
 				],
@@ -2913,6 +2920,7 @@
 						}
 					}
 				},
+				"description": "Updates a menu.",
 				"tags": [
 					"Menu"
 				],
@@ -3010,6 +3018,7 @@
 						}
 					}
 				},
+				"description": "Creates a new cylinder in a menu.",
 				"tags": [
 					"Menu"
 				],
@@ -3097,6 +3106,7 @@
 						}
 					}
 				},
+				"description": "Creates a new category in a menu.",
 				"tags": [
 					"Menu"
 				],
@@ -3173,6 +3183,7 @@
 						}
 					}
 				},
+				"description": "Reorders menu items.",
 				"tags": [
 					"Menu"
 				],
@@ -3245,6 +3256,7 @@
 						}
 					}
 				},
+				"description": "Deletes menu categories.",
 				"tags": [
 					"Menu"
 				],
@@ -3326,6 +3338,7 @@
 						}
 					}
 				},
+				"description": "Reorders menu categories.",
 				"tags": [
 					"Menu"
 				],
@@ -3398,6 +3411,7 @@
 						}
 					}
 				},
+				"description": "Deletes menu items.",
 				"tags": [
 					"Menu"
 				],
@@ -3472,6 +3486,7 @@
 						}
 					}
 				},
+				"description": "Toggles visibility of a menu item.",
 				"tags": [
 					"Menu"
 				],
@@ -3565,8 +3580,9 @@
 						}
 					}
 				},
+				"description": "Creates a new category name.",
 				"tags": [
-					"Category-Name"
+					"Category Name"
 				],
 				"security": [],
 				"parameters": [],
@@ -3618,8 +3634,9 @@
 						}
 					}
 				},
+				"description": "Retrieves all category names.",
 				"tags": [
-					"Category-Name"
+					"Category Name"
 				],
 				"security": [
 					{
@@ -3687,6 +3704,7 @@
 						}
 					}
 				},
+				"description": "Creates a new item in a backlog.",
 				"tags": [
 					"Backlog"
 				],
@@ -3755,6 +3773,7 @@
 						}
 					}
 				},
+				"description": "Retrieves all items in a backlog.",
 				"tags": [
 					"Backlog"
 				],
@@ -3814,6 +3833,7 @@
 						}
 					}
 				},
+				"description": "Deletes multiple items from a backlog.",
 				"tags": [
 					"Backlog"
 				],
@@ -3894,6 +3914,7 @@
 						}
 					}
 				},
+				"description": "Retrieves a specific backlog.",
 				"tags": [
 					"Backlog"
 				],
@@ -3965,6 +3986,7 @@
 						}
 					}
 				},
+				"description": "Updates an item in a backlog.",
 				"tags": [
 					"Backlog"
 				],
@@ -4051,6 +4073,7 @@
 						}
 					}
 				},
+				"description": "Reorders items within a category.",
 				"tags": [
 					"Backlog"
 				],
@@ -4132,6 +4155,7 @@
 						}
 					}
 				},
+				"description": "Reorders items within a list.",
 				"tags": [
 					"Backlog"
 				],
@@ -4213,6 +4237,7 @@
 						}
 					}
 				},
+				"description": "Reorders categories within a backlog.",
 				"tags": [
 					"Backlog"
 				],
@@ -4287,6 +4312,7 @@
 						}
 					}
 				},
+				"description": "Deletes a category and all its items.",
 				"tags": [
 					"Backlog"
 				],
@@ -4352,6 +4378,7 @@
 						}
 					}
 				},
+				"description": "Registers a new restaurant owner.",
 				"tags": [
 					"Auth"
 				],
@@ -4394,6 +4421,7 @@
 						}
 					}
 				},
+				"description": "Authenticates a restaurant owner.",
 				"tags": [
 					"Auth"
 				],
@@ -4426,6 +4454,7 @@
 						}
 					}
 				},
+				"description": "Logs out the current user.",
 				"tags": [
 					"Auth"
 				],
@@ -4437,6 +4466,36 @@
 	"servers": [
 		{
 			"url": "/"
+		}
+	],
+	"tags": [
+		{
+			"name": "Auth",
+			"description": "Authentication and session management"
+		},
+		{
+			"name": "User",
+			"description": "User profile and session info"
+		},
+		{
+			"name": "Restaurant",
+			"description": "Restaurant operations"
+		},
+		{
+			"name": "Backlog",
+			"description": "Backlog handling for restaurant branches"
+		},
+		{
+			"name": "Menu",
+			"description": "Menu management"
+		},
+		{
+			"name": "S3",
+			"description": "S3 file upload URL generation"
+		},
+		{
+			"name": "Category Name",
+			"description": "Menu category name operations"
 		}
 	]
 }
