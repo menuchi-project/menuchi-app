@@ -7,6 +7,7 @@ import * as swagger from './config/swagger.json';
 import morgan from 'morgan';
 import cors from 'cors';
 import RedisClient from './config/RedisClient';
+import TransformersRedisClient from './config/TransformersRedisClient';
 import sessionConfig from './config/SessionConfig';
 import cookieParser from 'cookie-parser';
 
