@@ -13,7 +13,6 @@ import {
 import { BacklogCompleteOut } from '../types/RestaurantTypes';
 import S3Service from './S3Service';
 import MenuchiError from '../exceptions/MenuchiError';
-import RedisClient from '../config/RedisClient';
 
 class BacklogService {
   private prisma: PrismaClient;

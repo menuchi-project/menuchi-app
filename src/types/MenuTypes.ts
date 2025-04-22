@@ -44,11 +44,13 @@ export interface CreateMenuCategoryCompleteOut extends CompleteOut {
   positionInMenu: Int | null;
 }
 
-interface CylinderCompleteOut extends CreateCylinderCompleteOut {
+interface CylinderCompleteOut extends CompleteOut {
+  days: (Boolean | null)[];
   menuCategories: MenuCategoryCompleteOut[] | null;
 }
 
 interface MenuCategoryCompleteOut extends CreateMenuCategoryCompleteOut {
+  categoryName: DefaultString | null;
   items: ItemCompleteOut[] | null;
 }
 

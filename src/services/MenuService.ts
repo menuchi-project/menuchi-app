@@ -326,7 +326,7 @@ class MenuService {
   }
 
   async getMenu(menuId: UUID): Promise<MenuCompleteOut | never> {
-    return this.prisma.menu.findUniqueOrThrow({
+    const menu = await this.prisma.menu.findUniqueOrThrow({
       where: {
         id: menuId
       },
@@ -335,6 +335,11 @@ class MenuService {
           include: {
             menuCategories: {
               include: {
+                category: {
+                  select: {
+                    categoryName: true
+                  }
+                },
                 items: true
               }
             }
@@ -347,6 +352,34 @@ class MenuService {
         throw new MenuNotFound();
       throw error;
     });
+
+    return {
+      ...menu,
+      cylinders: menu.cylinders.map(cylinder => ({
+        ...cylinder,
+        days: [
+          cylinder.sat,
+          cylinder.sun,
+          cylinder.mon,
+          cylinder.tue,
+          cylinder.wed,
+          cylinder.thu,
+          cylinder.fri
+        ],
+        sat: undefined,
+        sun: undefined,
+        mon: undefined,
+        tue: undefined,
+        wed: undefined,
+        thu: undefined,
+        fri: undefined,
+        menuCategories: cylinder.menuCategories.map(menuCategory => ({
+          ...menuCategory,
+          categoryName: menuCategory.category?.categoryName?.name ?? null,
+          category: undefined
+        }))
+      }))
+    };
   }
 }
 

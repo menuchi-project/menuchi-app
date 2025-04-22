@@ -1134,6 +1134,14 @@
 						],
 						"nullable": true
 					},
+					"categoryName": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
 					"items": {
 						"items": {
 							"$ref": "#/components/schemas/ItemCompleteOut"
@@ -1149,6 +1157,7 @@
 					"categoryId",
 					"cylinderId",
 					"positionInMenu",
+					"categoryName",
 					"items"
 				],
 				"type": "object",
@@ -1172,61 +1181,16 @@
 						"format": "date-time",
 						"nullable": true
 					},
-					"sat": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Boolean"
-							}
-						],
-						"nullable": true
-					},
-					"sun": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Boolean"
-							}
-						],
-						"nullable": true
-					},
-					"mon": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Boolean"
-							}
-						],
-						"nullable": true
-					},
-					"tue": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Boolean"
-							}
-						],
-						"nullable": true
-					},
-					"wed": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Boolean"
-							}
-						],
-						"nullable": true
-					},
-					"thu": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Boolean"
-							}
-						],
-						"nullable": true
-					},
-					"fri": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Boolean"
-							}
-						],
-						"nullable": true
+					"days": {
+						"items": {
+							"allOf": [
+								{
+									"$ref": "#/components/schemas/Boolean"
+								}
+							],
+							"nullable": true
+						},
+						"type": "array"
 					},
 					"menuCategories": {
 						"items": {
@@ -1240,6 +1204,7 @@
 					"id",
 					"createdAt",
 					"updatedAt",
+					"days",
 					"menuCategories"
 				],
 				"type": "object",
