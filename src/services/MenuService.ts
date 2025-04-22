@@ -110,7 +110,7 @@ class MenuService {
         data: {
           categoryId, cylinderId, positionInMenu,
           items: {
-            connect: items.map((itemId, index) => ({ id: itemId, positionInMenuCategory: index + 1 }))
+            connect: items.map(itemId => ({ id: itemId }))
           }
         }
       }).catch((error: Error) => {
