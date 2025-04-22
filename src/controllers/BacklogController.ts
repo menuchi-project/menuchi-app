@@ -10,7 +10,7 @@ import express from 'express';
 import { PermissionScope, RolesEnum } from "../types/Enums";
 import { ForbiddenError, UnauthorizedError } from "../exceptions/AuthError";
 import MenuchiError from "../exceptions/MenuchiError";
-import RedisClient from "../config/RedisClient";
+import TransformersRedisClient from "../config/TransformersRedisClient";
 
 @Route('/backlog')
 @Tags('Backlog')
@@ -33,8 +33,8 @@ export class BacklogController extends BaseController {
     const item = await BacklogService.createItem(backlogId, body);
     if (item.picKey) {
       const streamName = process.env.TRANSFORMERS_STREAM!;
-      const event = { image_key: item.picKey ?? '' };
-      await RedisClient.xAdd(streamName, '*', event);
+      const event = { image_key: item.picKey };
+      await TransformersRedisClient.xAdd(streamName, '*', event);
     }
 
     return item;
