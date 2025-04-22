@@ -8,7 +8,7 @@ class TransformersRedisClient {
     if (this.instance) return this.instance;
 
     this.instance = createClient({
-      url: process.env.REDIS_URL
+      url: process.env.TRANSFORMERS_REDIS_URL
     });
 
     this.instance.on('error', (err: Error) => {
