@@ -200,7 +200,7 @@ model Category {
   positionInBacklog Int?          @map("position_in_backlog")
   items             Item[]
   subCategories     SubCategory[]
-  menuCategory      MenuCategory?
+  menuCategory      MenuCategory[]
   createdAt         DateTime      @default(now()) @map("created_at")
   updatedAt         DateTime      @updatedAt @map("updated_at")
   deletedAt         DateTime?     @map("deleted_at")
@@ -268,7 +268,7 @@ model Cylinder {
 
 model MenuCategory {
   id             String    @id @default(uuid()) @db.Uuid
-  categoryId     String?   @unique @map("category_id") @db.Uuid
+  categoryId     String?   @map("category_id") @db.Uuid
   cylinderId     String?   @map("cylinder_id") @db.Uuid
   cylinder       Cylinder? @relation(fields: [cylinderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   positionInMenu Int?      @map("position_in_menu")
@@ -278,6 +278,7 @@ model MenuCategory {
   updatedAt      DateTime  @updatedAt @map("updated_at")
   deletedAt      DateTime? @map("deleted_at")
 
+  @@unique([categoryId, cylinderId])
   @@map("menu_categories")
 }
 
