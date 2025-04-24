@@ -125,6 +125,24 @@ export class MenuController extends BaseController {
   }
 
   /**
+   * Reorders cylinders.
+   */
+  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
+  @Response<UnauthorizedError>(401, 'Unauthorized user.')
+  @Response<MenuchiError>(400, 'All menu cylinder IDs must be in the request.')
+  @SuccessResponse(204, 'Cylinder orders in the menu updated successfully.')
+  @Security('', [RolesEnum.RestaurantOwner])
+  @Patch('/{menuId}/cylinders')
+  async reorderCylinders(
+    @Path() menuId: UUID,
+    @Body() body: UUID[],
+    @Request() req: express.Request
+  ): Promise<number> {
+    this.checkPermission(req.session.user, PermissionScope.Menu, menuId);
+    return MenuService.reorderCylinders(menuId, body);
+  }
+
+  /**
    * Creates a new category in a menu.
    */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
@@ -152,7 +170,7 @@ export class MenuController extends BaseController {
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<MenuchiError>(400, 'All menu item IDs must be in the request.')
-  @SuccessResponse(204, 'Menu item orders in the list updated successfully.')
+  @SuccessResponse(204, 'Menu item orders in the menu category updated successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Patch('/{menuId}/categories')
   async reorderMenuItems(
@@ -188,7 +206,7 @@ export class MenuController extends BaseController {
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<MenuchiError>(400, 'All menu category IDs must be in the request.')
-  @SuccessResponse(204, 'Menu category orders in the list updated successfully.')
+  @SuccessResponse(204, 'Menu category orders in the cylinder updated successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Patch('/{menuId}/items')
   async reorderMenuCategories(
@@ -201,7 +219,7 @@ export class MenuController extends BaseController {
   }
 
   /**
-   * Toggles visibility of a menu item.
+   * Hide/Unhide a menu item.
    */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')

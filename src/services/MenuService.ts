@@ -49,16 +49,46 @@ class MenuService {
   }
 
   async createCylinder(menuId: UUID, cylinderDTO: CylinderCompactIn): Promise<CreateCylinderCompleteOut | never> {
-    return this.prisma.cylinder.create({
-      data: {
-        menuId,
-        ...cylinderDTO
-      }
-    }).catch((error: Error) => {
-      if (error.message.includes('cylinders_menu_id_fkey (index)'))
-        throw new MenuNotFound();
-      throw error;
+    return this.prisma.$transaction(async (tx) => {
+      const maxPositionInMenu = await tx.cylinder.aggregate({
+        _max: {
+          positionInMenu: true
+        },
+        where: {
+          menuId
+        }
+      }).catch((error: Error) => {
+        if (error.message.includes('cylinders_menu_id_fkey (index)'))
+          throw new MenuNotFound();
+        throw error;
+      });
+
+      const positionInMenu = (maxPositionInMenu._max.positionInMenu ?? 0) + 1;
+
+      return tx.cylinder.create({
+        data: {
+          menuId,
+          ...cylinderDTO,
+          positionInMenu
+        }
+      }).catch((error: Error) => {
+        if (error.message.includes('cylinders_menu_id_fkey (index)'))
+          throw new MenuNotFound();
+        throw error;
+      });
     });
+  }
+
+  async reorderCylinders(menuId: UUID, cylindersId: UUID[]) {
+    await this.isValidCylindersId(menuId, cylindersId);
+    return this.prisma.$executeRaw`
+      UPDATE "cylinders"
+      SET "position_in_menu" = CASE "id"
+        ${Prisma.join(cylindersId.map((cylinderId, index) => Prisma.sql`WHEN ${cylinderId}::uuid THEN ${index + 1}`), ' ')}
+      ELSE "position_in_menu"
+      END
+      WHERE "id" IN (${Prisma.join(cylindersId.map(id => Prisma.sql`${id}::uuid`))})
+    `;
   }
 
   async createMenuCategory(
@@ -70,9 +100,9 @@ class MenuService {
     }: MenuCategoryCompactIn
   ): Promise<CreateMenuCategoryCompleteOut | never> {
     return this.prisma.$transaction(async (tx) => {
-      const maxPositionInMenu = await tx.menuCategory.aggregate({
+      const maxPositionInCylinder = await tx.menuCategory.aggregate({
         _max: {
-          positionInMenu: true
+          positionInCylinder: true
         },
         where: {
           cylinder: {
@@ -85,7 +115,7 @@ class MenuService {
         throw error;
       });
 
-      const positionInMenu = (maxPositionInMenu._max.positionInMenu ?? 0) + 1;
+      const positionInCylinder = (maxPositionInCylinder._max.positionInCylinder ?? 0) + 1;
 
       await tx.category.findUniqueOrThrow({
         where: {
@@ -108,7 +138,7 @@ class MenuService {
 
       const newMenuCategory = await tx.menuCategory.create({
         data: {
-          categoryId, cylinderId, positionInMenu,
+          categoryId, cylinderId, positionInCylinder,
           items: {
             connect: items.map(itemId => ({ id: itemId }))
           }
@@ -140,9 +170,9 @@ class MenuService {
     await this.isValidMenuCategoriesId(menuId, menuCategoriesId);
     return this.prisma.$executeRaw`
       UPDATE "menu_categories"
-      SET "position_in_menu" = CASE "id"
+      SET "position_in_cylinder" = CASE "id"
         ${Prisma.join(menuCategoriesId.map((menuCategory, index) => Prisma.sql`WHEN ${menuCategory}::uuid THEN ${index + 1}`), ' ')}
-      ELSE "position_in_menu"
+      ELSE "position_in_cylinder"
       END
       WHERE "id" IN (${Prisma.join(menuCategoriesId.map(id => Prisma.sql`${id}::uuid`))})
     `;
@@ -251,7 +281,6 @@ class MenuService {
   private async isValidMenuCategoriesId(menuId: UUID, menuCategoriesId: UUID[]): Promise<void | never> {
     const menuCategories = await this.prisma.menuCategory.findMany({
       where: {
-        deletedAt: null,
         cylinder: {
           menuId
         }
@@ -264,6 +293,21 @@ class MenuService {
     const isValidQuery = (menuCategories.length === menuCategoriesId.length) &&
             menuCategories.every(menuCategory => menuCategoriesId.some(menuCategoryId => menuCategoryId === menuCategory.id ));
     if (!isValidQuery) throw new MenuchiError('All menu category IDs must be in the request.', 400);
+  }
+
+  private async isValidCylindersId(menuId: UUID, cylindersId: UUID[]): Promise<void | never> {
+    const cylinders = await this.prisma.cylinder.findMany({
+      where: {
+        menuId
+      },
+      select: {
+        id: true
+      }
+    });
+    
+    const isValidQuery = (cylinders.length === cylindersId.length) &&
+            cylinders.every(cylinder => cylindersId.some(cylinderId => cylinderId === cylinder.id ));
+    if (!isValidQuery) throw new MenuchiError('All cylinder IDs must be in the request.', 400);
   }
 
   async getBacklog(backlogId: UUID, search = ''): Promise<BacklogCompleteOut | never> {

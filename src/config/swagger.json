@@ -1126,7 +1126,7 @@
 						],
 						"nullable": true
 					},
-					"positionInMenu": {
+					"positionInCylinder": {
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/Int"
@@ -1156,7 +1156,7 @@
 					"updatedAt",
 					"categoryId",
 					"cylinderId",
-					"positionInMenu",
+					"positionInCylinder",
 					"categoryName",
 					"items"
 				],
@@ -1198,6 +1198,14 @@
 						},
 						"type": "array",
 						"nullable": true
+					},
+					"positionInMenu": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
 					}
 				},
 				"required": [
@@ -1205,7 +1213,8 @@
 					"createdAt",
 					"updatedAt",
 					"days",
-					"menuCategories"
+					"menuCategories",
+					"positionInMenu"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1460,12 +1469,21 @@
 							}
 						],
 						"nullable": true
+					},
+					"positionInMenu": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
 					}
 				},
 				"required": [
 					"id",
 					"createdAt",
-					"updatedAt"
+					"updatedAt",
+					"positionInMenu"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1634,6 +1652,40 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"MenuchiError": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"CreateMenuCategoryCompleteOut": {
 				"properties": {
 					"id": {
@@ -1668,7 +1720,7 @@
 						],
 						"nullable": true
 					},
-					"positionInMenu": {
+					"positionInCylinder": {
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/Int"
@@ -1683,7 +1735,7 @@
 					"updatedAt",
 					"categoryId",
 					"cylinderId",
-					"positionInMenu"
+					"positionInCylinder"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1741,40 +1793,6 @@
 					"categoryId",
 					"cylinderId",
 					"items"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"MenuchiError": {
-				"properties": {
-					"name": {
-						"type": "string"
-					},
-					"message": {
-						"type": "string"
-					},
-					"stack": {
-						"type": "string"
-					},
-					"status": {
-						"type": "number",
-						"format": "double"
-					},
-					"code": {
-						"type": "number",
-						"format": "double"
-					},
-					"details": {
-						"items": {
-							"$ref": "#/components/schemas/ErrorDetail"
-						},
-						"type": "array"
-					}
-				},
-				"required": [
-					"name",
-					"message",
-					"status"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -3014,6 +3032,86 @@
 						}
 					}
 				}
+			},
+			"patch": {
+				"operationId": "ReorderCylinders",
+				"responses": {
+					"204": {
+						"description": "Cylinder orders in the menu updated successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"format": "double"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "All menu cylinder IDs must be in the request.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuchiError"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Reorders cylinders.",
+				"tags": [
+					"Menu"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"items": {
+									"$ref": "#/components/schemas/UUID"
+								},
+								"type": "array"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/menus/{menuId}/categories": {
@@ -3107,7 +3205,7 @@
 				"operationId": "ReorderMenuItems",
 				"responses": {
 					"204": {
-						"description": "Menu item orders in the list updated successfully.",
+						"description": "Menu item orders in the menu category updated successfully.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -3262,7 +3360,7 @@
 				"operationId": "ReorderMenuCategories",
 				"responses": {
 					"204": {
-						"description": "Menu category orders in the list updated successfully.",
+						"description": "Menu category orders in the cylinder updated successfully.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -3451,7 +3549,7 @@
 						}
 					}
 				},
-				"description": "Toggles visibility of a menu item.",
+				"description": "Hide/Unhide a menu item.",
 				"tags": [
 					"Menu"
 				],
