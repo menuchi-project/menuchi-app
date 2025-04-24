@@ -81,6 +81,10 @@ class BacklogService {
       const positionInCategory =
         (maxItemPositions._max.positionInCategory ?? 0) + 1;
 
+      if (!picKey) {
+        picKey = process.env.S3_DEFAULT_KEY;
+      }
+
       const item = await tx.item.create({
         data: {
           categoryId: category.id,
