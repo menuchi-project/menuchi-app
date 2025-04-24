@@ -399,7 +399,7 @@ class MenuService {
 
     return {
       ...menu,
-      cylinders: menu.cylinders.map(cylinder => ({
+      cylinders: await Promise.all(menu.cylinders.map(async (cylinder) => ({
         ...cylinder,
         days: [
           cylinder.sat,
@@ -417,12 +417,19 @@ class MenuService {
         wed: undefined,
         thu: undefined,
         fri: undefined,
-        menuCategories: cylinder.menuCategories.map(menuCategory => ({
+        menuCategories: await Promise.all(cylinder.menuCategories.map(async (menuCategory) => ({
           ...menuCategory,
           categoryName: menuCategory.category?.categoryName?.name ?? null,
-          category: undefined
-        }))
-      }))
+          category: undefined,
+          items: await Promise.all(
+            menuCategory.items.map(async (item) => ({
+              ...item,
+              picUrl: await S3Service.generateGetPresignedUrl(item.picKey),
+              picKey: undefined,
+            }))
+          ),
+        })))
+      })))
     };
   }
 }
