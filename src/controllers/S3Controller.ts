@@ -10,6 +10,9 @@ import { ForbiddenError, UnauthorizedError } from "../exceptions/AuthError";
 @Route('/s3')
 @Tags('S3')
 export class S3Controller extends BaseController {
+  /**
+   * Generates a pre-signed URL for uploading an item picture to S3.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<S3ValidationError>(422, '4224 S3ValidationError')

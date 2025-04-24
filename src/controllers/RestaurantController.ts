@@ -14,6 +14,10 @@ import { RestaurantUpdateSession } from "../types/AuthTypes";
 @Route('/restaurants')
 @Tags('Restaurant')
 export class RestaurantController extends BaseController {
+
+  /**
+   * Creates a new restaurant along with its first branch and backlog.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<ConstraintsDatabaseError>(409, 'ConstraintsDatabaseError')
@@ -37,6 +41,9 @@ export class RestaurantController extends BaseController {
     return restaurant;
   }
 
+  /**
+   * Retrieves full details of a specific restaurant by its ID.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<RestaurantNotFound>(404, '4041 RestaurantNotFound')

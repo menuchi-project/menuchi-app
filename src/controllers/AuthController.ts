@@ -20,6 +20,9 @@ import BaseController from "./BaseController";
 @Route('/auth')
 @Tags('Auth')
 export class AuthController extends BaseController {
+  /**
+   * Registers a new restaurant owner.
+   */
   @Response<ConstraintsDatabaseError>(409, 'ConstraintsDatabaseError')
   @Response<UserValidationError>(422, '4225 UserValidationError')
   @SuccessResponse(201, 'User signed up successfully.')
@@ -28,6 +31,9 @@ export class AuthController extends BaseController {
     return AuthService.signup(body);
   }
 
+  /**
+   * Authenticates a restaurant owner.
+   */
   @Response<UserNotFound>(404, '4045 UserNotFound')
   @SuccessResponse(200, 'User signed in successfully.')
   @Post('/res-signin')
@@ -51,6 +57,9 @@ export class AuthController extends BaseController {
     return true;
   }
 
+  /**
+   * Logs out the current user.
+   */
   @SuccessResponse(200, 'User logged out successfully.')
   @Post('/logout')
   public async logout(@Request() req: express.Request): Promise<boolean> {

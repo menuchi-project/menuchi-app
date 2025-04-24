@@ -8,8 +8,11 @@ import { ForbiddenError, UnauthorizedError } from "../exceptions/AuthError";
 import { RolesEnum } from "../types/Enums";
 
 @Route('/category-names')
-@Tags('Category-Name')
+@Tags('Category Name')
 export class CategoryNameController extends BaseController {
+  /**
+   * Creates a new category name.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<ConstraintsDatabaseError>(409, 'ConstraintsDatabaseError')
@@ -21,6 +24,9 @@ export class CategoryNameController extends BaseController {
     return CategoryNameService.createCategoryName(body);
   }
 
+  /**
+   * Retrieves all category names.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @SuccessResponse(200, 'All category names retrieved successfully.')

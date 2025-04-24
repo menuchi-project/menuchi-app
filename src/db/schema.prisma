@@ -192,18 +192,18 @@ model Backlog {
 }
 
 model Category {
-  id                String        @id @default(uuid()) @db.Uuid
-  backlogId         String?       @map("backlog_id") @db.Uuid
-  backlog           Backlog?      @relation(fields: [backlogId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  categoryNameId    String?       @map("category_name_id") @db.Uuid
-  categoryName      CategoryName? @relation(fields: [categoryNameId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  positionInBacklog Int?          @map("position_in_backlog")
+  id                String         @id @default(uuid()) @db.Uuid
+  backlogId         String?        @map("backlog_id") @db.Uuid
+  backlog           Backlog?       @relation(fields: [backlogId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  categoryNameId    String?        @map("category_name_id") @db.Uuid
+  categoryName      CategoryName?  @relation(fields: [categoryNameId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  positionInBacklog Int?           @map("position_in_backlog")
   items             Item[]
   subCategories     SubCategory[]
-  menuCategory      MenuCategory?
-  createdAt         DateTime      @default(now()) @map("created_at")
-  updatedAt         DateTime      @updatedAt @map("updated_at")
-  deletedAt         DateTime?     @map("deleted_at")
+  menuCategory      MenuCategory[]
+  createdAt         DateTime       @default(now()) @map("created_at")
+  updatedAt         DateTime       @updatedAt @map("updated_at")
+  deletedAt         DateTime?      @map("deleted_at")
 
   @@unique([backlogId, categoryNameId])
   @@map("categories")
@@ -257,6 +257,7 @@ model Cylinder {
   wed            Boolean?       @default(false)
   thu            Boolean?       @default(false)
   fri            Boolean?       @default(false)
+  positionInMenu Int?           @map("position_in_menu")
   menuCategories MenuCategory[]
   createdAt      DateTime       @default(now()) @map("created_at")
   updatedAt      DateTime       @updatedAt @map("updated_at")
@@ -267,17 +268,18 @@ model Cylinder {
 }
 
 model MenuCategory {
-  id             String    @id @default(uuid()) @db.Uuid
-  categoryId     String?   @unique @map("category_id") @db.Uuid
-  cylinderId     String?   @map("cylinder_id") @db.Uuid
-  cylinder       Cylinder? @relation(fields: [cylinderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  positionInMenu Int?      @map("position_in_menu")
-  category       Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  items          Item[]
-  createdAt      DateTime  @default(now()) @map("created_at")
-  updatedAt      DateTime  @updatedAt @map("updated_at")
-  deletedAt      DateTime? @map("deleted_at")
+  id                 String    @id @default(uuid()) @db.Uuid
+  categoryId         String?   @map("category_id") @db.Uuid
+  cylinderId         String?   @map("cylinder_id") @db.Uuid
+  cylinder           Cylinder? @relation(fields: [cylinderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  positionInCylinder Int?      @map("position_in_cylinder")
+  category           Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  items              Item[]
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+  deletedAt          DateTime? @map("deleted_at")
 
+  @@unique([categoryId, cylinderId])
   @@map("menu_categories")
 }
 

@@ -8,6 +8,9 @@ import { ForbiddenError, UnauthorizedError } from "../exceptions/AuthError";
 @Route('/users')
 @Tags('User')
 export class UserController extends BaseController {
+  /**
+   * Retrieves the profile of the currently authorized user.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @SuccessResponse(200, 'Authorized user profile retrieved successfully.')

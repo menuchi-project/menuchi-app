@@ -34,7 +34,7 @@ class S3Service {
     return getSignedUrl(this.client, putCommand, { expiresIn });
   }
 
-  async generateGetPresignedUrl(keyName: string | null, expiresIn = 300): Promise<URL | null> {
+  async generateGetPresignedUrl(keyName: string | null, expiresIn = 1800): Promise<URL | null> {
     if (!keyName) return null;
 
     const getCommand = new GetObjectCommand({

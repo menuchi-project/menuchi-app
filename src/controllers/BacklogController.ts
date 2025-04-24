@@ -10,11 +10,14 @@ import express from 'express';
 import { PermissionScope, RolesEnum } from "../types/Enums";
 import { ForbiddenError, UnauthorizedError } from "../exceptions/AuthError";
 import MenuchiError from "../exceptions/MenuchiError";
-import RedisClient from "../config/RedisClient";
+import TransformersRedisClient from "../config/TransformersRedisClient";
 
 @Route('/backlog')
 @Tags('Backlog')
 export class BacklogController extends BaseController {
+  /**
+   * Creates a new item in a backlog.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<CategoryNameNotFound>(404, '4042 CategoryNameNotFound')
@@ -33,13 +36,16 @@ export class BacklogController extends BaseController {
     const item = await BacklogService.createItem(backlogId, body);
     if (item.picKey) {
       const streamName = process.env.TRANSFORMERS_STREAM!;
-      const event = { image_key: item.picKey ?? '' };
-      await RedisClient.xAdd(streamName, '*', event);
+      const event = { image_key: item.picKey };
+      await TransformersRedisClient.xAdd(streamName, '*', event);
     }
 
     return item;
   }
 
+  /**
+   * Retrieves a specific backlog.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<BacklogNotFound>(404, '4044 BacklogNotFound')
@@ -51,6 +57,9 @@ export class BacklogController extends BaseController {
     return BacklogService.getBacklog(backlogId);
   }
 
+  /**
+   * Retrieves all items in a backlog.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response(200, 'BacklogNotFound without raise any error.')
@@ -62,6 +71,9 @@ export class BacklogController extends BaseController {
     return BacklogService.getItems(backlogId);
   }
 
+  /**
+   * Updates an item in a backlog.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<ItemValidationError>(422, '4223 ItemValidationError')
@@ -79,6 +91,9 @@ export class BacklogController extends BaseController {
     return null;
   }
 
+  /**
+   * Reorders items within a category.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<MenuchiError>(400, 'All item IDs must be in the request.')
@@ -94,6 +109,9 @@ export class BacklogController extends BaseController {
     return BacklogService.reorderItemsInCategory(backlogId, body);
   }
 
+  /**
+   * Reorders items within a list.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<MenuchiError>(400, 'All item IDs must be in the request.')
@@ -109,6 +127,9 @@ export class BacklogController extends BaseController {
     return BacklogService.reorderItemsInList(backlogId, body);
   }
 
+  /**
+   * Deletes multiple items from a backlog.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @SuccessResponse(204, 'Items deleted successfully. It doesn\'t retrieve anything.')
@@ -124,6 +145,9 @@ export class BacklogController extends BaseController {
     return null;
   }
 
+  /**
+   * Reorders categories within a backlog.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<MenuchiError>(400, 'All category IDs must be in the request.')
@@ -139,6 +163,9 @@ export class BacklogController extends BaseController {
     return BacklogService.reorderCategoriesInBacklog(backlogId, body);
   }
 
+  /**
+   * Deletes a category and all its items.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @SuccessResponse(204, 'Category and its items deleted successfully.  It doesn\'t retrieve anything.')

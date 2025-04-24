@@ -16,6 +16,9 @@ import { MenuUpdateSession } from "../types/AuthTypes";
 @Route('/menus')
 @Tags('Menu')
 export class MenuController extends BaseController {
+  /**
+   * Retrieves a backlog by ID.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<BranchNotFound>(404, '4049 BranchNotFound')
@@ -31,6 +34,9 @@ export class MenuController extends BaseController {
     return MenuService.getBacklog(backlogId, search);
   }
 
+  /**
+   * Creates a new menu.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<BranchNotFound>(404, '4049 BranchNotFound')
@@ -55,6 +61,9 @@ export class MenuController extends BaseController {
     return menu;
   }
 
+  /**
+   * Retrieves a menu by ID.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<MenuNotFound>(404, '4045 MenuNotFound')
@@ -69,6 +78,9 @@ export class MenuController extends BaseController {
     return MenuService.getMenu(menuId);
   }
 
+  /**
+   * Updates a menu.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<MenuNotFound>(404, '4045 MenuNotFound')
@@ -86,6 +98,9 @@ export class MenuController extends BaseController {
     return null;
   }
 
+  /**
+   * Creates a new cylinder in a menu.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<CylinderNotFound>(404, '4046 CylinderNotFound')
@@ -109,6 +124,27 @@ export class MenuController extends BaseController {
     return MenuService.createCylinder(menuId, body);
   }
 
+  /**
+   * Reorders cylinders.
+   */
+  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
+  @Response<UnauthorizedError>(401, 'Unauthorized user.')
+  @Response<MenuchiError>(400, 'All menu cylinder IDs must be in the request.')
+  @SuccessResponse(204, 'Cylinder orders in the menu updated successfully.')
+  @Security('', [RolesEnum.RestaurantOwner])
+  @Patch('/{menuId}/cylinders')
+  async reorderCylinders(
+    @Path() menuId: UUID,
+    @Body() body: UUID[],
+    @Request() req: express.Request
+  ): Promise<number> {
+    this.checkPermission(req.session.user, PermissionScope.Menu, menuId);
+    return MenuService.reorderCylinders(menuId, body);
+  }
+
+  /**
+   * Creates a new category in a menu.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<ConstraintsDatabaseError>(409, 'ConstraintsDatabaseError')
@@ -128,10 +164,13 @@ export class MenuController extends BaseController {
     return MenuService.createMenuCategory(menuId, body);
   }
 
+  /**
+   * Reorders menu items.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<MenuchiError>(400, 'All menu item IDs must be in the request.')
-  @SuccessResponse(204, 'Menu item orders in the list updated successfully.')
+  @SuccessResponse(204, 'Menu item orders in the menu category updated successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Patch('/{menuId}/categories')
   async reorderMenuItems(
@@ -143,6 +182,9 @@ export class MenuController extends BaseController {
     return MenuService.reorderMenuItems(menuId, body);
   }
 
+  /**
+   * Deletes menu categories.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @SuccessResponse(204, 'Menu Categories deleted successfully.')
@@ -158,10 +200,13 @@ export class MenuController extends BaseController {
     return null;
   }
 
+  /**
+   * Reorders menu categories.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<MenuchiError>(400, 'All menu category IDs must be in the request.')
-  @SuccessResponse(204, 'Menu category orders in the list updated successfully.')
+  @SuccessResponse(204, 'Menu category orders in the cylinder updated successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Patch('/{menuId}/items')
   async reorderMenuCategories(
@@ -173,6 +218,9 @@ export class MenuController extends BaseController {
     return MenuService.reorderMenuCategories(menuId, body);
   }
 
+  /**
+   * Hide/Unhide a menu item.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @SuccessResponse(204, 'Menu Item hide/unhide successfully.')
@@ -189,6 +237,9 @@ export class MenuController extends BaseController {
     return null;
   }
 
+  /**
+   * Deletes menu items.
+   */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @SuccessResponse(204, 'Menu Items deleted successfully.')

@@ -30,7 +30,9 @@ export interface CylinderCompactIn {
   fri?: Boolean | null;
 }
 
-export interface CreateCylinderCompleteOut extends CompleteOut, CylinderCompactIn {}
+export interface CreateCylinderCompleteOut extends CompleteOut, CylinderCompactIn {
+  positionInMenu: Int | null;
+}
 
 export interface MenuCategoryCompactIn {
   categoryId: UUID;
@@ -41,14 +43,17 @@ export interface MenuCategoryCompactIn {
 export interface CreateMenuCategoryCompleteOut extends CompleteOut {
   categoryId: UUID | null;
   cylinderId: UUID | null;
+  positionInCylinder: Int | null;
+}
+
+interface CylinderCompleteOut extends CompleteOut {
+  days: (Boolean | null)[];
+  menuCategories: MenuCategoryCompleteOut[] | null;
   positionInMenu: Int | null;
 }
 
-interface CylinderCompleteOut extends CreateCylinderCompleteOut {
-  menuCategories: MenuCategoryCompleteOut[] | null;
-}
-
 interface MenuCategoryCompleteOut extends CreateMenuCategoryCompleteOut {
+  categoryName: DefaultString | null;
   items: ItemCompleteOut[] | null;
 }
 

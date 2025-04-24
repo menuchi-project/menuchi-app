@@ -13,7 +13,6 @@ import {
 import { BacklogCompleteOut } from '../types/RestaurantTypes';
 import S3Service from './S3Service';
 import MenuchiError from '../exceptions/MenuchiError';
-import RedisClient from '../config/RedisClient';
 
 class BacklogService {
   private prisma: PrismaClient;
@@ -81,6 +80,10 @@ class BacklogService {
         (maxItemPositions._max.positionInItemsList ?? 0) + 1;
       const positionInCategory =
         (maxItemPositions._max.positionInCategory ?? 0) + 1;
+
+      if (!picKey) {
+        picKey = process.env.S3_DEFAULT_KEY;
+      }
 
       const item = await tx.item.create({
         data: {

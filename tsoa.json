@@ -21,7 +21,37 @@
         "in": "cookie",
         "name": "access-token"
       }
-    }
+    },
+    "tags": [
+      {
+        "name": "Auth",
+        "description": "Authentication and session management"
+      },
+      {
+        "name": "User",
+        "description": "User profile and session info"
+      },
+      {
+        "name": "Restaurant",
+        "description": "Restaurant operations"
+      },
+      {
+        "name": "Backlog",
+        "description": "Backlog handling for restaurant branches"
+      },
+      {
+        "name": "Menu",
+        "description": "Menu management"
+      },
+      {
+        "name": "S3",
+        "description": "S3 file upload URL generation"
+      },
+      {
+        "name": "Category Name",
+        "description": "Menu category name operations"
+      }
+    ]
   },
   "routes": {
     "routesDir": "./src",
