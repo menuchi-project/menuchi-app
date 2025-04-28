@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "npx tsoa spec-and-routes && ts-node --files ./src/index.ts",
     "start": "node ./build/index.js",
-    "db-push": "npx prisma db push --schema=./src/db/schema.prisma"
+    "db-push": "npx prisma db push --schema=./src/db/schema.prisma",
+    "test": "vitest --config ./test/vitest.config.ts"
   },
   "repository": {
     "type": "git",
@@ -47,5 +48,12 @@
     "swagger-ui-express": "^5.0.1",
     "tsoa": "^6.6.0",
     "typescript": "^5.8.2"
+  },
+  "devDependencies": {
+    "@types/supertest": "^6.0.3",
+    "@vitest/ui": "^3.1.2",
+    "supertest": "^7.1.0",
+    "vitest": "^3.1.2",
+    "vitest-mock-extended": "^3.1.0"
   }
 }
