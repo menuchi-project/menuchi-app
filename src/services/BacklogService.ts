@@ -1,4 +1,5 @@
 import { Prisma, PrismaClient } from '@prisma/client';
+import prismaClient from '../../libs/prisma';
 import {
   UpdateItemIn,
   ItemCompactIn,
@@ -15,11 +16,7 @@ import S3Service from './S3Service';
 import MenuchiError from '../exceptions/MenuchiError';
 
 class BacklogService {
-  private prisma: PrismaClient;
-
-  constructor() {
-    this.prisma = new PrismaClient();
-  }
+  constructor(private prisma: PrismaClient = prismaClient) {}
 
   async createItem(
     backlogId: UUID,

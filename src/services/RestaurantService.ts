@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import prismaClient from '../../libs/prisma';
 import {
   RestaurantCompactIn,
   RestaurantCompleteOut,
@@ -7,11 +8,7 @@ import { UUID } from '../types/TypeAliases';
 import { RestaurantNotFound } from '../exceptions/NotFoundError';
 
 class RestaurantService {
-  private prisma: PrismaClient;
-
-  constructor() {
-    this.prisma = new PrismaClient();
-  }
+  constructor(private prisma: PrismaClient = prismaClient) {}
 
  async createRestaurant(
     restaurantDTO: RestaurantCompactIn,

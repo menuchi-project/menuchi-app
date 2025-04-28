@@ -1,4 +1,5 @@
 import { Prisma, PrismaClient } from '@prisma/client';
+import prismaClient from '../../libs/prisma';
 import { UUID } from '../types/TypeAliases';
 import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, CreateMenuCompleteOut, MenuCompleteOut, CreateMenuCompactIn } from '../types/MenuTypes';
 import MenuchiError from '../exceptions/MenuchiError';
@@ -7,11 +8,7 @@ import S3Service from './S3Service';
 import { BacklogCompleteOut } from '../types/RestaurantTypes';
 
 class MenuService {
-  private prisma: PrismaClient;
-
-  constructor() {
-    this.prisma = new PrismaClient();
-  }
+  constructor(private prisma: PrismaClient = prismaClient) {}
 
   async createMenu(body: CreateMenuCompactIn): Promise<CreateMenuCompleteOut | never> {
     const newMenu = await this.prisma.menu.create({

@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import prismaClient from '../../libs/prisma';
 import { UserCompactIn, UserCompleteOut } from '../types/UserTypes';
 import { JWTPayload, UserLogin, ExpressSession } from "../types/AuthTypes";
 import bcrypt from 'bcryptjs';
@@ -7,11 +8,7 @@ import { UserNotFound } from '../exceptions/NotFoundError';
 import jwt from 'jsonwebtoken';
 
 class AuthService {
-  private prisma: PrismaClient;
-
-  constructor() {
-    this.prisma = new PrismaClient();
-  }
+  constructor(private prisma: PrismaClient = prismaClient) {}
 
   async signup(userDTO: UserCompactIn, roles = [RolesEnum.RestaurantOwner]): Promise<UserCompleteOut | never> {
     userDTO.password = await this.hashPassword(userDTO.password);
