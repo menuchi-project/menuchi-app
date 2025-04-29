@@ -133,3 +133,4 @@ dist
 build
 
 .dev.env
+test/db/test.db

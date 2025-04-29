@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-import prismaClient from '../../libs/prisma';
+import prismaClient from '../db/prisma';
 import {
   UpdateItemIn,
   ItemCompactIn,

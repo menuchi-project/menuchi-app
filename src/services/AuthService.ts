@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import prismaClient from '../../libs/prisma';
+import prismaClient from '../db/prisma';
 import { UserCompactIn, UserCompleteOut } from '../types/UserTypes';
 import { JWTPayload, UserLogin, ExpressSession } from "../types/AuthTypes";
 import bcrypt from 'bcryptjs';

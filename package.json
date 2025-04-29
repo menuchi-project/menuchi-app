@@ -7,7 +7,7 @@
     "dev": "npx tsoa spec-and-routes && ts-node --files ./src/index.ts",
     "start": "node ./build/index.js",
     "db-push": "npx prisma db push --schema=./src/db/schema.prisma",
-    "test": "vitest --config ./test/vitest.config.ts"
+    "test": "set NODE_ENV=test && vitest --config ./test/vitest.config.ts"
   },
   "repository": {
     "type": "git",

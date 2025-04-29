@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-import prismaClient from '../../libs/prisma';
+import prismaClient from '../db/prisma';
 import { UUID } from '../types/TypeAliases';
 import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, CreateMenuCompleteOut, MenuCompleteOut, CreateMenuCompactIn } from '../types/MenuTypes';
 import MenuchiError from '../exceptions/MenuchiError';
@@ -319,8 +319,7 @@ class MenuService {
                 deletedAt: null,
                 categoryName: {
                   name: {
-                    contains: search,
-                    mode: 'insensitive'
+                    contains: search
                   }
                 }
               },

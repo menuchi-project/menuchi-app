@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import prismaClient from '../../libs/prisma';
+import prismaClient from '../db/prisma';
 import { CategoryNameCompactIn, CategoryNameCompleteOut } from '../types/CategoryTypes';
 
 class CategoryNameService {

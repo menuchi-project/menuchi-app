@@ -1,8 +1,8 @@
 import { randomUUID } from "crypto";
 
-export const createUser = () => ({
+export const returnUser = () => ({
   id: randomUUID(),
-  phoneNumber: '09112345678',
+  phoneNumber: '09123456789',
   password: 'P@ssword1234',
   username: 'test_user',
   email: 'test@gmail.com',

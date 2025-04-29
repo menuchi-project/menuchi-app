@@ -1,0 +1,299 @@
+generator db {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url = "file:./test.db?connection_limit=1&socket_timeout=10"
+}
+
+model User {
+  id                    String       @id @default(uuid()) 
+  username              String?      @unique
+  password              String?
+  phoneNumber           String?      @unique @map("phone_number")
+  isPhoneNumberVerified Boolean?     @map("is_phone_number_verified")
+  email                 String?      @unique
+  isEmailVerified       Boolean?     @map("is_email_verified")
+  restaurants           Restaurant[]
+  roles                 Role[]
+  staff                 Staff[]
+  userProfile           UserProfile?
+  createdAt             DateTime     @default(now()) @map("created_at")
+  updatedAt             DateTime     @updatedAt @map("updated_at")
+  deletedAt             DateTime?    @map("deleted_at")
+
+  @@map("users")
+}
+
+model Role {
+  id        String     @id @default(uuid()) 
+  userId    String?    @map("user_id") 
+  role      RolesEnum?
+  user      User?      @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  deletedAt DateTime?  @map("deleted_at")
+
+  @@map("roles")
+}
+
+enum RolesEnum {
+  ADMIN
+  RESTAURANT_OWNER
+
+  @@map("roles_enum")
+}
+
+model UserProfile {
+  id               String    @id @default(uuid()) 
+  userId           String?   @unique @map("user_id") 
+  fullName         String?   @map("full_name")
+  gender           Gender?
+  bio              String?   
+  profileAvatarKey String?   @map("profile_avatar_key")
+  profileCoverKey  String?   @map("profile_cover_key")
+  user             User?     @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+  deletedAt        DateTime? @map("deleted_at")
+
+  @@map("user_profiles")
+}
+
+enum Gender {
+  male
+  female
+  other
+
+  @@map("genders_enum")
+}
+
+model Restaurant {
+  id          String    @id @default(uuid()) 
+  managerId   String?   @map("manager_id") 
+  name        String?
+  displayName String?   @unique @map("display_name")
+  slang       String?
+  instagram   String?
+  telegram    String?
+  twitter     String?
+  youtube     String?
+  eitaa       String?
+  avatarKey   String?   @map("avatar_key")
+  coverKey    String?   @map("cover_key")
+  logoKey     String?   @map("logo_key")
+  branches    Branch[]
+  user        User?     @relation(fields: [managerId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  @@map("restaurants")
+}
+
+model Branch {
+  id           String        @id @default(uuid()) 
+  restaurantId String?       @map("restaurant_id") 
+  name         String?
+  displayName  String?       @unique @map("display_name")
+  iOpen        Boolean?      @map("is_open")
+  status       String?
+  rating       Float?
+  showRating   Boolean?      @map("show_rating")
+  instagram    String?
+  telegram     String?
+  twitter      String?
+  youtube      String?
+  eitaa        String?
+  address      Address?
+  backlog      Backlog?
+  restaurant   Restaurant?   @relation(fields: [restaurantId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  menus        Menu[]
+  openingTimes OpeningTimes?
+  staff        Staff[]
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  deletedAt    DateTime?     @map("deleted_at")
+
+  @@map("branches")
+}
+
+model Staff {
+  id        String    @id @default(uuid()) 
+  userId    String?   @map("user_id") 
+  branchId  String?   @map("branch_id") 
+  branch    Branch?   @relation(fields: [branchId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  user      User?     @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@unique([userId, branchId])
+  @@map("staff")
+}
+
+model OpeningTimes {
+  id        String    @id @default(uuid()) 
+  branchId  String?   @unique @map("branch_id") 
+  sat       String?
+  sun       String?
+  mon       String?
+  tue       String?
+  wed       String?
+  thu       String?
+  fri       String?
+  branch    Branch?   @relation(fields: [branchId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@map("opening_times")
+}
+
+model Address {
+  id          String    @id @default(uuid()) 
+  branchId    String?   @unique @map("branch_id") 
+  country     String?   @default("Iran")
+  region      String?
+  city        String?
+  area        String?
+  street      String?
+  description String?   
+  branch      Branch?   @relation(fields: [branchId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  @@map("addresses")
+}
+
+model CategoryName {
+  id         String     @id @default(uuid()) 
+  name       String?    @unique
+  categories Category[]
+  createdAt  DateTime   @default(now()) @map("created_at")
+  updatedAt  DateTime   @updatedAt @map("updated_at")
+  deletedAt  DateTime?  @map("deleted_at")
+
+  @@map("category_names")
+}
+
+model Backlog {
+  id         String     @id @default(uuid()) 
+  branchId   String?    @unique @map("branch_id") 
+  branch     Branch?    @relation(fields: [branchId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  categories Category[]
+  createdAt  DateTime   @default(now()) @map("created_at")
+  updatedAt  DateTime   @updatedAt @map("updated_at")
+  deletedAt  DateTime?  @map("deleted_at")
+
+  @@map("backlog")
+}
+
+model Category {
+  id                String         @id @default(uuid()) 
+  backlogId         String?        @map("backlog_id") 
+  backlog           Backlog?       @relation(fields: [backlogId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  categoryNameId    String?        @map("category_name_id") 
+  categoryName      CategoryName?  @relation(fields: [categoryNameId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  positionInBacklog Int?           @map("position_in_backlog")
+  items             Item[]
+  subCategories     SubCategory[]
+  menuCategory      MenuCategory[]
+  createdAt         DateTime       @default(now()) @map("created_at")
+  updatedAt         DateTime       @updatedAt @map("updated_at")
+  deletedAt         DateTime?      @map("deleted_at")
+
+  @@unique([backlogId, categoryNameId])
+  @@map("categories")
+}
+
+model SubCategory {
+  id                 String    @id @default(uuid()) 
+  categoryId         String?   @map("category_id") 
+  name               String?
+  positionInCategory Int?      @map("position_in_category")
+  items              Item[]
+  category           Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+  deletedAt          DateTime? @map("deleted_at")
+
+  @@map("sub_categories")
+}
+
+model Item {
+  id                     String        @id @default(uuid()) 
+  categoryId             String?       @map("category_id") 
+  subCategoryId          String?       @map("sub_category_id") 
+  menuCategoryId         String?       @map("menu_category_id") 
+  name                   String?
+  ingredients            String?       
+  price                  Float?
+  picKey                 String?       @map("pic_key")
+  positionInItemsList    Int?          @map("position_in_items_list")
+  positionInCategory     Int?          @map("position_in_category")
+  positionInMenuCategory Int?          @map("position_in_menu_categories")
+  isActive               Boolean?      @default(true) @map("is_active")
+  category               Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  subCategory            SubCategory?  @relation(fields: [subCategoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  menuCategory           MenuCategory? @relation(fields: [menuCategoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt              DateTime      @default(now()) @map("created_at")
+  updatedAt              DateTime      @updatedAt @map("updated_at")
+  deletedAt              DateTime?     @map("deleted_at")
+
+  @@map("items")
+}
+
+model Cylinder {
+  id             String         @id @default(uuid()) 
+  menuId         String?        @map("menu_id") 
+  menu           Menu?          @relation(fields: [menuId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sat            Boolean?       @default(false)
+  sun            Boolean?       @default(false)
+  mon            Boolean?       @default(false)
+  tue            Boolean?       @default(false)
+  wed            Boolean?       @default(false)
+  thu            Boolean?       @default(false)
+  fri            Boolean?       @default(false)
+  positionInMenu Int?           @map("position_in_menu")
+  menuCategories MenuCategory[]
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+  deletedAt      DateTime?      @map("deleted_at")
+
+  @@unique([menuId, sat, sun, mon, tue, wed, thu, fri])
+  @@map("cylinders")
+}
+
+model MenuCategory {
+  id                 String    @id @default(uuid()) 
+  categoryId         String?   @map("category_id") 
+  cylinderId         String?   @map("cylinder_id") 
+  cylinder           Cylinder? @relation(fields: [cylinderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  positionInCylinder Int?      @map("position_in_cylinder")
+  category           Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  items              Item[]
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+  deletedAt          DateTime? @map("deleted_at")
+
+  @@unique([categoryId, cylinderId])
+  @@map("menu_categories")
+}
+
+model Menu {
+  id          String     @id @default(uuid()) 
+  branchId    String?    @map("branch_id") 
+  name        String?
+  favicon     String?
+  isPublished Boolean?   @default(false) @map("is_published")
+  branch      Branch?    @relation(fields: [branchId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  cylinders   Cylinder[]
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+  deletedAt   DateTime?  @map("deleted_at")
+
+  @@map("menus")
+}
