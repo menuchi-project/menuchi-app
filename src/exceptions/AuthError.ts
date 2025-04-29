@@ -26,3 +26,9 @@ export class InvalidTokenError extends AuthError {
     super('Invalid token.', 401);
   }
 }
+
+export class InvalidCredentialsError extends AuthError {
+  constructor() {
+    super('Invalid credentials.', 401);
+  }
+}

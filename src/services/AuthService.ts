@@ -4,8 +4,8 @@ import { UserCompactIn, UserCompleteOut } from '../types/UserTypes';
 import { JWTPayload, UserLogin, ExpressSession } from "../types/AuthTypes";
 import bcrypt from 'bcryptjs';
 import { RolesEnum } from '../types/Enums';
-import { UserNotFound } from '../exceptions/NotFoundError';
 import jwt from 'jsonwebtoken';
+import { InvalidCredentialsError } from '../exceptions/AuthError';
 
 class AuthService {
   constructor(private prisma: PrismaClient = prismaClient) {}
@@ -55,15 +55,15 @@ class AuthService {
       }
     }).catch((error: Error) => {
       if (error.message.includes('not found'))
-        throw new UserNotFound();
+        throw new InvalidCredentialsError();
       throw error;
     });
 
     const isCorrectPassword = await this.comparePassword(password, user?.password!);
-    if(!isCorrectPassword) throw new UserNotFound();
+    if(!isCorrectPassword) throw new InvalidCredentialsError();
 
     const roles = user.roles.map(role => role.role) as RolesEnum[];
-    const token = await this.generateAuthToken({ userId: user.id, roles });
+    const token = this.generateAuthToken({ userId: user.id, roles });
 
     return {
       accessToken: token,
