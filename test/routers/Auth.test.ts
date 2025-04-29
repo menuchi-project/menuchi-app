@@ -3,6 +3,7 @@ import createServer from '../../src/server';
 import { expect, test } from 'vitest';
 import supertest from 'supertest';
 import { returnUser } from '../factories';
+import { CookieNames } from '../../src/types/Enums';
 
 const request = supertest(createServer());
 
@@ -12,7 +13,6 @@ describe('POST /auth/res-signup', () => {
     const res = await request
       .post('/auth/res-signup')
       .send(userObject);
-    console.log(res.body);
     
     expect(res.status).toBe(201);
     expect(res.body.phoneNumber).toMatch(userObject.phoneNumber);
@@ -29,5 +29,63 @@ describe('POST /auth/res-signup', () => {
       .send(userObject);
   
     expect(res.status).toBe(409);
+    expect(res.body.message).toMatch('Constraint failed');
+  });
+});
+
+describe('POST /auth/res-signin', () => {
+  test('should signin successfully with 200 status code.', async () => {
+    const { phoneNumber, password } = returnUser();
+    const res = await request
+      .post('/auth/res-signin')
+      .send({ phoneNumber, password });
+    
+    expect(res.status).toBe(200);
+    expect(res.body).toBe(true);
+    expect(res.headers['set-cookie']).toBeDefined();
+    expect(res.headers['set-cookie']).toContainEqual(expect.stringContaining(CookieNames.AccessToken));
+    expect(res.headers['set-cookie']).toContainEqual(expect.stringContaining(CookieNames.SessionId));
+  });
+
+  test('should reject signin with 401 status code.', async () => {
+    const { phoneNumber } = returnUser();
+    const res = await request
+      .post('/auth/res-signin')
+      .send({
+        phoneNumber,
+        password: 'WRONG-PASSWORD'
+      });
+    
+    expect(res.status).toBe(401);
+    expect(res.body.message).toMatch('Invalid credentials.');
+  });
+
+  test('should reject signin with 401 status code.', async () => {
+    const { password } = returnUser();
+    const res = await request
+      .post('/auth/res-signin')
+      .send({
+        phoneNumber: '09987654321',
+        password
+      });
+    
+    expect(res.status).toBe(401);
+    expect(res.body.message).toMatch('Invalid credentials.');
+  });
+});
+
+describe('POST /auth/logout', () => {
+  test('should logout with 200 status code.', async () => {
+    const { phoneNumber, password } = returnUser();
+    await request
+      .post('/auth/res-signin')
+      .send({ phoneNumber, password });
+    const res = await request
+      .post('/auth/logout')
+      .send();
+    
+    expect(res.status).toBe(200);
+    expect(res.body).toBe(true);
+    expect(res.headers['set-cookie']).not.toBeDefined();
   });
 });
