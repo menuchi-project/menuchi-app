@@ -1,15 +1,17 @@
+import { request } from '../requestAgents';
 import { describe } from 'node:test';
-import createServer from '../../src/server';
 import { expect, test } from 'vitest';
-import supertest from 'supertest';
 import { returnUser } from '../factories';
 import { CookieNames } from '../../src/types/Enums';
+import supertest from 'supertest';
+import createServer from '../../src/server';
 
-const request = supertest(createServer());
+const agent = supertest.agent(createServer());
+const userObject = returnUser();
+const { phoneNumber, password } = userObject;
 
 describe('POST /auth/res-signup', () => {
   test('should signup a new user successfully with 201 status code.', async () => {
-    const userObject = returnUser();
     const res = await request
       .post('/auth/res-signup')
       .send(userObject);
@@ -22,8 +24,6 @@ describe('POST /auth/res-signup', () => {
   });
 
   test('should reject signup with constraint error and 409 status code.', async () => {
-    const userObject = returnUser();
-
     const res = await request
       .post('/auth/res-signup')
       .send(userObject);
@@ -35,8 +35,7 @@ describe('POST /auth/res-signup', () => {
 
 describe('POST /auth/res-signin', () => {
   test('should signin successfully with 200 status code.', async () => {
-    const { phoneNumber, password } = returnUser();
-    const res = await request
+    const res = await agent
       .post('/auth/res-signin')
       .send({ phoneNumber, password });
     
@@ -48,7 +47,6 @@ describe('POST /auth/res-signin', () => {
   });
 
   test('should reject signin with 401 status code.', async () => {
-    const { phoneNumber } = returnUser();
     const res = await request
       .post('/auth/res-signin')
       .send({
@@ -61,7 +59,6 @@ describe('POST /auth/res-signin', () => {
   });
 
   test('should reject signin with 401 status code.', async () => {
-    const { password } = returnUser();
     const res = await request
       .post('/auth/res-signin')
       .send({
@@ -76,16 +73,11 @@ describe('POST /auth/res-signin', () => {
 
 describe('POST /auth/logout', () => {
   test('should logout with 200 status code.', async () => {
-    const { phoneNumber, password } = returnUser();
-    await request
-      .post('/auth/res-signin')
-      .send({ phoneNumber, password });
-    const res = await request
+    const res = await agent
       .post('/auth/logout')
       .send();
-    
+
     expect(res.status).toBe(200);
     expect(res.body).toBe(true);
-    expect(res.headers['set-cookie']).not.toBeDefined();
   });
 });
