@@ -6,13 +6,13 @@ import swaggerUi from 'swagger-ui-express';
 import * as swagger from './config/swagger.json';
 import morgan from 'morgan';
 import cors from 'cors';
-import RedisClient from './config/RedisClient';
-import TransformersRedisClient from './config/TransformersRedisClient';
+import './config/RedisClient';
+import './config/TransformersRedisClient';
 import sessionConfig from './config/SessionConfig';
 import cookieParser from 'cookie-parser';
 
 export default function createServer() {
-  dotenv.config();
+  dotenv.config({ path: process.env.NODE_ENV?.trim() === 'test' ? '.test.env' : '.env' });
   const app = express();
 
   app.use(cors({ origin: process.env.MENUCHI_FRONT_URL, credentials: true }));
