@@ -25,11 +25,11 @@ export class RestaurantController extends BaseController {
   @SuccessResponse(201, 'Restaurant, a branch and its backlog created successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Post()
-  public async createRestaurant(@Body() body: RestaurantCompactIn, @Request() req: express.Request): Promise<RestaurantCompleteOut> {
-    const restaurant = await RestaurantService.createRestaurant(body, req.session.user?.id);
+  public async createRestaurant(@Body() body: RestaurantCompactIn, @Request() req?: express.Request): Promise<RestaurantCompleteOut> {
+    const restaurant = await RestaurantService.createRestaurant(body, req?.session.user?.id);
 
     const updateSession = {
-      userSession: req.session.user,
+      userSession: req?.session.user,
       restaurantId: restaurant.id,
       branch: {
         id: restaurant.branches?.[0].id,
@@ -50,8 +50,8 @@ export class RestaurantController extends BaseController {
   @SuccessResponse(200, 'Restaurant is retrieved successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Get('/{restaurantId}')
-  public async getRestaurant(@Path() restaurantId: UUID, @Request() req: express.Request): Promise<RestaurantCompleteOut> {
-    this.checkPermission(req.session.user, PermissionScope.Restaurant, restaurantId);    
+  public async getRestaurant(@Path() restaurantId: UUID, @Request() req?: express.Request): Promise<RestaurantCompleteOut> {
+    this.checkPermission(req?.session.user, PermissionScope.Restaurant, restaurantId);    
     return RestaurantService.getRestaurant(restaurantId);
   }
 }

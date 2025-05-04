@@ -7,12 +7,12 @@ const categoryNameObject = returnCategoryName();
 const controller = new CategoryNameController();
 
 describe('POST /category-names', async () =>{
-  test('should create category name successfully with 201 status code.', async () => {
+  test('should create category name successfully.', async () => {
     const res = await controller.createCategoryName(categoryNameObject);
     expect(res.name).toMatch(categoryNameObject.name);
   });
 
-  test('should reject create category name with constraint error and 409 status code.', async () => {
+  test('should reject create category name with constraint error.', async () => {
     await controller.createCategoryName(categoryNameObject);
     const promise = controller.createCategoryName(categoryNameObject);
     expect(promise).rejects.toThrowError(Prisma.PrismaClientKnownRequestError);
@@ -20,7 +20,7 @@ describe('POST /category-names', async () =>{
 });
 
 describe('GET /category-names', () => {
-  test('should retrieved all category names successfully with 200 status code.', async () => {
+  test('should retrieved all category names successfully.', async () => {
     await controller.createCategoryName(categoryNameObject);
     const promise = controller.getAllCategoryNames();
     expect(promise).resolves.toMatchObject([categoryNameObject]);
