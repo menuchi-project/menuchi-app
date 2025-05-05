@@ -131,3 +131,5 @@ dist
 
 # Typescript build
 build
+
+.docker

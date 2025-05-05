@@ -17,9 +17,7 @@ describe('POST /auth/res-signup', () => {
     expect(res.body.email).toMatch(userObject.email);
     expect(res.body.username).toMatch(userObject.username);
   });
-});
 
-describe('POST /auth/res-signup', () => {
   test('should reject signup with constraint error and 409 status code.', async () => {
     await request.post('/auth/res-signup').send(userObject);
     const res = await request.post('/auth/res-signup').send(userObject);
@@ -46,9 +44,7 @@ describe('POST /auth/res-signin', () => {
       expect.stringContaining(CookieNames.SessionId)
     );
   });
-});
 
-describe('POST /auth/res-signin', () => {
   test('should reject signin with 401 status code.', async () => {
     await request.post('/auth/res-signup').send(userObject);
     const res = await request.post('/auth/res-signin').send({
@@ -59,9 +55,7 @@ describe('POST /auth/res-signin', () => {
     expect(res.status).toBe(401);
     expect(res.body.message).toMatch('Invalid credentials.');
   });
-});
 
-describe('POST /auth/res-signin', () => {
   test('should reject signin with 401 status code.', async () => {
     await request.post('/auth/res-signup').send(userObject);
     const res = await request.post('/auth/res-signin').send({
