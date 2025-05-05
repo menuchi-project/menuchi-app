@@ -2294,7 +2294,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"UserNotFound": {
+			"InvalidCredentialsError": {
 				"properties": {
 					"name": {
 						"type": "string"
@@ -4473,12 +4473,12 @@
 							}
 						}
 					},
-					"404": {
-						"description": "4045 UserNotFound",
+					"401": {
+						"description": "InvalidCredentialsError",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UserNotFound"
+									"$ref": "#/components/schemas/InvalidCredentialsError"
 								}
 							}
 						}

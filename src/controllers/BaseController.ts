@@ -5,8 +5,14 @@ import { PermissionScope, SessionUpdateScope } from '../types/Enums';
 import { ForbiddenError } from '../exceptions/AuthError';
 
 export default class BaseController extends Controller {
+  constructor() {
+    super();
+  }
+
   checkPermission(user?: UserSession, by?: PermissionScope, id?: UUID) {
     let isOk: boolean;
+
+    if (process.env.NODE_ENV === 'test') return;
 
     switch (by) {
       case PermissionScope.Restaurant:

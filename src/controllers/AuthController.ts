@@ -14,8 +14,8 @@ import AuthService from '../services/AuthService';
 import { UserValidationError } from '../exceptions/ValidationError';
 import express from 'express';
 import { CookieNames } from '../types/Enums';
-import { UserNotFound } from '../exceptions/NotFoundError';
 import BaseController from "./BaseController";
+import { InvalidCredentialsError } from '../exceptions/AuthError';
 
 @Route('/auth')
 @Tags('Auth')
@@ -34,7 +34,7 @@ export class AuthController extends BaseController {
   /**
    * Authenticates a restaurant owner.
    */
-  @Response<UserNotFound>(404, '4045 UserNotFound')
+  @Response<InvalidCredentialsError>(401, 'InvalidCredentialsError')
   @SuccessResponse(200, 'User signed in successfully.')
   @Post('/res-signin')
   public async restaurantOwnerSignin(

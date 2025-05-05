@@ -18,7 +18,7 @@ COPY ./ ./
 ###################################
 FROM base AS build
 
-RUN npm ci --omit=dev && \
+RUN npm ci && \
     npx tsoa spec-and-routes && \
     npx prisma generate --schema=./src/db/schema.prisma && \
     npx tsc

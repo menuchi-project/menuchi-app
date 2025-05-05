@@ -3,13 +3,14 @@ import { NotFoundError } from '../exceptions/NotFoundError';
 import { URL } from '../types/TypeAliases';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import dotenv from 'dotenv';
-dotenv.config();
 
 class S3Service {
   private client: S3Client;
   private bucketName;
 
   constructor() {
+    dotenv.config({ path: process.env.NODE_ENV?.trim() === 'test' ? '.env.test' : '.env' });
+
     const { S3_ACCESSKEYID, S3_SECRETACCESSKEY, S3_ENDPOINT } = process.env;
     if (S3_ACCESSKEYID && S3_SECRETACCESSKEY) {
       this.client = new S3Client({
