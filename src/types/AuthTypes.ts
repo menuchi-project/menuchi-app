@@ -7,19 +7,18 @@ export interface UserLogin {
 }
 
 export interface JWTPayload {
-  userId?: UUID;
-  email?: Email;
+  userId: UUID | Email;
   roles: RolesEnum[];
 }
 
 export interface ExpressSession {
   accessToken: string;
-  user: UserSession
+  user: UserSession;
 }
 
 export interface UserSession {
-  id: UUID;
-  restaurants: RestaurantSession[];
+  id: UUID | Email;
+  restaurants?: RestaurantSession[];
 };
 
 export interface RestaurantSession {
