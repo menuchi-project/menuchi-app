@@ -31,6 +31,14 @@ beforeAll(async () => {
     };
   });
 
+  vi.mock('../src/services/S3Service.ts', () => {
+    return {
+      default: {
+        generateGetPresignedUrl: vi.fn(async (key) => Promise.resolve(key)),
+      }
+    };
+  });
+
   await prisma.$connect();
 });
 

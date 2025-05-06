@@ -47,3 +47,24 @@ describe('POST /backlog/{backlogId}/items', () => {
     expect(promise).rejects.toThrowError(CategoryNameNotFound);
   });
 });
+
+describe('GET /backlog/{backlogId}', () => {
+  test('should retrieved backlog successfully.', async () => {
+    const { id: categoryNameId } = await categoryNameController.createCategoryName(categoryNameObject);
+    const backlogId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.backlog?.id;
+    await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
+    const backlog = await backlogController.getBacklog(backlogId!);
+
+    expect(backlog.id).toBe(backlogId);
+    expect(backlog.categories?.[0]?.items?.[0]).toMatchObject(itemObject);
+  });
+
+  test('should rejects with BacklogNotFound.', async () => {
+    const { id: categoryNameId } = await categoryNameController.createCategoryName(categoryNameObject);
+    const backlogId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.backlog?.id;
+    await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
+    const promise = backlogController.getBacklog(randomUUID());
+
+    expect(promise).rejects.toThrowError(BacklogNotFound);
+  });
+});

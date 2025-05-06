@@ -1423,27 +1423,27 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsBacklogController_geBacklog: Record<string, TsoaRoute.ParameterSchema> = {
+        const argsBacklogController_getBacklog: Record<string, TsoaRoute.ParameterSchema> = {
                 backlogId: {"in":"path","name":"backlogId","required":true,"ref":"UUID"},
-                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                req: {"in":"request","name":"req","dataType":"object"},
         };
         app.get('/backlog/:backlogId',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
             ...(fetchMiddlewares<RequestHandler>(BacklogController)),
-            ...(fetchMiddlewares<RequestHandler>(BacklogController.prototype.geBacklog)),
+            ...(fetchMiddlewares<RequestHandler>(BacklogController.prototype.getBacklog)),
 
-            async function BacklogController_geBacklog(request: ExRequest, response: ExResponse, next: any) {
+            async function BacklogController_getBacklog(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsBacklogController_geBacklog, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsBacklogController_getBacklog, request, response });
 
                 const controller = new BacklogController();
 
               await templateService.apiHandler({
-                methodName: 'geBacklog',
+                methodName: 'getBacklog',
                 controller,
                 response,
                 next,
