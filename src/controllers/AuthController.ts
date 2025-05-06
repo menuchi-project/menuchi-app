@@ -60,8 +60,16 @@ export class AuthController extends BaseController {
   /**
    * Logs out the current user.
    */
-   @SuccessResponse(200, 'User authenticated successfully')
+   @SuccessResponse(200, 'Otp code sent successfully.')
    @Post('/send-otp')
+   public async sendOtp(@Body() { email } : SendOtpIn): Promise<boolean> {
+     const streamName = process.env.OTP_STREAM!;
+     await OtpRedisClient.xAdd(streamName, '*',  { email });
+     return true;
+   }
+ 
+   @SuccessResponse(200, 'User authenticated successfully')
+   @Post('/check-otp')
    public async checkOtp(
      @Body() { email, code } : CheckOtpIn,
      @Request() req: express.Request
@@ -88,6 +96,14 @@ export class AuthController extends BaseController {
  
      return true;
    } 
+ 
+   @SuccessResponse(200, 'Otp code sent successfully.')
+   @Post('/send-otp')
+   public async sendOtp(@Body() { email } : SendOtpIn): Promise<boolean> {
+     const streamName = process.env.OTP_STREAM!;
+     await OtpRedisClient.xAdd(streamName, '*',  { email });
+     return true;
+   }
  
   @SuccessResponse(200, 'User logged out successfully.')
   @Post('/logout')
