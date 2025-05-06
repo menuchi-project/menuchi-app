@@ -68,3 +68,23 @@ describe('GET /backlog/{backlogId}', () => {
     expect(promise).rejects.toThrowError(BacklogNotFound);
   });
 });
+
+describe('GET /backlog/{backlogId}/items', () => {
+  test('should retrieved items list successfully.', async () => {
+    const { id: categoryNameId } = await categoryNameController.createCategoryName(categoryNameObject);
+    const backlogId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.backlog?.id;
+    await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
+    const promise = backlogController.getItems(backlogId!);
+
+    expect(promise).resolves.toMatchObject([itemObject]);
+  });
+
+  test('should resolves with am empty array.', async () => {
+    const { id: categoryNameId } = await categoryNameController.createCategoryName(categoryNameObject);
+    const backlogId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.backlog?.id;
+    await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
+    const promise = backlogController.getItems(randomUUID());
+
+    expect(promise).resolves.toMatchObject([]);
+  });
+});

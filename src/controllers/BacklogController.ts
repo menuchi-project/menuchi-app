@@ -66,8 +66,8 @@ export class BacklogController extends BaseController {
   @SuccessResponse(200, 'All backlog items retrieved successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Get('/{backlogId}/items')
-  public async getItems(@Path() backlogId: UUID, @Request() req: express.Request): Promise<ItemCompleteOut[]> {
-    this.checkPermission(req.session.user, PermissionScope.Backlog, backlogId);
+  public async getItems(@Path() backlogId: UUID, @Request() req?: express.Request): Promise<ItemCompleteOut[]> {
+    this.checkPermission(req?.session.user, PermissionScope.Backlog, backlogId);
     return BacklogService.getItems(backlogId);
   }
 
