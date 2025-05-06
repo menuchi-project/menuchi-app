@@ -48,3 +48,12 @@ export interface MenuUpdateSession extends BaseUpdateSession {
 }
 
 export type SessionUpdate = RestaurantUpdateSession | MenuUpdateSession;
+
+export interface SendOtpIn {
+  email: Email;
+}
+
+export interface CheckOtpIn {
+  email: Email;
+  code: OTP;
+}

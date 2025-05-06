@@ -8,6 +8,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import './config/RedisClient';
 import './config/TransformersRedisClient';
+import './config/OtpRedisClient';
 import sessionConfig from './config/SessionConfig';
 import cookieParser from 'cookie-parser';
 
