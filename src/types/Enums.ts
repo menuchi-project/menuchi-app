@@ -1,6 +1,7 @@
 export enum RolesEnum {
   Admin = 'ADMIN',
-  RestaurantOwner = 'RESTAURANT_OWNER'
+  RestaurantOwner = 'RESTAURANT_OWNER',
+  RestaurantCustomer = 'RESTAURANT_CUSTOMER'
 }
 
 export enum CookieNames {

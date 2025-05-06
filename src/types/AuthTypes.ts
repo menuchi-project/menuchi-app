@@ -1,6 +1,5 @@
-import { RolesEnum, SessionUpdateScope } from './Enums';
-import { IranPhoneNumber, UUID } from './TypeAliases';
-import express from 'express';
+import { RolesEnum } from './Enums';
+import { Email, IranPhoneNumber, OTP, UUID } from './TypeAliases';
 
 export interface UserLogin {
   phoneNumber: IranPhoneNumber;
@@ -8,7 +7,8 @@ export interface UserLogin {
 }
 
 export interface JWTPayload {
-  userId: UUID;
+  userId?: UUID;
+  email?: Email;
   roles: RolesEnum[];
 }
 

@@ -95,3 +95,15 @@ export type Slug = string;
  * @example "photo_123.png"
  */
 export type ImageFilename = string;
+
+/**
+ * A 5-digit One-Time Password (OTP).
+ * Contains exactly 5 numeric digits (0-9).
+ * Must be a string of length 5.
+ * @pattern ^\d{5}$
+ * @minLength 5
+ * @maxLength 5
+ * @format otp-5-digit
+ * @example "12345"
+ */
+export type OTP = string;
