@@ -60,50 +60,42 @@ export class AuthController extends BaseController {
   /**
    * Logs out the current user.
    */
-   @SuccessResponse(200, 'Otp code sent successfully.')
-   @Post('/send-otp')
-   public async sendOtp(@Body() { email } : SendOtpIn): Promise<boolean> {
-     const streamName = process.env.OTP_STREAM!;
-     await OtpRedisClient.xAdd(streamName, '*',  { email });
-     return true;
-   }
+  @SuccessResponse(200, 'User authenticated successfully')
+  @Post('/check-otp')
+  public async checkOtp(
+    @Body() { email, code } : CheckOtpIn,
+    @Request() req: express.Request
+  ): Promise<boolean> {
+    const otpService = ${process.env.INTERNAL_OTP_URL}${process.env.INTERNAL_OTP_ENDPOINT}/${email};
+    const { code: otpCode } = await (await fetch(otpService)).json();
  
-   @SuccessResponse(200, 'User authenticated successfully')
-   @Post('/check-otp')
-   public async checkOtp(
-     @Body() { email, code } : CheckOtpIn,
-     @Request() req: express.Request
-   ): Promise<boolean> {
-     const otpService = ${process.env.INTERNAL_OTP_URL}${process.env.INTERNAL_OTP_ENDPOINT}/${email};
-     const { code: otpCode } = await (await fetch(otpService)).json();
+    if (code === otpCode) {
+      const payload = {
+        userId: email,
+        roles: [RolesEnum.RestaurantCustomer]
+      };
+      const accessToken = AuthService.generateAuthToken(payload);
  
-     if (code === otpCode) {
-       const payload = {
-         userId: email,
-         roles: [RolesEnum.RestaurantCustomer]
-       };
-       const accessToken = AuthService.generateAuthToken(payload);
+      this.setHeader(
+        'Set-Cookie',
+        ${CookieNames.AccessToken}=${accessToken}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${2 * 24 * 3600}
+      );
  
-       this.setHeader(
-         'Set-Cookie',
-         ${CookieNames.AccessToken}=${accessToken}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${2 * 24 * 3600}
-       );
+      req.session.accessToken = accessToken;
+      req.session.user = { id: email };
+      req.session.lastAccessed = new Date();
+    } else throw new InvalidCredentialsError();
  
-       req.session.accessToken = accessToken;
-       req.session.user = { id: email };
-       req.session.lastAccessed = new Date();
-     } else throw new InvalidCredentialsError();
+    return true;
+  } 
  
-     return true;
-   } 
- 
-   @SuccessResponse(200, 'Otp code sent successfully.')
-   @Post('/send-otp')
-   public async sendOtp(@Body() { email } : SendOtpIn): Promise<boolean> {
-     const streamName = process.env.OTP_STREAM!;
-     await OtpRedisClient.xAdd(streamName, '*',  { email });
-     return true;
-   }
+  @SuccessResponse(200, 'Otp code sent successfully.')
+  @Post('/send-otp')
+  public async sendOtp(@Body() { email } : SendOtpIn): Promise<boolean> {
+    const streamName = process.env.OTP_STREAM!;
+    await OtpRedisClient.xAdd(streamName, '*',  { email });
+    return true;
+  }
  
   @SuccessResponse(200, 'User logged out successfully.')
   @Post('/logout')
