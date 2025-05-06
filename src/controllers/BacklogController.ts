@@ -29,9 +29,9 @@ export class BacklogController extends BaseController {
   public async createItem(
     @Path() backlogId: UUID,
     @Body() body: ItemCompactIn,
-    @Request() req: express.Request
+    @Request() req?: express.Request
   ): Promise<CreateItemCompleteOut> {
-    this.checkPermission(req.session.user, PermissionScope.Backlog, backlogId);
+    this.checkPermission(req?.session.user, PermissionScope.Backlog, backlogId);
 
     const item = await BacklogService.createItem(backlogId, body);
     if (item.picKey) {

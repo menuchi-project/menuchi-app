@@ -22,3 +22,10 @@ export const returnRestaurant = () => ({
   coverKey: '/some-key',
   logoKey: '/some-key'
 });
+
+export const returnItem = () => ({
+  name: 'some-name',
+  ingredients: 'some-ingredients',
+  price: 2_000_000,
+  picKey: '/some-key'
+});

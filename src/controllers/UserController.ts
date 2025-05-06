@@ -14,7 +14,7 @@ export class UserController extends BaseController {
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @SuccessResponse(200, 'Authorized user profile retrieved successfully.')
-  @Security('', [RolesEnum.RestaurantOwner])
+  @Security('', [RolesEnum.RestaurantOwner, RolesEnum.RestaurantCustomer])
   @Get('/profile')
   public async getProfile(@Request() req: express.Request): Promise<UserSession | undefined> {
     return req.session.user;
