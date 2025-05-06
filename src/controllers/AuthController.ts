@@ -60,6 +60,35 @@ export class AuthController extends BaseController {
   /**
    * Logs out the current user.
    */
+   @SuccessResponse(200, 'User authenticated successfully')
+   @Post('/send-otp')
+   public async checkOtp(
+     @Body() { email, code } : CheckOtpIn,
+     @Request() req: express.Request
+   ): Promise<boolean> {
+     const otpService = ${process.env.INTERNAL_OTP_URL}${process.env.INTERNAL_OTP_ENDPOINT}/${email};
+     const { code: otpCode } = await (await fetch(otpService)).json();
+ 
+     if (code === otpCode) {
+       const payload = {
+         userId: email,
+         roles: [RolesEnum.RestaurantCustomer]
+       };
+       const accessToken = AuthService.generateAuthToken(payload);
+ 
+       this.setHeader(
+         'Set-Cookie',
+         ${CookieNames.AccessToken}=${accessToken}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${2 * 24 * 3600}
+       );
+ 
+       req.session.accessToken = accessToken;
+       req.session.user = { id: email };
+       req.session.lastAccessed = new Date();
+     } else throw new InvalidCredentialsError();
+ 
+     return true;
+   } 
+ 
   @SuccessResponse(200, 'User logged out successfully.')
   @Post('/logout')
   public async logout(@Request() req: express.Request): Promise<boolean> {
