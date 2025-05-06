@@ -14,6 +14,13 @@
 				"description": "Stringified UUIDv4.\r\nSee [RFC 4112](https://tools.ietf.org/html/rfc4122)",
 				"pattern": "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}"
 			},
+			"Email": {
+				"type": "string",
+				"example": "example@example.com",
+				"format": "email",
+				"description": "Email address format.",
+				"pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+			},
 			"BranchSession": {
 				"properties": {
 					"id": {
@@ -53,7 +60,14 @@
 			"UserSession": {
 				"properties": {
 					"id": {
-						"$ref": "#/components/schemas/UUID"
+						"anyOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							},
+							{
+								"$ref": "#/components/schemas/Email"
+							}
+						]
 					},
 					"restaurants": {
 						"items": {
@@ -63,8 +77,7 @@
 					}
 				},
 				"required": [
-					"id",
-					"restaurants"
+					"id"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -2175,13 +2188,6 @@
 				"description": "Username format.\r\nMust be 3-30 characters long, containing only letters, numbers, underscores, and hyphens.",
 				"pattern": "^[a-zA-Z0-9_-]{3,30}$"
 			},
-			"Email": {
-				"type": "string",
-				"example": "example@example.com",
-				"format": "email",
-				"description": "Email address format.",
-				"pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
-			},
 			"UserCompleteOut": {
 				"properties": {
 					"id": {
@@ -2343,6 +2349,43 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"SendOtpIn": {
+				"properties": {
+					"email": {
+						"$ref": "#/components/schemas/Email"
+					}
+				},
+				"required": [
+					"email"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"OTP": {
+				"type": "string",
+				"example": "12345",
+				"format": "otp-5-digit",
+				"description": "A 5-digit One-Time Password (OTP).\r\nContains exactly 5 numeric digits (0-9).\r\nMust be a string of length 5.",
+				"pattern": "^\\d{5}$",
+				"minLength": 5,
+				"maxLength": 5
+			},
+			"CheckOtpIn": {
+				"properties": {
+					"email": {
+						"$ref": "#/components/schemas/Email"
+					},
+					"code": {
+						"$ref": "#/components/schemas/OTP"
+					}
+				},
+				"required": [
+					"email",
+					"code"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {
@@ -2365,7 +2408,9 @@
 		"license": {
 			"name": "ISC"
 		},
-		"contact": {}
+		"contact": {
+			"name": "Mohammad Hosseini"
+		}
 	},
 	"paths": {
 		"/users/profile": {
@@ -2410,7 +2455,8 @@
 				"security": [
 					{
 						"": [
-							"RESTAURANT_OWNER"
+							"RESTAURANT_OWNER",
+							"RESTAURANT_CUSTOMER"
 						]
 					}
 				],
@@ -4496,6 +4542,72 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/UserLogin"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/send-otp": {
+			"post": {
+				"operationId": "SendOtp",
+				"responses": {
+					"200": {
+						"description": "Otp code sent successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "boolean"
+								}
+							}
+						}
+					}
+				},
+				"description": "Sends an OTP to the email.",
+				"tags": [
+					"Auth"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/SendOtpIn"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/check-otp": {
+			"post": {
+				"operationId": "CheckOtp",
+				"responses": {
+					"200": {
+						"description": "User authenticated successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "boolean"
+								}
+							}
+						}
+					}
+				},
+				"description": "Sends email and OTP for auth.",
+				"tags": [
+					"Auth"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CheckOtpIn"
 							}
 						}
 					}

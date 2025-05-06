@@ -16,23 +16,23 @@ export default class BaseController extends Controller {
 
     switch (by) {
       case PermissionScope.Restaurant:
-        isOk = user?.restaurants.some((restaurant) => restaurant.id === id) ? true : false;
+        isOk = user?.restaurants?.some((restaurant) => restaurant.id === id) ? true : false;
         break;
 
       case PermissionScope.Branch:
-        isOk = user?.restaurants.some((restaurant) =>
+        isOk = user?.restaurants?.some((restaurant) =>
           restaurant.branches.some((branch) => branch.id === id)
         ) ? true : false;
         break;
 
       case PermissionScope.Backlog:
-        isOk = user?.restaurants.some((restaurant) =>
+        isOk = user?.restaurants?.some((restaurant) =>
           restaurant.branches.some((branch) => branch.backlogId === id)
         ) ? true : false;
         break;
 
       case PermissionScope.Menu:
-        isOk = user?.restaurants.some((restaurant) =>
+        isOk = user?.restaurants?.some((restaurant) =>
           restaurant.branches.some((branch) => 
             branch.menus?.some(menuId => menuId === id)
         )) ? true : false;
@@ -55,7 +55,7 @@ export default class BaseController extends Controller {
     switch (scope) {
       case SessionUpdateScope.Restaurant:
         const restaurantUpdate = update as RestaurantUpdateSession;
-        userSession.restaurants.push({ 
+        userSession.restaurants?.push({ 
           id: restaurantUpdate.restaurantId, 
           branches: [restaurantUpdate.branch] 
         });
@@ -63,7 +63,7 @@ export default class BaseController extends Controller {
       
       case SessionUpdateScope.Menu:
         const menuUpdate = update as MenuUpdateSession;
-        const restaurant = userSession.restaurants.find(r => r.id === menuUpdate.restaurantId);
+        const restaurant = userSession.restaurants?.find(r => r.id === menuUpdate.restaurantId);
         const branch = restaurant?.branches.find(b => b.id === menuUpdate.branchId);
 
         if (branch) {
