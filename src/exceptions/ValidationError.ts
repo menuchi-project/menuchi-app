@@ -42,12 +42,6 @@ export class UserValidationError extends ValidationError {
   }
 }
 
-export class MenuValidationError extends ValidationError {
-  constructor(details?: ErrorDetail[]) {
-    super('Menu validation failed', 422, 4225, details);
-  }
-}
-
 export class CylinderValidationError extends ValidationError {
   constructor(details: ErrorDetail[] = [{ message: 'At least one day must be selected.' }]) {
     super('Cylinder validation failed', 422, 4226, details);
@@ -57,5 +51,11 @@ export class CylinderValidationError extends ValidationError {
 export class MenuCategoryValidationError extends ValidationError {
   constructor(details: ErrorDetail[] = [{ message: 'At least one item must be selected.' }]) {
     super('Menu Category validation failed', 422, 4227, details);
+  }
+}
+
+export class MenuValidationError extends ValidationError {
+  constructor(details?: ErrorDetail[]) {
+    super('Menu validation failed', 422, 4228, details);
   }
 }

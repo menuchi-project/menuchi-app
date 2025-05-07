@@ -10,6 +10,7 @@ import { UUID } from '../types/TypeAliases';
 import {
   BacklogNotFound,
   CategoryNameNotFound,
+  ItemNotFound,
 } from '../exceptions/NotFoundError';
 import { BacklogCompleteOut } from '../types/RestaurantTypes';
 import S3Service from './S3Service';
@@ -98,6 +99,17 @@ class BacklogService {
         ...item,
         categoryName: category.categoryName?.name,
       };
+    });
+  }
+
+  async getItem(id: UUID): Promise<ItemCompleteOut | never> {
+    return this.prisma.item.findUniqueOrThrow({
+      where: {
+        id
+      }
+    }).catch((error: Error) => {
+      if (error.message.includes('not found')) throw new ItemNotFound();
+      throw error;
     });
   }
 
