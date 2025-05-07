@@ -111,3 +111,25 @@ describe('PATCH /backlog/{backlogId}/reorder-items/in-category', () => {
     expect(promise).rejects.toThrowError(MenuchiError);
   });
 });
+
+describe('PATCH /backlog/{backlogId}/reorder-items/in-list', () => {
+  test('should update items order in list successfully and return number of updated items.', async () => {
+    const { id: categoryNameId } = await categoryNameController.createCategoryName(categoryNameObject);
+    const backlogId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.backlog?.id;
+    const { id: itemId1 } = await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
+    const { id: itemId2 } = await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
+    const { id: itemId3 } =  await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
+    const promise = backlogController.reorderItemsInList(backlogId!, [itemId3, itemId2, itemId1]);
+
+    expect(promise).resolves.toBe(3);
+  });
+
+  test('should reject update items order in list with MenuchiError.', async () => {
+    const { id: categoryNameId } = await categoryNameController.createCategoryName(categoryNameObject);
+    const backlogId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.backlog?.id;
+    const { id: itemId } = await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
+    const promise = backlogController.reorderItemsInList(backlogId!, [randomUUID(), itemId]);
+
+    expect(promise).rejects.toThrowError(MenuchiError);
+  });
+});

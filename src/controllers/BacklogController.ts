@@ -121,9 +121,9 @@ export class BacklogController extends BaseController {
   public async reorderItemsInList(
     @Path() backlogId: UUID,
     @Body() body: UUID[],
-    @Request() req: express.Request
+    @Request() req?: express.Request
   ): Promise<number> {
-    this.checkPermission(req.session.user, PermissionScope.Backlog, backlogId);
+    this.checkPermission(req?.session.user, PermissionScope.Backlog, backlogId);
     return BacklogService.reorderItemsInList(backlogId, body);
   }
 
