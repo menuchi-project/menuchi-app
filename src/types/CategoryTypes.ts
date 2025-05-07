@@ -12,7 +12,7 @@ export interface CategoryNameCompleteOut extends CompleteOut {
 
 export interface CategoryCompleteOut extends CompleteOut {
   backlogId: UUID | null;
-  categoryName: DefaultString | null;
+  categoryName?: DefaultString | null;
   positionInBacklog?: Int | null;
   items?: ItemCompleteOut[] | null;
 }
