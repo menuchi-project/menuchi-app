@@ -69,6 +69,8 @@ class AuthService {
       accessToken: token,
       user: {
         id: user.id,
+        username: user.username,
+        phoneNumber: user.phoneNumber,
         restaurants: user.restaurants.map(restaurant => ({
           id: restaurant.id,
           branches: restaurant.branches.map(branch => ({

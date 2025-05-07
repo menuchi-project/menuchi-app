@@ -37,6 +37,16 @@ const models: TsoaRoute.Models = {
         "type": {"dataType":"string","validators":{"pattern":{"errorMsg":"is not a valid email","value":"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"}}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Username": {
+        "dataType": "refAlias",
+        "type": {"dataType":"string","validators":{"pattern":{"value":"^[a-zA-Z0-9_-]{3,30}$"}}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "IranPhoneNumber": {
+        "dataType": "refAlias",
+        "type": {"dataType":"string","validators":{"pattern":{"errorMsg":"is not a valid phone number","value":"^0?9\\d{9}$"}}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "BranchSession": {
         "dataType": "refObject",
         "properties": {
@@ -60,6 +70,8 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "id": {"dataType":"union","subSchemas":[{"ref":"UUID"},{"ref":"Email"}],"required":true},
+            "username": {"dataType":"union","subSchemas":[{"ref":"Username"},{"dataType":"enum","enums":[null]}]},
+            "phoneNumber": {"dataType":"union","subSchemas":[{"ref":"IranPhoneNumber"},{"dataType":"enum","enums":[null]}]},
             "restaurants": {"dataType":"array","array":{"dataType":"refObject","ref":"RestaurantSession"}},
         },
         "additionalProperties": false,
@@ -312,7 +324,7 @@ const models: TsoaRoute.Models = {
             "updatedAt": {"dataType":"datetime","required":true},
             "deletedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}]},
             "backlogId": {"dataType":"union","subSchemas":[{"ref":"UUID"},{"dataType":"enum","enums":[null]}],"required":true},
-            "categoryName": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}],"required":true},
+            "categoryName": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
             "positionInBacklog": {"dataType":"union","subSchemas":[{"ref":"Int"},{"dataType":"enum","enums":[null]}]},
             "items": {"dataType":"union","subSchemas":[{"dataType":"array","array":{"dataType":"refObject","ref":"ItemCompleteOut"}},{"dataType":"enum","enums":[null]}]},
         },
@@ -692,16 +704,6 @@ const models: TsoaRoute.Models = {
             "picKey": {"dataType":"union","subSchemas":[{"ref":"LongString"},{"dataType":"enum","enums":[null]}]},
         },
         "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "IranPhoneNumber": {
-        "dataType": "refAlias",
-        "type": {"dataType":"string","validators":{"pattern":{"errorMsg":"is not a valid phone number","value":"^0?9\\d{9}$"}}},
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Username": {
-        "dataType": "refAlias",
-        "type": {"dataType":"string","validators":{"pattern":{"value":"^[a-zA-Z0-9_-]{3,30}$"}}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "UserCompleteOut": {
@@ -1457,7 +1459,7 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsBacklogController_getItems: Record<string, TsoaRoute.ParameterSchema> = {
                 backlogId: {"in":"path","name":"backlogId","required":true,"ref":"UUID"},
-                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                req: {"in":"request","name":"req","dataType":"object"},
         };
         app.get('/backlog/:backlogId/items',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
@@ -1491,7 +1493,7 @@ export function RegisterRoutes(app: Router) {
                 backlogId: {"in":"path","name":"backlogId","required":true,"ref":"UUID"},
                 itemId: {"in":"path","name":"itemId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"ref":"UpdateItemIn"},
-                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                req: {"in":"request","name":"req","dataType":"object"},
         };
         app.patch('/backlog/:backlogId/items/:itemId',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
@@ -1524,7 +1526,7 @@ export function RegisterRoutes(app: Router) {
         const argsBacklogController_reorderItemsInCategory: Record<string, TsoaRoute.ParameterSchema> = {
                 backlogId: {"in":"path","name":"backlogId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refAlias","ref":"UUID"}},
-                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                req: {"in":"request","name":"req","dataType":"object"},
         };
         app.patch('/backlog/:backlogId/reorder-items/in-category',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
@@ -1557,7 +1559,7 @@ export function RegisterRoutes(app: Router) {
         const argsBacklogController_reorderItemsInList: Record<string, TsoaRoute.ParameterSchema> = {
                 backlogId: {"in":"path","name":"backlogId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refAlias","ref":"UUID"}},
-                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                req: {"in":"request","name":"req","dataType":"object"},
         };
         app.patch('/backlog/:backlogId/reorder-items/in-list',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
@@ -1590,7 +1592,7 @@ export function RegisterRoutes(app: Router) {
         const argsBacklogController_deleteItems: Record<string, TsoaRoute.ParameterSchema> = {
                 backlogId: {"in":"path","name":"backlogId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refAlias","ref":"UUID"}},
-                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                req: {"in":"request","name":"req","dataType":"object"},
         };
         app.delete('/backlog/:backlogId/items',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
@@ -1623,7 +1625,7 @@ export function RegisterRoutes(app: Router) {
         const argsBacklogController_reorderCategoriesInBacklog: Record<string, TsoaRoute.ParameterSchema> = {
                 backlogId: {"in":"path","name":"backlogId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refAlias","ref":"UUID"}},
-                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                req: {"in":"request","name":"req","dataType":"object"},
         };
         app.patch('/backlog/:backlogId/reorder-categories',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
@@ -1656,7 +1658,7 @@ export function RegisterRoutes(app: Router) {
         const argsBacklogController_deleteCategory: Record<string, TsoaRoute.ParameterSchema> = {
                 backlogId: {"in":"path","name":"backlogId","required":true,"ref":"UUID"},
                 categoryId: {"in":"path","name":"categoryId","required":true,"ref":"UUID"},
-                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                req: {"in":"request","name":"req","dataType":"object"},
         };
         app.delete('/backlog/:backlogId/categories/:categoryId',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),

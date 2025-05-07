@@ -21,6 +21,16 @@
 				"description": "Email address format.",
 				"pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
 			},
+			"Username": {
+				"type": "string",
+				"description": "Username format.\r\nMust be 3-30 characters long, containing only letters, numbers, underscores, and hyphens.",
+				"pattern": "^[a-zA-Z0-9_-]{3,30}$"
+			},
+			"IranPhoneNumber": {
+				"type": "string",
+				"description": "Iran phone number format.\r\nSupported format: 09123456789",
+				"pattern": "^0?9\\d{9}$"
+			},
 			"BranchSession": {
 				"properties": {
 					"id": {
@@ -68,6 +78,22 @@
 								"$ref": "#/components/schemas/Email"
 							}
 						]
+					},
+					"username": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Username"
+							}
+						],
+						"nullable": true
+					},
+					"phoneNumber": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/IranPhoneNumber"
+							}
+						],
+						"nullable": true
 					},
 					"restaurants": {
 						"items": {
@@ -915,8 +941,7 @@
 					"id",
 					"createdAt",
 					"updatedAt",
-					"backlogId",
-					"categoryName"
+					"backlogId"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -2178,16 +2203,6 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"IranPhoneNumber": {
-				"type": "string",
-				"description": "Iran phone number format.\r\nSupported format: 09123456789",
-				"pattern": "^0?9\\d{9}$"
-			},
-			"Username": {
-				"type": "string",
-				"description": "Username format.\r\nMust be 3-30 characters long, containing only letters, numbers, underscores, and hyphens.",
-				"pattern": "^[a-zA-Z0-9_-]{3,30}$"
-			},
 			"UserCompleteOut": {
 				"properties": {
 					"id": {
@@ -2859,7 +2874,7 @@
 						}
 					},
 					"404": {
-						"description": "4045 MenuNotFound",
+						"description": "4048 MenuNotFound",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -2929,7 +2944,7 @@
 						}
 					},
 					"404": {
-						"description": "4045 MenuNotFound",
+						"description": "4048 MenuNotFound",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -2939,7 +2954,7 @@
 						}
 					},
 					"422": {
-						"description": "4225 MenuValidationError",
+						"description": "4228 MenuValidationError",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -3017,7 +3032,7 @@
 						}
 					},
 					"404": {
-						"description": "4045 MenuNotFound",
+						"description": "4048 MenuNotFound",
 						"content": {
 							"application/json": {
 								"schema": {

@@ -1,5 +1,5 @@
 import { RolesEnum } from './Enums';
-import { Email, IranPhoneNumber, OTP, UUID } from './TypeAliases';
+import { Email, IranPhoneNumber, OTP, Username, UUID } from './TypeAliases';
 
 export interface UserLogin {
   phoneNumber: IranPhoneNumber;
@@ -18,6 +18,8 @@ export interface ExpressSession {
 
 export interface UserSession {
   id: UUID | Email;
+  username?: Username | null;
+  phoneNumber?: IranPhoneNumber | null;
   restaurants?: RestaurantSession[];
 };
 
