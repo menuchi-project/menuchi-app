@@ -4,7 +4,7 @@ import { BacklogController } from "../../src/controllers/BacklogController";
 import { returnCategoryName, returnItem, returnRestaurant } from "../factories";
 import { RestaurantController } from "../../src/controllers/RestaurantController";
 import { randomUUID } from "crypto";
-import { BacklogNotFound, CategoryNameNotFound, ItemNotFound } from "../../src/exceptions/NotFoundError";
+import { BacklogNotFound, CategoryNameNotFound, CategoryNotFound, ItemNotFound } from "../../src/exceptions/NotFoundError";
 import MenuchiError from "../../src/exceptions/MenuchiError";
 import BacklogService from "../../src/services/BacklogService";
 
@@ -194,5 +194,18 @@ describe('PATCH /backlog/{backlogId}/reorder-categories', () => {
     const promise = backlogController.reorderCategoriesInBacklog(backlogId!, [randomUUID(), categoryId!]);
 
     expect(promise).rejects.toThrowError(MenuchiError);
+  });
+});
+
+describe('DELETE /backlog/{backlogId}/categories', () => {
+  test('should delete multiple categories successfully.', async () => {
+    const { id: categoryNameId } = await categoryNameController.createCategoryName(categoryNameObject);
+    const backlogId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.backlog?.id;
+    const { categoryId } = await backlogController.createItem(backlogId!, { categoryNameId: categoryNameId, ...itemObject });
+
+    await backlogController.deleteCategory(backlogId!, categoryId!);
+    const promise = BacklogService.getCategory(categoryId!);
+
+    expect(promise).rejects.toThrowError(CategoryNotFound);
   });
 });
