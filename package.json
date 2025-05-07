@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "dotenv -e .env -- npx tsoa spec-and-routes && ts-node --files ./src/index.ts",
     "build": "npx tsc",
-    "start": "dotenv -e .env -- node ./build/index.js",
+    "start": "node ./build/index.js",
     "db-push": "npx prisma db push --schema=./src/db/schema.prisma",
     "db-generate": "npx prisma --schema=./src/db/schema.prisma",
     "test": "cross-env NODE_ENV=test dotenv -e .env.test -- vitest --config ./test/vitest.config.ts"
