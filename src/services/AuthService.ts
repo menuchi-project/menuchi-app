@@ -90,7 +90,7 @@ class AuthService {
     return bcrypt.compare(password, hash);
   }
 
-  private generateAuthToken(payload: JWTPayload): string {
+  generateAuthToken(payload: JWTPayload): string {
     return jwt.sign(payload, process.env.JWT_PRIVATE_KEY!, { algorithm: 'HS256', expiresIn: '2d' });
   }
 }

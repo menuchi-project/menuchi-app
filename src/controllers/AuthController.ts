@@ -9,13 +9,14 @@ import {
 } from 'tsoa';
 import { ConstraintsDatabaseError } from '../exceptions/DatabaseError';
 import { UserCompactIn, UserCompleteOut } from '../types/UserTypes';
-import { UserLogin } from "../types/AuthTypes";
+import { CheckOtpIn, SendOtpIn, UserLogin } from "../types/AuthTypes";
 import AuthService from '../services/AuthService';
 import { UserValidationError } from '../exceptions/ValidationError';
 import express from 'express';
-import { CookieNames } from '../types/Enums';
+import { CookieNames, RolesEnum } from '../types/Enums';
 import BaseController from "./BaseController";
 import { InvalidCredentialsError } from '../exceptions/AuthError';
+import OtpRedisClient from '../config/OtpRedisClient';
 
 @Route('/auth')
 @Tags('Auth')
@@ -57,6 +58,49 @@ export class AuthController extends BaseController {
     return true;
   }
 
+  /**
+   * Sends an OTP to the email.
+   */
+   @SuccessResponse(200, 'Otp code sent successfully.')
+   @Post('/send-otp')
+   public async sendOtp(@Body() body: SendOtpIn): Promise<boolean> {
+     const streamName = process.env.OTP_STREAM!;
+     await OtpRedisClient.xAdd(streamName, '*',  { email: body.email });
+     return true;
+   }
+   
+  /**
+   * Sends email and OTP for auth.
+   */
+  @SuccessResponse(200, 'User authenticated successfully.')
+  @Post('/check-otp')
+  public async checkOtp(
+    @Body() body: CheckOtpIn,
+    @Request() req: express.Request
+  ): Promise<boolean> {
+    const otpService = `${process.env.INTERNAL_OTP_URL}${process.env.INTERNAL_OTP_ENDPOINT}/${body.email}`;
+    const { code: otpCode } = await (await fetch(otpService)).json();
+ 
+    if (body.code === otpCode) {
+      const payload = {
+        userId: body.email,
+        roles: [RolesEnum.RestaurantCustomer]
+      };
+      const accessToken = AuthService.generateAuthToken(payload);
+ 
+      this.setHeader(
+        'Set-Cookie',
+        `${CookieNames.AccessToken}=${accessToken}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${2 * 24 * 3600}`
+      );
+ 
+      req.session.accessToken = accessToken;
+      req.session.user = { id: body.email };
+      req.session.lastAccessed = new Date();
+    } else throw new InvalidCredentialsError();
+ 
+    return true;
+  } 
+ 
   /**
    * Logs out the current user.
    */

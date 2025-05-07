@@ -1,6 +1,5 @@
-import { RolesEnum, SessionUpdateScope } from './Enums';
-import { IranPhoneNumber, UUID } from './TypeAliases';
-import express from 'express';
+import { RolesEnum } from './Enums';
+import { Email, IranPhoneNumber, OTP, UUID } from './TypeAliases';
 
 export interface UserLogin {
   phoneNumber: IranPhoneNumber;
@@ -8,18 +7,18 @@ export interface UserLogin {
 }
 
 export interface JWTPayload {
-  userId: UUID;
+  userId: UUID | Email;
   roles: RolesEnum[];
 }
 
 export interface ExpressSession {
   accessToken: string;
-  user: UserSession
+  user: UserSession;
 }
 
 export interface UserSession {
-  id: UUID;
-  restaurants: RestaurantSession[];
+  id: UUID | Email;
+  restaurants?: RestaurantSession[];
 };
 
 export interface RestaurantSession {
@@ -49,3 +48,12 @@ export interface MenuUpdateSession extends BaseUpdateSession {
 }
 
 export type SessionUpdate = RestaurantUpdateSession | MenuUpdateSession;
+
+export interface SendOtpIn {
+  email: Email;
+}
+
+export interface CheckOtpIn {
+  email: Email;
+  code: OTP;
+}
