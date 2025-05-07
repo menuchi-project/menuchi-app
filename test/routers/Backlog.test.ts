@@ -5,6 +5,7 @@ import { returnCategoryName, returnItem, returnRestaurant } from "../factories";
 import { RestaurantController } from "../../src/controllers/RestaurantController";
 import { randomUUID } from "crypto";
 import { BacklogNotFound, CategoryNameNotFound } from "../../src/exceptions/NotFoundError";
+import MenuchiError from "../../src/exceptions/MenuchiError";
 
 const categoryNameController = new CategoryNameController();
 const restaurantController = new RestaurantController();
@@ -86,5 +87,27 @@ describe('GET /backlog/{backlogId}/items', () => {
     const promise = backlogController.getItems(randomUUID());
 
     expect(promise).resolves.toMatchObject([]);
+  });
+});
+
+describe('PATCH /backlog/{backlogId}/reorder-items/in-category', () => {
+  test('should update items order in category successfully and return number of updated items.', async () => {
+    const { id: categoryNameId } = await categoryNameController.createCategoryName(categoryNameObject);
+    const backlogId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.backlog?.id;
+    const { id: itemId1 } = await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
+    const { id: itemId2 } = await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
+    const { id: itemId3 } =  await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
+    const promise = backlogController.reorderItemsInCategory(backlogId!, [itemId3, itemId2, itemId1]);
+
+    expect(promise).resolves.toBe(3);
+  });
+
+  test('should reject update items order in category with MenuchiError.', async () => {
+    const { id: categoryNameId } = await categoryNameController.createCategoryName(categoryNameObject);
+    const backlogId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.backlog?.id;
+    const { id: itemId } = await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
+    const promise = backlogController.reorderItemsInCategory(backlogId!, [randomUUID(), itemId]);
+
+    expect(promise).rejects.toThrowError(MenuchiError);
   });
 });

@@ -84,9 +84,9 @@ export class BacklogController extends BaseController {
     @Path() backlogId: UUID,
     @Path() itemId: UUID,
     @Body() body: UpdateItemIn,
-    @Request() req: express.Request
+    @Request() req?: express.Request
   ): Promise<null> {
-    this.checkPermission(req.session.user, PermissionScope.Backlog, backlogId);
+    this.checkPermission(req?.session.user, PermissionScope.Backlog, backlogId);
     await BacklogService.updateItem(backlogId, itemId, body);
     return null;
   }
@@ -103,9 +103,9 @@ export class BacklogController extends BaseController {
   public async reorderItemsInCategory(
     @Path() backlogId: UUID,
     @Body() body: UUID[],
-    @Request() req: express.Request
+    @Request() req?: express.Request
   ): Promise<number> {
-    this.checkPermission(req.session.user, PermissionScope.Backlog, backlogId);
+    this.checkPermission(req?.session.user, PermissionScope.Backlog, backlogId);
     return BacklogService.reorderItemsInCategory(backlogId, body);
   }
 
