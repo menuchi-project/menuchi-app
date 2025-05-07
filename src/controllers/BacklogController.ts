@@ -138,9 +138,9 @@ export class BacklogController extends BaseController {
   public async deleteItems(
     @Path() backlogId: UUID,
     @Body() body: UUID[],
-    @Request() req: express.Request
+    @Request() req?: express.Request
   ): Promise<null> {
-    this.checkPermission(req.session.user, PermissionScope.Backlog, backlogId);
+    this.checkPermission(req?.session.user, PermissionScope.Backlog, backlogId);
     await BacklogService.deleteItems(backlogId, body);
     return null;
   }

@@ -105,7 +105,8 @@ class BacklogService {
   async getItem(id: UUID): Promise<ItemCompleteOut | never> {
     return this.prisma.item.findUniqueOrThrow({
       where: {
-        id
+        id,
+        deletedAt: null
       }
     }).catch((error: Error) => {
       if (error.message.includes('not found')) throw new ItemNotFound();
