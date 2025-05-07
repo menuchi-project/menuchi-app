@@ -6,6 +6,7 @@ import { RestaurantController } from "../../src/controllers/RestaurantController
 import { randomUUID } from "crypto";
 import { BacklogNotFound, CategoryNameNotFound } from "../../src/exceptions/NotFoundError";
 import MenuchiError from "../../src/exceptions/MenuchiError";
+import BacklogService from "../../src/services/BacklogService";
 
 const categoryNameController = new CategoryNameController();
 const restaurantController = new RestaurantController();
@@ -87,6 +88,25 @@ describe('GET /backlog/{backlogId}/items', () => {
     const promise = backlogController.getItems(randomUUID());
 
     expect(promise).resolves.toMatchObject([]);
+  });
+});
+
+describe('PATCH /backlog/{backlogId}/items/{itemId}', () => {
+  test('should update the item successfully.', async () => {
+    const { id: categoryNameId } = await categoryNameController.createCategoryName(categoryNameObject);
+    const backlogId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.backlog?.id;
+    const item = await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
+
+    const newItem = {
+      name: 'new-item-name',
+      price: 50000,
+      ingredients: 'new-ingredients'
+    };
+    await backlogController.updateItem(backlogId!, item.id, newItem);
+    const promise = BacklogService.getItem(item.id);
+
+    expect(promise).resolves.not.toMatchObject(item);
+    expect(promise).resolves.toMatchObject(newItem);
   });
 });
 
