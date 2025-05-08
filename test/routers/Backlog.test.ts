@@ -21,7 +21,7 @@ describe('POST /backlog/{backlogId}/items', () => {
     const backlogId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.backlog?.id;
     const promise = backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
 
-    expect(promise).resolves.toMatchObject(itemObject);
+    await expect(promise).resolves.toMatchObject(itemObject);
   });
 
   test('should assign items to the same categoryId with the same \'category name\'. and auto-set their positionInCategory and positionInItemsList in ascending order.', async () => {
@@ -39,14 +39,14 @@ describe('POST /backlog/{backlogId}/items', () => {
     const { id: categoryNameId } = await categoryNameController.createCategoryName(categoryNameObject);
     const promise = backlogController.createItem(randomUUID(), { categoryNameId, ...itemObject });
 
-    expect(promise).rejects.toThrowError(BacklogNotFound);
+    await expect(promise).rejects.toThrowError(BacklogNotFound);
   });
 
   test('should rejects create item with CategoryNameNotFound.', async () => {
     const backlogId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.backlog?.id;
     const promise = backlogController.createItem(backlogId!, { categoryNameId: randomUUID(), ...itemObject });
 
-    expect(promise).rejects.toThrowError(CategoryNameNotFound);
+    await expect(promise).rejects.toThrowError(CategoryNameNotFound);
   });
 });
 
@@ -67,7 +67,7 @@ describe('GET /backlog/{backlogId}', () => {
     await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
     const promise = backlogController.getBacklog(randomUUID());
 
-    expect(promise).rejects.toThrowError(BacklogNotFound);
+    await expect(promise).rejects.toThrowError(BacklogNotFound);
   });
 });
 
@@ -78,7 +78,7 @@ describe('GET /backlog/{backlogId}/items', () => {
     await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
     const promise = backlogController.getItems(backlogId!);
 
-    expect(promise).resolves.toMatchObject([itemObject]);
+    await expect(promise).resolves.toMatchObject([itemObject]);
   });
 
   test('should resolves with am empty array.', async () => {
@@ -87,7 +87,7 @@ describe('GET /backlog/{backlogId}/items', () => {
     await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
     const promise = backlogController.getItems(randomUUID());
 
-    expect(promise).resolves.toMatchObject([]);
+    await expect(promise).resolves.toMatchObject([]);
   });
 });
 
@@ -105,8 +105,8 @@ describe('PATCH /backlog/{backlogId}/items/{itemId}', () => {
     await backlogController.updateItem(backlogId!, item.id, newItem);
     const promise = BacklogService.getItem(item.id);
 
-    expect(promise).resolves.not.toMatchObject(item);
-    expect(promise).resolves.toMatchObject(newItem);
+    await expect(promise).resolves.not.toMatchObject(item);
+    await expect(promise).resolves.toMatchObject(newItem);
   });
 });
 
@@ -119,7 +119,7 @@ describe('PATCH /backlog/{backlogId}/reorder-items/in-category', () => {
     const { id: itemId3 } =  await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
     const promise = backlogController.reorderItemsInCategory(backlogId!, [itemId3, itemId2, itemId1]);
 
-    expect(promise).resolves.toBe(3);
+    await expect(promise).resolves.toBe(3);
   });
 
   test('should reject update items order in category with MenuchiError.', async () => {
@@ -128,7 +128,7 @@ describe('PATCH /backlog/{backlogId}/reorder-items/in-category', () => {
     const { id: itemId } = await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
     const promise = backlogController.reorderItemsInCategory(backlogId!, [randomUUID(), itemId]);
 
-    expect(promise).rejects.toThrowError(MenuchiError);
+    await expect(promise).rejects.toThrowError(MenuchiError);
   });
 });
 
