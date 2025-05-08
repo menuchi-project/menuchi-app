@@ -107,7 +107,7 @@ export function errorHandler(
   res: Response,
   next: NextFunction
 ): void {
-  // if (process.env.NODE_ENV !== 'test')
+  if (process.env.NODE_ENV?.trim() !== 'test')
     console.error(error);
   res.status(error.status).json({
     code: error.code,

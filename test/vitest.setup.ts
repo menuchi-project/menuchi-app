@@ -31,6 +31,17 @@ beforeAll(async () => {
     };
   });
 
+  vi.mock('../src/config/OtpRedisClient.ts', () => {
+    return {
+      default: {
+        connect: vi.fn(),
+        on: vi.fn(),
+        once: vi.fn(),
+        xAdd: vi.fn(),
+      }
+    };
+  });
+  
   vi.mock('../src/services/S3Service.ts', () => {
     return {
       default: {
