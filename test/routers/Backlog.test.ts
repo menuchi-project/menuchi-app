@@ -141,7 +141,7 @@ describe('PATCH /backlog/{backlogId}/reorder-items/in-list', () => {
     const { id: itemId3 } =  await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
     const promise = backlogController.reorderItemsInList(backlogId!, [itemId3, itemId2, itemId1]);
 
-    expect(promise).resolves.toBe(3);
+    await expect(promise).resolves.toBe(3);
   });
 
   test('should reject update items order in list with MenuchiError.', async () => {
@@ -151,7 +151,7 @@ describe('PATCH /backlog/{backlogId}/reorder-items/in-list', () => {
     await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
     const promise = backlogController.reorderItemsInList(backlogId!, [randomUUID(), itemId]);
 
-    expect(promise).rejects.toThrowError(MenuchiError);
+    await expect(promise).rejects.toThrowError(MenuchiError);
   });
 });
 
@@ -166,8 +166,8 @@ describe('DELETE /backlog/{backlogId}/items', () => {
     const promise1 = BacklogService.getItem(itemId1);
     const promise2 = BacklogService.getItem(itemId2);
 
-    expect(promise1).rejects.toThrowError(ItemNotFound);
-    expect(promise2).rejects.toThrowError(ItemNotFound);
+    await expect(promise1).rejects.toThrowError(ItemNotFound);
+    await expect(promise2).rejects.toThrowError(ItemNotFound);
   });
 });
 
@@ -182,7 +182,7 @@ describe('PATCH /backlog/{backlogId}/reorder-categories', () => {
     const { categoryId: categoryId3 } = await backlogController.createItem(backlogId!, { categoryNameId: categoryNameId3, ...itemObject });
     const promise = backlogController.reorderCategoriesInBacklog(backlogId!, [categoryId3!, categoryId2!, categoryId1!]);
 
-    expect(promise).resolves.toBe(3);
+    await expect(promise).resolves.toBe(3);
   });
 
   test('should reject update categories order in backlog with MenuchiError.', async () => {
@@ -193,7 +193,7 @@ describe('PATCH /backlog/{backlogId}/reorder-categories', () => {
     await backlogController.createItem(backlogId!, { categoryNameId: categoryNameId2, ...itemObject });
     const promise = backlogController.reorderCategoriesInBacklog(backlogId!, [randomUUID(), categoryId!]);
 
-    expect(promise).rejects.toThrowError(MenuchiError);
+    await expect(promise).rejects.toThrowError(MenuchiError);
   });
 });
 
@@ -206,6 +206,6 @@ describe('DELETE /backlog/{backlogId}/categories', () => {
     await backlogController.deleteCategory(backlogId!, categoryId!);
     const promise = BacklogService.getCategory(categoryId!);
 
-    expect(promise).rejects.toThrowError(CategoryNotFound);
+    await expect(promise).rejects.toThrowError(CategoryNotFound);
   });
 });
