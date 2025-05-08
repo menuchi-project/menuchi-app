@@ -61,9 +61,6 @@ jobs:
       - name: Push DB with prisma
         run: npm run db-push
 
-      - name: Run Dev
-        run: npm run dev
-
       - name: Test
         run: npm test
      
