@@ -44,6 +44,10 @@
         "description": "Menu management"
       },
       {
+        "name": "Order",
+        "description": "Order management"
+      },
+      {
         "name": "S3",
         "description": "S3 file upload URL generation"
       },

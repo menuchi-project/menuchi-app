@@ -100,6 +100,9 @@
 							"$ref": "#/components/schemas/RestaurantSession"
 						},
 						"type": "array"
+					},
+					"lastOrderId": {
+						"$ref": "#/components/schemas/UUID"
 					}
 				},
 				"required": [
@@ -787,9 +790,35 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"_36_Enums.OrderStatus": {
+				"type": "string",
+				"enum": [
+					"PENDING",
+					"ACCEPTED",
+					"PREPARING",
+					"READY",
+					"DONE"
+				]
+			},
 			"Int": {
 				"type": "integer",
 				"format": "int32"
+			},
+			"OrderItemCompactIn": {
+				"properties": {
+					"itemId": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"amount": {
+						"$ref": "#/components/schemas/Int"
+					}
+				},
+				"required": [
+					"itemId",
+					"amount"
+				],
+				"type": "object",
+				"additionalProperties": false
 			},
 			"ItemCompleteOut": {
 				"properties": {
@@ -2692,6 +2721,133 @@
 						}
 					}
 				]
+			}
+		},
+		"/orders": {
+			"post": {
+				"operationId": "CreateOrder",
+				"responses": {
+					"201": {
+						"description": "Order created successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"properties": {
+												"orderItems": {
+													"items": {
+														"properties": {
+															"orderId": {
+																"type": "string"
+															},
+															"itemId": {
+																"type": "string"
+															},
+															"amount": {
+																"type": "number",
+																"format": "double"
+															},
+															"price": {
+																"type": "number",
+																"format": "double"
+															},
+															"id": {
+																"type": "string"
+															}
+														},
+														"required": [
+															"orderId",
+															"itemId",
+															"amount",
+															"price",
+															"id"
+														],
+														"type": "object"
+													},
+													"type": "array"
+												}
+											},
+											"required": [
+												"orderItems"
+											],
+											"type": "object"
+										},
+										{
+											"properties": {
+												"status": {
+													"$ref": "#/components/schemas/_36_Enums.OrderStatus"
+												},
+												"totalPrice": {
+													"type": "number",
+													"format": "double"
+												},
+												"customerEmail": {
+													"type": "string"
+												},
+												"id": {
+													"type": "string"
+												}
+											},
+											"required": [
+												"status",
+												"totalPrice",
+												"customerEmail",
+												"id"
+											],
+											"type": "object"
+										}
+									]
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_CUSTOMER",
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"items": {
+									"$ref": "#/components/schemas/OrderItemCompactIn"
+								},
+								"type": "array"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/menus/backlog/{backlogId}": {
@@ -4678,6 +4834,10 @@
 		{
 			"name": "Menu",
 			"description": "Menu management"
+		},
+		{
+			"name": "Order",
+			"description": "Order management"
 		},
 		{
 			"name": "S3",

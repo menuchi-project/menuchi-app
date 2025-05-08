@@ -21,7 +21,7 @@ export interface UserSession {
   username?: Username | null;
   phoneNumber?: IranPhoneNumber | null;
   restaurants?: RestaurantSession[];
-  lastOrderId?: UUID;
+  recentlyOrderIds?: UUID[];
 };
 
 export interface RestaurantSession {

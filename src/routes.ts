@@ -10,6 +10,8 @@ import { S3Controller } from './controllers/S3Controller';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { RestaurantController } from './controllers/RestaurantController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { OrderController } from './controllers/OrderController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { MenuController } from './controllers/MenuController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { CategoryNameController } from './controllers/CategoryNameController';
@@ -73,6 +75,7 @@ const models: TsoaRoute.Models = {
             "username": {"dataType":"union","subSchemas":[{"ref":"Username"},{"dataType":"enum","enums":[null]}]},
             "phoneNumber": {"dataType":"union","subSchemas":[{"ref":"IranPhoneNumber"},{"dataType":"enum","enums":[null]}]},
             "restaurants": {"dataType":"array","array":{"dataType":"refObject","ref":"RestaurantSession"}},
+            "lastOrderId": {"ref":"UUID"},
         },
         "additionalProperties": false,
     },
@@ -291,9 +294,23 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "_36_Enums.OrderStatus": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["PENDING"]},{"dataType":"enum","enums":["ACCEPTED"]},{"dataType":"enum","enums":["PREPARING"]},{"dataType":"enum","enums":["READY"]},{"dataType":"enum","enums":["DONE"]}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Int": {
         "dataType": "refAlias",
         "type": {"dataType":"integer","validators":{"isInt":{"errorMsg":"number should be integer"}}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OrderItemCompactIn": {
+        "dataType": "refObject",
+        "properties": {
+            "itemId": {"ref":"UUID","required":true},
+            "amount": {"ref":"Int","required":true,"validators":{"minimum":{"errorMsg":"minimum age is 1","value":1}}},
+        },
+        "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "ItemCompleteOut": {
@@ -931,6 +948,38 @@ export function RegisterRoutes(app: Router) {
                 next,
                 validatedArgs,
                 successStatus: 200,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsOrderController_createOrder: Record<string, TsoaRoute.ParameterSchema> = {
+                body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refObject","ref":"OrderItemCompactIn"}},
+                req: {"in":"request","name":"req","dataType":"object"},
+        };
+        app.post('/orders',
+            authenticateMiddleware([{"":["RESTAURANT_CUSTOMER","RESTAURANT_OWNER"]}]),
+            ...(fetchMiddlewares<RequestHandler>(OrderController)),
+            ...(fetchMiddlewares<RequestHandler>(OrderController.prototype.createOrder)),
+
+            async function OrderController_createOrder(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsOrderController_createOrder, request, response });
+
+                const controller = new OrderController();
+
+              await templateService.apiHandler({
+                methodName: 'createOrder',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 201,
               });
             } catch (err) {
                 return next(err);
