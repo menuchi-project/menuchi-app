@@ -36,7 +36,7 @@ export class UserNotFound extends NotFoundError {
 
 export class MenuNotFound extends NotFoundError {
   constructor() {
-    super('Menu with the given id not found', 404, 4045);
+    super('Menu with the given id not found', 404, 4048);
   }
 }
 
@@ -55,5 +55,11 @@ export class CategoryNotFound extends NotFoundError {
 export class BranchNotFound extends NotFoundError {
   constructor() {
     super('Branch with the given id not found', 404, 4049);
+  }
+}
+
+export class ItemNotFound extends NotFoundError {
+  constructor() {
+    super('Item with the given id not found', 404, 4043);
   }
 }

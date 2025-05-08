@@ -66,7 +66,7 @@ export class MenuController extends BaseController {
    */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
-  @Response<MenuNotFound>(404, '4045 MenuNotFound')
+  @Response<MenuNotFound>(404, '4048 MenuNotFound')
   @SuccessResponse(200, 'Menu is retrieved successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Get('/{menuId}')
@@ -83,8 +83,8 @@ export class MenuController extends BaseController {
    */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
-  @Response<MenuNotFound>(404, '4045 MenuNotFound')
-  @Response<MenuValidationError>(422, '4225 MenuValidationError')
+  @Response<MenuNotFound>(404, '4048 MenuNotFound')
+  @Response<MenuValidationError>(422, '4228 MenuValidationError')
   @SuccessResponse(204, 'Menu updated successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Patch('/{menuId}')
@@ -105,7 +105,7 @@ export class MenuController extends BaseController {
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<CylinderNotFound>(404, '4046 CylinderNotFound')
   @Response<CategoryNotFound>(404, '4048 CategoryNotFound')
-  @Response<MenuNotFound>(404, '4045 MenuNotFound')
+  @Response<MenuNotFound>(404, '4048 MenuNotFound')
   @Response<ConstraintsDatabaseError>(409, 'ConstraintsDatabaseError')
   @Response<CylinderValidationError>(422, '4226 CylinderValidationError')
   @SuccessResponse(201, 'Cylinder created successfully.')

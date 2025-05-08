@@ -29,9 +29,9 @@ export class BacklogController extends BaseController {
   public async createItem(
     @Path() backlogId: UUID,
     @Body() body: ItemCompactIn,
-    @Request() req: express.Request
+    @Request() req?: express.Request
   ): Promise<CreateItemCompleteOut> {
-    this.checkPermission(req.session.user, PermissionScope.Backlog, backlogId);
+    this.checkPermission(req?.session.user, PermissionScope.Backlog, backlogId);
 
     const item = await BacklogService.createItem(backlogId, body);
     if (item.picKey) {
@@ -52,8 +52,8 @@ export class BacklogController extends BaseController {
   @SuccessResponse(200, 'Backlog is retrieved successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Get('/{backlogId}')
-  public async geBacklog(@Path() backlogId: UUID, @Request() req: express.Request): Promise<BacklogCompleteOut> {
-    this.checkPermission(req.session.user, PermissionScope.Backlog, backlogId);
+  public async getBacklog(@Path() backlogId: UUID, @Request() req?: express.Request): Promise<BacklogCompleteOut> {
+    this.checkPermission(req?.session.user, PermissionScope.Backlog, backlogId);
     return BacklogService.getBacklog(backlogId);
   }
 
@@ -66,8 +66,8 @@ export class BacklogController extends BaseController {
   @SuccessResponse(200, 'All backlog items retrieved successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Get('/{backlogId}/items')
-  public async getItems(@Path() backlogId: UUID, @Request() req: express.Request): Promise<ItemCompleteOut[]> {
-    this.checkPermission(req.session.user, PermissionScope.Backlog, backlogId);
+  public async getItems(@Path() backlogId: UUID, @Request() req?: express.Request): Promise<ItemCompleteOut[]> {
+    this.checkPermission(req?.session.user, PermissionScope.Backlog, backlogId);
     return BacklogService.getItems(backlogId);
   }
 
@@ -84,9 +84,9 @@ export class BacklogController extends BaseController {
     @Path() backlogId: UUID,
     @Path() itemId: UUID,
     @Body() body: UpdateItemIn,
-    @Request() req: express.Request
+    @Request() req?: express.Request
   ): Promise<null> {
-    this.checkPermission(req.session.user, PermissionScope.Backlog, backlogId);
+    this.checkPermission(req?.session.user, PermissionScope.Backlog, backlogId);
     await BacklogService.updateItem(backlogId, itemId, body);
     return null;
   }
@@ -103,9 +103,9 @@ export class BacklogController extends BaseController {
   public async reorderItemsInCategory(
     @Path() backlogId: UUID,
     @Body() body: UUID[],
-    @Request() req: express.Request
+    @Request() req?: express.Request
   ): Promise<number> {
-    this.checkPermission(req.session.user, PermissionScope.Backlog, backlogId);
+    this.checkPermission(req?.session.user, PermissionScope.Backlog, backlogId);
     return BacklogService.reorderItemsInCategory(backlogId, body);
   }
 
@@ -121,9 +121,9 @@ export class BacklogController extends BaseController {
   public async reorderItemsInList(
     @Path() backlogId: UUID,
     @Body() body: UUID[],
-    @Request() req: express.Request
+    @Request() req?: express.Request
   ): Promise<number> {
-    this.checkPermission(req.session.user, PermissionScope.Backlog, backlogId);
+    this.checkPermission(req?.session.user, PermissionScope.Backlog, backlogId);
     return BacklogService.reorderItemsInList(backlogId, body);
   }
 
@@ -138,9 +138,9 @@ export class BacklogController extends BaseController {
   public async deleteItems(
     @Path() backlogId: UUID,
     @Body() body: UUID[],
-    @Request() req: express.Request
+    @Request() req?: express.Request
   ): Promise<null> {
-    this.checkPermission(req.session.user, PermissionScope.Backlog, backlogId);
+    this.checkPermission(req?.session.user, PermissionScope.Backlog, backlogId);
     await BacklogService.deleteItems(backlogId, body);
     return null;
   }
@@ -157,9 +157,9 @@ export class BacklogController extends BaseController {
   public async reorderCategoriesInBacklog(
     @Path() backlogId: UUID,
     @Body() body: UUID[],
-    @Request() req: express.Request
+    @Request() req?: express.Request
   ): Promise<number> {
-    this.checkPermission(req.session.user, PermissionScope.Backlog, backlogId);
+    this.checkPermission(req?.session.user, PermissionScope.Backlog, backlogId);
     return BacklogService.reorderCategoriesInBacklog(backlogId, body);
   }
 
@@ -174,9 +174,9 @@ export class BacklogController extends BaseController {
   public async deleteCategory(
     @Path() backlogId: UUID,
     @Path() categoryId: UUID,
-    @Request() req: express.Request
+    @Request() req?: express.Request
   ): Promise<null> {
-    this.checkPermission(req.session.user, PermissionScope.Backlog, backlogId);
+    this.checkPermission(req?.session.user, PermissionScope.Backlog, backlogId);
     await BacklogService.deleteCategory(backlogId, categoryId);
     return null;
   }

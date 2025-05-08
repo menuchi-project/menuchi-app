@@ -5,8 +5,9 @@ export const returnUser = () => ({
   email: 'test@gmail.com'
 });
 
+let categoryNameIndex = 0;
 export const returnCategoryName = () => ({
-  name: 'test-category-name'
+    name: `test-category-name-${categoryNameIndex++}`
 });
 
 export const returnRestaurant = () => ({
@@ -17,8 +18,11 @@ export const returnRestaurant = () => ({
   telegram:'some-id',
   twitter:'some-id',
   youtube:'some-id',
-  eitaa:'some-id',
-  avatarKey: '/some-key',
-  coverKey: '/some-key',
-  logoKey: '/some-key'
+  eitaa:'some-id'
+});
+
+export const returnItem = () => ({
+  name: 'some-name',
+  ingredients: 'some-ingredients',
+  price: 2_000_000
 });

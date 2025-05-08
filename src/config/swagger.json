@@ -3980,7 +3980,7 @@
 		},
 		"/backlog/{backlogId}": {
 			"get": {
-				"operationId": "GeBacklog",
+				"operationId": "GetBacklog",
 				"responses": {
 					"200": {
 						"description": "Backlog is retrieved successfully.",

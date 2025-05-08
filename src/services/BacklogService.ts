@@ -10,10 +10,13 @@ import { UUID } from '../types/TypeAliases';
 import {
   BacklogNotFound,
   CategoryNameNotFound,
+  CategoryNotFound,
+  ItemNotFound,
 } from '../exceptions/NotFoundError';
 import { BacklogCompleteOut } from '../types/RestaurantTypes';
 import S3Service from './S3Service';
 import MenuchiError from '../exceptions/MenuchiError';
+import { CategoryCompleteOut } from '../types/CategoryTypes';
 
 class BacklogService {
   constructor(private prisma: PrismaClient = prismaClient) {}
@@ -99,6 +102,30 @@ class BacklogService {
         categoryName: category.categoryName?.name,
       };
     });
+  }
+
+  async getItem(id: UUID): Promise<ItemCompleteOut | never> {
+    return this.prisma.item.findUniqueOrThrow({
+      where: {
+        id,
+        deletedAt: null
+      }
+    }).catch((error: Error) => {
+      if (error.message.includes('not found')) throw new ItemNotFound();
+      throw error;
+    });
+  }
+
+  async getCategory(id: UUID): Promise<CategoryCompleteOut | never> {
+    return this.prisma.category.findUniqueOrThrow({
+      where: {
+        id,
+        deletedAt: null
+      }
+    }).catch((error: Error) => {
+      if (error.message.includes('not found')) throw new CategoryNotFound();
+      throw error;
+    });;
   }
 
   async getBacklog(backlogId: UUID): Promise<BacklogCompleteOut | never> {
