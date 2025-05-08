@@ -5,8 +5,8 @@ on:
     branches: [ "dev" ]
 
 env:
-  DATABASE_URL: postgres://postgres:postgres@localhost:5432/menuchi
-  REDIS_URL: redis://default@localhost:6379/0
+  DATABASE_URL: postgres://postgres:postgres@postgres:5432/menuchi
+  REDIS_URL: redis://default@postgres:6379/0
   S3_BUCKETNAME: c355966
   S3_ENDPOINT: http://parspack.net
   S3_ACCESSKEYID: cBM7deDXZobbbs5R
