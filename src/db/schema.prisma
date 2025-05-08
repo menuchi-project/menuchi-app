@@ -237,6 +237,7 @@ model Item {
   positionInCategory     Int?          @map("position_in_category")
   positionInMenuCategory Int?          @map("position_in_menu_categories")
   isActive               Boolean?      @default(true) @map("is_active")
+  orderItems             OrderItem[]
   category               Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   subCategory            SubCategory?  @relation(fields: [subCategoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   menuCategory           MenuCategory? @relation(fields: [menuCategoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
@@ -297,4 +298,26 @@ model Menu {
   deletedAt   DateTime?  @map("deleted_at")
 
   @@map("menus")
+}
+
+model Order {
+  id            String      @id @default(uuid()) @db.Uuid
+  customerEmail String?     @map("customer_email")
+  totalPrice    Float?      @default(0)
+  items         OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id      String  @id @default(uuid()) @db.Uuid
+  orderId String? @map("order_id") @db.Uuid
+  itemId  String? @map("item_id") @db.Uuid
+  price   Float?  @default(0)
+  amount  Int?    @default(1)
+  order   Order?  @relation(fields: [orderId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  item    Item?   @relation(fields: [itemId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@unique([orderId, itemId])
+  @@map("order_items")
 }
