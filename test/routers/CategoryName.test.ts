@@ -15,7 +15,7 @@ describe('POST /category-names', async () =>{
   test('should reject create category name with constraint error.', async () => {
     await controller.createCategoryName(categoryNameObject);
     const promise = controller.createCategoryName(categoryNameObject);
-    expect(promise).rejects.toThrowError(Prisma.PrismaClientKnownRequestError);
+    await expect(promise).rejects.toThrowError(Prisma.PrismaClientKnownRequestError);
   });
 });
 
@@ -23,6 +23,6 @@ describe('GET /category-names', () => {
   test('should retrieved all category names successfully.', async () => {
     await controller.createCategoryName(categoryNameObject);
     const promise = controller.getAllCategoryNames();
-    expect(promise).resolves.toMatchObject([categoryNameObject]);
+    await expect(promise).resolves.toMatchObject([categoryNameObject]);
   });
 });
