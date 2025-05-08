@@ -7,6 +7,10 @@ on:
 env:
   DATABASE_URL: postgres://postgres:postgres@postgres:5432/menuchi
   REDIS_URL: redis://default@redis:6379/0
+  OTP_REDIS_URL: redis://default@redis:6379/1
+  OTP_STREAM: otps
+  INTERNAL_OTP_URL: http://localhost:9000
+  INTERNAL_OTP_ENDPOINT: /api/v1/get-otp
   S3_BUCKETNAME: c355966
   S3_ENDPOINT: http://parspack.net
   S3_ACCESSKEYID: cBM7deDXZobbbs5R
