@@ -75,7 +75,7 @@ const models: TsoaRoute.Models = {
             "username": {"dataType":"union","subSchemas":[{"ref":"Username"},{"dataType":"enum","enums":[null]}]},
             "phoneNumber": {"dataType":"union","subSchemas":[{"ref":"IranPhoneNumber"},{"dataType":"enum","enums":[null]}]},
             "restaurants": {"dataType":"array","array":{"dataType":"refObject","ref":"RestaurantSession"}},
-            "lastOrderId": {"ref":"UUID"},
+            "recentlyOrderIds": {"dataType":"array","array":{"dataType":"refAlias","ref":"UUID"}},
         },
         "additionalProperties": false,
     },
@@ -299,9 +299,45 @@ const models: TsoaRoute.Models = {
         "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["PENDING"]},{"dataType":"enum","enums":["ACCEPTED"]},{"dataType":"enum","enums":["PREPARING"]},{"dataType":"enum","enums":["READY"]},{"dataType":"enum","enums":["DONE"]}],"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OrderStatus": {
+        "dataType": "refAlias",
+        "type": {"ref":"_36_Enums.OrderStatus","validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Int": {
         "dataType": "refAlias",
         "type": {"dataType":"integer","validators":{"isInt":{"errorMsg":"number should be integer"}}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OrderItemCompleteOut": {
+        "dataType": "refObject",
+        "properties": {
+            "id": {"ref":"UUID","required":true},
+            "createdAt": {"dataType":"datetime","required":true},
+            "updatedAt": {"dataType":"datetime","required":true},
+            "deletedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}]},
+            "name": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+            "pikUrl": {"dataType":"union","subSchemas":[{"ref":"URL"},{"dataType":"enum","enums":[null]}]},
+            "price": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}]},
+            "amount": {"dataType":"union","subSchemas":[{"ref":"Int"},{"dataType":"enum","enums":[null]}]},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OrderCompleteOut": {
+        "dataType": "refObject",
+        "properties": {
+            "id": {"ref":"UUID","required":true},
+            "createdAt": {"dataType":"datetime","required":true},
+            "updatedAt": {"dataType":"datetime","required":true},
+            "deletedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}]},
+            "menuId": {"dataType":"union","subSchemas":[{"ref":"UUID"},{"dataType":"enum","enums":[null]}],"required":true},
+            "customerEmail": {"dataType":"union","subSchemas":[{"ref":"Email"},{"dataType":"enum","enums":[null]}],"required":true},
+            "totalPrice": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
+            "status": {"dataType":"union","subSchemas":[{"ref":"OrderStatus"},{"dataType":"enum","enums":[null]}],"required":true},
+            "orderItems": {"dataType":"union","subSchemas":[{"dataType":"array","array":{"dataType":"refObject","ref":"OrderItemCompleteOut"}},{"dataType":"enum","enums":[null]}],"required":true},
+        },
+        "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "OrderItemCompactIn": {
@@ -309,6 +345,15 @@ const models: TsoaRoute.Models = {
         "properties": {
             "itemId": {"ref":"UUID","required":true},
             "amount": {"ref":"Int","required":true,"validators":{"minimum":{"errorMsg":"minimum age is 1","value":1}}},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CreateOrderCompactIn": {
+        "dataType": "refObject",
+        "properties": {
+            "menuId": {"ref":"UUID","required":true},
+            "items": {"dataType":"array","array":{"dataType":"refObject","ref":"OrderItemCompactIn"},"required":true},
         },
         "additionalProperties": false,
     },
@@ -955,7 +1000,7 @@ export function RegisterRoutes(app: Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsOrderController_createOrder: Record<string, TsoaRoute.ParameterSchema> = {
-                body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refObject","ref":"OrderItemCompactIn"}},
+                body: {"in":"body","name":"body","required":true,"ref":"CreateOrderCompactIn"},
                 req: {"in":"request","name":"req","dataType":"object"},
         };
         app.post('/orders',

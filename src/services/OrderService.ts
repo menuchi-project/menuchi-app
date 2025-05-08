@@ -1,12 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 import prismaClient from '../db/prisma';
 import { Email } from "../types/TypeAliases";
-import { OrderItemCompactIn } from "../types/OrderTypes";
+import { CreateOrderCompactIn, OrderCompleteOut } from "../types/OrderTypes";
+import S3Service from "./S3Service";
 
 class OrderService {
   constructor(private prisma: PrismaClient = prismaClient) {}
 
-  async createOrder(customerEmail: Email, items: OrderItemCompactIn[]) {
+  async createOrder(customerEmail: Email, { menuId, items }: CreateOrderCompactIn): Promise<OrderCompleteOut | never> {
     return this.prisma.$transaction(async (tx) => {
       const dbItems = await tx.item.findMany({
         where: {
@@ -31,8 +32,9 @@ class OrderService {
         };
       });
 
-      return tx.order.create({
+      const order = await tx.order.create({
         data: {
+          menuId,
           customerEmail,
           orderItems: {
             create: orderItems
@@ -40,9 +42,23 @@ class OrderService {
           totalPrice,
         },
         include: {
-          orderItems: true
+          orderItems: {
+            include: {
+              item: true
+            }
+          }
         }
       });
+
+      return {
+        ...order,
+        orderItems: await Promise.all(order.orderItems.map(async (orderItem) => ({
+          name: orderItem.item?.name,
+          pikUrl: await S3Service.generateGetPresignedUrl(orderItem.item?.picKey!) ?? null,
+          ...orderItem,
+          item: undefined
+        })))
+      };
     });
   }
 }

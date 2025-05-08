@@ -293,6 +293,7 @@ model Menu {
   isPublished Boolean?   @default(false) @map("is_published")
   branch      Branch?    @relation(fields: [branchId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   cylinders   Cylinder[]
+  orders      Order[]
   createdAt   DateTime   @default(now()) @map("created_at")
   updatedAt   DateTime   @updatedAt @map("updated_at")
   deletedAt   DateTime?  @map("deleted_at")
@@ -302,10 +303,15 @@ model Menu {
 
 model Order {
   id            String      @id @default(uuid()) @db.Uuid
+  menuId        String?     @map("menu_id") @db.Uuid
   customerEmail String?     @map("customer_email")
   totalPrice    Float?      @default(0)
   status        OrderStatus @default(PENDING)
   orderItems    OrderItem[]
+  menu          Menu?       @relation(fields: [menuId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+  deletedAt   DateTime?  @map("deleted_at")
 
   @@map("orders")
 }
@@ -318,6 +324,9 @@ model OrderItem {
   amount  Int?    @default(1)
   order   Order?  @relation(fields: [orderId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   item    Item?   @relation(fields: [itemId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+  deletedAt   DateTime?  @map("deleted_at")
 
   @@unique([orderId, itemId])
   @@map("order_items")

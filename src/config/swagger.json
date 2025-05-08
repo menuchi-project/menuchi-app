@@ -101,8 +101,11 @@
 						},
 						"type": "array"
 					},
-					"lastOrderId": {
-						"$ref": "#/components/schemas/UUID"
+					"recentlyOrderIds": {
+						"items": {
+							"$ref": "#/components/schemas/UUID"
+						},
+						"type": "array"
 					}
 				},
 				"required": [
@@ -800,9 +803,136 @@
 					"DONE"
 				]
 			},
+			"OrderStatus": {
+				"$ref": "#/components/schemas/_36_Enums.OrderStatus"
+			},
 			"Int": {
 				"type": "integer",
 				"format": "int32"
+			},
+			"OrderItemCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"pikUrl": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/URL"
+							}
+						],
+						"nullable": true
+					},
+					"price": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"amount": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"OrderCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"menuId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"customerEmail": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Email"
+							}
+						],
+						"nullable": true
+					},
+					"totalPrice": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"status": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/OrderStatus"
+							}
+						],
+						"nullable": true
+					},
+					"orderItems": {
+						"items": {
+							"$ref": "#/components/schemas/OrderItemCompleteOut"
+						},
+						"type": "array",
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"menuId",
+					"customerEmail",
+					"totalPrice",
+					"status",
+					"orderItems"
+				],
+				"type": "object",
+				"additionalProperties": false
 			},
 			"OrderItemCompactIn": {
 				"properties": {
@@ -816,6 +946,25 @@
 				"required": [
 					"itemId",
 					"amount"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CreateOrderCompactIn": {
+				"properties": {
+					"menuId": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"items": {
+						"items": {
+							"$ref": "#/components/schemas/OrderItemCompactIn"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"menuId",
+					"items"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -2732,72 +2881,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"allOf": [
-										{
-											"properties": {
-												"orderItems": {
-													"items": {
-														"properties": {
-															"orderId": {
-																"type": "string"
-															},
-															"itemId": {
-																"type": "string"
-															},
-															"amount": {
-																"type": "number",
-																"format": "double"
-															},
-															"price": {
-																"type": "number",
-																"format": "double"
-															},
-															"id": {
-																"type": "string"
-															}
-														},
-														"required": [
-															"orderId",
-															"itemId",
-															"amount",
-															"price",
-															"id"
-														],
-														"type": "object"
-													},
-													"type": "array"
-												}
-											},
-											"required": [
-												"orderItems"
-											],
-											"type": "object"
-										},
-										{
-											"properties": {
-												"status": {
-													"$ref": "#/components/schemas/_36_Enums.OrderStatus"
-												},
-												"totalPrice": {
-													"type": "number",
-													"format": "double"
-												},
-												"customerEmail": {
-													"type": "string"
-												},
-												"id": {
-													"type": "string"
-												}
-											},
-											"required": [
-												"status",
-												"totalPrice",
-												"customerEmail",
-												"id"
-											],
-											"type": "object"
-										}
-									]
+									"$ref": "#/components/schemas/OrderCompleteOut"
 								}
 							}
 						}
@@ -2840,10 +2924,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"items": {
-									"$ref": "#/components/schemas/OrderItemCompactIn"
-								},
-								"type": "array"
+								"$ref": "#/components/schemas/CreateOrderCompactIn"
 							}
 						}
 					}

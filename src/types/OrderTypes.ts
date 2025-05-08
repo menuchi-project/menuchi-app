@@ -1,12 +1,35 @@
-import { Int, UUID } from "./TypeAliases";
+import { OrderStatus } from "@prisma/client";
+import { CompleteOut } from "./BaseTypes";
+import { DefaultString, Email, Int, URL, UUID } from "./TypeAliases";
+
+
+export interface CreateOrderCompactIn {
+  menuId: UUID;
+  items: OrderItemCompactIn[];
+}
 
 /**
  *  @minItems 1 at least 1 item is required
  */
-export interface OrderItemCompactIn {
+interface OrderItemCompactIn {
   itemId: UUID;
   /**
    * @minimum 1 minimum age is 1
    */
   amount: Int;
+}
+
+export interface OrderCompleteOut extends CompleteOut {
+  menuId: UUID | null;
+  customerEmail: Email | null;
+  totalPrice: number | null;
+  status: OrderStatus | null;
+  orderItems: OrderItemCompleteOut[] | null;
+}
+
+interface OrderItemCompleteOut extends CompleteOut {
+  name?: DefaultString | null;
+  pikUrl?: URL | null;
+  price?: number | null;
+  amount?: Int | null;
 }
