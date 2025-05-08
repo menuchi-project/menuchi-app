@@ -5,7 +5,7 @@ on:
     branches: [ "dev" ]
 
 env:
-  DATABASE_UR: postgres://postgres:postgres@localhost:5432/menuchi
+  DATABASE_URL: postgres://postgres:postgres@localhost:5432/menuchi
   REDIS_URL: redis://default@localhost:6379/0
   S3_BUCKETNAME: c355966
   S3_ENDPOINT: http://parspack.net
@@ -51,7 +51,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
+      - name: Update and Upgrade image
+        run: apt-get update -y && apt-get upgrade -y && apt-get install -y openssl
+        
       - name: Install Deps
         run: npm ci
 
