@@ -69,10 +69,28 @@ jobs:
 
       - name: Test
         run: npm test
-     
-  build:
+
+  lint:
     runs-on: ubuntu-latest
     needs: test
+    container: node:22-bookworm-slim
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install biome
+        run: npm install --save-dev --save-exact @biomejs/biome
+
+      - name: Biome init
+        run: npx @biomejs/biome init
+
+      - name: Lint
+        run: npx @biomejs/biome lint --write ./src
+        
+  build:
+    runs-on: ubuntu-latest
+    needs: [test, lint]
     
     steps:
     - name: Check out the repo
