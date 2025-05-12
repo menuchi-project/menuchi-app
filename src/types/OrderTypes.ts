@@ -1,5 +1,5 @@
-import { OrderStatus } from "@prisma/client";
 import { CompleteOut } from "./BaseTypes";
+import { OrderStatus } from "./Enums";
 import { DefaultString, Email, Int, URL, UUID } from "./TypeAliases";
 
 
