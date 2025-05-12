@@ -7,6 +7,11 @@ export interface CreateOrderCompactIn {
   items: OrderItemCompactIn[];
 }
 
+export interface CreateOrderCompleteIn {
+  customerEmail: Email;
+  items: OrderItemCompactIn[];
+}
+
 /**
  *  @minItems 1 at least 1 item is required
  */

@@ -335,6 +335,19 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ItemNotFound": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "message": {"dataType":"string","required":true},
+            "stack": {"dataType":"string"},
+            "status": {"dataType":"double","required":true},
+            "code": {"dataType":"double"},
+            "details": {"dataType":"array","array":{"dataType":"refObject","ref":"ErrorDetail"}},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "OrderItemCompactIn": {
         "dataType": "refObject",
         "properties": {
@@ -347,6 +360,15 @@ const models: TsoaRoute.Models = {
     "CreateOrderCompactIn": {
         "dataType": "refObject",
         "properties": {
+            "items": {"dataType":"array","array":{"dataType":"refObject","ref":"OrderItemCompactIn"},"required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CreateOrderCompleteIn": {
+        "dataType": "refObject",
+        "properties": {
+            "customerEmail": {"ref":"Email","required":true},
             "items": {"dataType":"array","array":{"dataType":"refObject","ref":"OrderItemCompactIn"},"required":true},
         },
         "additionalProperties": false,
@@ -1001,7 +1023,7 @@ export function RegisterRoutes(app: Router) {
                 req: {"in":"request","name":"req","dataType":"object"},
         };
         app.post('/menus/:menuId/orders',
-            authenticateMiddleware([{"":["RESTAURANT_CUSTOMER","RESTAURANT_OWNER"]}]),
+            authenticateMiddleware([{"":["RESTAURANT_CUSTOMER"]}]),
             ...(fetchMiddlewares<RequestHandler>(OrderController)),
             ...(fetchMiddlewares<RequestHandler>(OrderController.prototype.createOrder)),
 
@@ -1017,6 +1039,39 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'createOrder',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 201,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsOrderController_createOrderByOwner: Record<string, TsoaRoute.ParameterSchema> = {
+                menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
+                body: {"in":"body","name":"body","required":true,"ref":"CreateOrderCompleteIn"},
+                req: {"in":"request","name":"req","dataType":"object"},
+        };
+        app.post('/menus/:menuId/orders/by-owner',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
+            ...(fetchMiddlewares<RequestHandler>(OrderController)),
+            ...(fetchMiddlewares<RequestHandler>(OrderController.prototype.createOrderByOwner)),
+
+            async function OrderController_createOrderByOwner(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsOrderController_createOrderByOwner, request, response });
+
+                const controller = new OrderController();
+
+              await templateService.apiHandler({
+                methodName: 'createOrderByOwner',
                 controller,
                 response,
                 next,

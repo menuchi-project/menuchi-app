@@ -932,6 +932,40 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"ItemNotFound": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"OrderItemCompactIn": {
 				"properties": {
 					"itemId": {
@@ -958,6 +992,25 @@
 					}
 				},
 				"required": [
+					"items"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CreateOrderCompleteIn": {
+				"properties": {
+					"customerEmail": {
+						"$ref": "#/components/schemas/Email"
+					},
+					"items": {
+						"items": {
+							"$ref": "#/components/schemas/OrderItemCompactIn"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"customerEmail",
 					"items"
 				],
 				"type": "object",
@@ -2915,16 +2968,26 @@
 								}
 							}
 						}
+					},
+					"404": {
+						"description": "4043 ItemNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ItemNotFound"
+								}
+							}
+						}
 					}
 				},
+				"description": "Creates a new order for a specific menu.\r\nAccessible to both restaurant customers.",
 				"tags": [
 					"Order"
 				],
 				"security": [
 					{
 						"": [
-							"RESTAURANT_CUSTOMER",
-							"RESTAURANT_OWNER"
+							"RESTAURANT_CUSTOMER"
 						]
 					}
 				],
@@ -2986,6 +3049,7 @@
 						}
 					}
 				},
+				"description": "Retrieves all orders for a specific menu.",
 				"tags": [
 					"Order"
 				],
@@ -3006,6 +3070,84 @@
 						}
 					}
 				]
+			}
+		},
+		"/menus/{menuId}/orders/by-owner": {
+			"post": {
+				"operationId": "CreateOrderByOwner",
+				"responses": {
+					"201": {
+						"description": "Order created successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrderCompleteOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4043 ItemNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ItemNotFound"
+								}
+							}
+						}
+					}
+				},
+				"description": "Creates a new order for a specific menu.\r\nAccessible to both restaurant owners.",
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateOrderCompleteIn"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/branches/{branchId}/orders": {
@@ -3046,6 +3188,7 @@
 						}
 					}
 				},
+				"description": "Retrieves all orders for a specific branch (all its menus's orders).",
 				"tags": [
 					"Order"
 				],
@@ -3106,6 +3249,7 @@
 						}
 					}
 				},
+				"description": "Retrieves the current customer's recently created orders.",
 				"tags": [
 					"Order"
 				],
@@ -3158,6 +3302,7 @@
 						}
 					}
 				},
+				"description": "Updates the status of a specific order within a menu.",
 				"tags": [
 					"Order"
 				],

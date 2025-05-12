@@ -24,7 +24,6 @@ export enum SessionUpdateScope {
 export enum OrderStatus {
   Pending = 'PENDING',
   Canceled = 'CANCELED',
-  Accepted = 'ACCEPTED',
   Preparing = 'PREPARING',
   Ready = 'READY',
   Done = 'DONE'

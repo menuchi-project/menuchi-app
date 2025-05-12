@@ -335,7 +335,6 @@ model OrderItem {
 enum OrderStatus {
   PENDING
   CANCELED
-  ACCEPTED
   PREPARING
   READY
   DONE

@@ -4,6 +4,7 @@ import { Email, UUID } from "../types/TypeAliases";
 import { CreateOrderCompactIn, OrderCompleteOut } from "../types/OrderTypes";
 import S3Service from "./S3Service";
 import { OrderStatus } from "../types/Enums";
+import { ItemNotFound } from "../exceptions/NotFoundError";
 
 class OrderService {
   constructor(private prisma: PrismaClient = prismaClient) {}
@@ -26,6 +27,8 @@ class OrderService {
           price: true
         },
       });
+
+      if (dbItems.length < 1) throw new ItemNotFound();
 
       let totalPrice = 0;
       const orderItems = dbItems.map(item => {
