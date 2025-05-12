@@ -75,14 +75,24 @@ class OrderService {
         menuId
       },
       include: {
-        orderItems: true
+        orderItems: {
+          include: {
+            item: true
+          }
+        }
       }
     });
 
-    return orders.map(order => ({
+    return await Promise.all(orders.map(async (order) => ({
       ...order,
-      status: order.status as OrderStatus,
-    }));
+      orderItems: await Promise.all(order.orderItems.map(async (orderItem) => ({
+        name: orderItem.item?.name,
+        pikUrl: await S3Service.generateGetPresignedUrl(orderItem.item?.picKey!) ?? null,
+        ...orderItem,
+        item: undefined
+      }))),
+      status: order.status as OrderStatus
+    })));
   }
 
   async getAllOrders(branchId: UUID) {
@@ -93,14 +103,52 @@ class OrderService {
         }
       },
       include: {
-        orderItems: true
+        orderItems: {
+          include: {
+            item: true
+          }
+        }
       }
     });
 
-    return orders.map(order => ({
+    return await Promise.all(orders.map(async (order) => ({
       ...order,
-      status: order.status as OrderStatus,
-    }));
+      orderItems: await Promise.all(order.orderItems.map(async (orderItem) => ({
+        name: orderItem.item?.name,
+        pikUrl: await S3Service.generateGetPresignedUrl(orderItem.item?.picKey!) ?? null,
+        ...orderItem,
+        item: undefined
+      }))),
+      status: order.status as OrderStatus
+    })));
+  }
+
+  async getRecentlyOrders(recentlyOrderIds: UUID[]): Promise<OrderCompleteOut[]> {
+    const orders = await this.prisma.order.findMany({
+      where: {
+        id: {
+          in: recentlyOrderIds
+        }
+      },
+      include: {
+        orderItems: {
+          include: {
+            item: true
+          }
+        }
+      }
+    });
+
+    return await Promise.all(orders.map(async (order) => ({
+      ...order,
+      orderItems: await Promise.all(order.orderItems.map(async (orderItem) => ({
+        name: orderItem.item?.name,
+        pikUrl: await S3Service.generateGetPresignedUrl(orderItem.item?.picKey!) ?? null,
+        ...orderItem,
+        item: undefined
+      }))),
+      status: order.status as OrderStatus
+    })));
   }
 }
 
