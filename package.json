@@ -4,7 +4,7 @@
   "description": "The backend of Menuchi",
   "main": "index.js",
   "scripts": {
-    "dev": "dotenv -e .env -- npx tsoa spec-and-routes && ts-node --files ./src/index.ts",
+    "dev": "npx tsoa spec-and-routes && ts-node --files ./src/index.ts",
     "build": "npx tsc",
     "start": "node ./build/src/index.js",
     "db-push": "npx prisma db push --schema=./src/db/schema.prisma",
@@ -40,7 +40,6 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
-    "dotenv-cli": "^8.0.0",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
     "jsonwebtoken": "^9.0.2",

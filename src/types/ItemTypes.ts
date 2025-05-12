@@ -23,6 +23,7 @@ export interface CreateItemCompleteOut extends CompleteOut {
 
 export interface ItemCompleteOut extends CompleteOut {
   categoryId?: UUID | null;
+  categoryNameId?: UUID | null;
   categoryName?: DefaultString | null;
   subCategoryId?: UUID | null;
   name?: DefaultString | null;
