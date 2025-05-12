@@ -22,9 +22,9 @@ export enum SessionUpdateScope {
 }
 
 export enum OrderStatus {
-  PENDING = 'PENDING',
-  ACCEPTED = 'ACCEPTED',
-  PREPARING = 'PREPARING',
-  READY = 'READY',
-  DONE = 'DONE'
+  Pending = 'PENDING',
+  Accepted = 'ACCEPTED',
+  Preparing = 'PREPARING',
+  Ready = 'READY',
+  Done = 'DONE'
 }

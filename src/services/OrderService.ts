@@ -3,6 +3,7 @@ import prismaClient from '../db/prisma';
 import { Email } from "../types/TypeAliases";
 import { CreateOrderCompactIn, OrderCompleteOut } from "../types/OrderTypes";
 import S3Service from "./S3Service";
+import { OrderStatus } from "../types/Enums";
 
 class OrderService {
   constructor(private prisma: PrismaClient = prismaClient) {}
@@ -57,7 +58,8 @@ class OrderService {
           pikUrl: await S3Service.generateGetPresignedUrl(orderItem.item?.picKey!) ?? null,
           ...orderItem,
           item: undefined
-        })))
+        }))),
+        status: order.status as OrderStatus
       };
     });
   }

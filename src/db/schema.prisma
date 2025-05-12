@@ -306,7 +306,7 @@ model Order {
   menuId        String?     @map("menu_id") @db.Uuid
   customerEmail String?     @map("customer_email")
   totalPrice    Float?      @default(0)
-  status        OrderStatus @default(PENDING)
+  status        OrderStatus? @default(PENDING)
   orderItems    OrderItem[]
   menu          Menu?       @relation(fields: [menuId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   createdAt   DateTime   @default(now()) @map("created_at")
