@@ -68,6 +68,40 @@ class OrderService {
       };
     });
   }
+
+  async getOrders(menuId: UUID): Promise<OrderCompleteOut[]> {
+    const orders = await this.prisma.order.findMany({
+      where: {
+        menuId
+      },
+      include: {
+        orderItems: true
+      }
+    });
+
+    return orders.map(order => ({
+      ...order,
+      status: order.status as OrderStatus,
+    }));
+  }
+
+  async getAllOrders(branchId: UUID) {
+    const orders = await this.prisma.order.findMany({
+      where: {
+        menu: {
+          branchId
+        }
+      },
+      include: {
+        orderItems: true
+      }
+    });
+
+    return orders.map(order => ({
+      ...order,
+      status: order.status as OrderStatus,
+    }));
+  }
 }
 
 export default new OrderService();
