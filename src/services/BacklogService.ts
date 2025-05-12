@@ -166,6 +166,7 @@ class BacklogService {
       categories: await Promise.all(
         backlog.categories.map(async (category) => ({
           ...category,
+          categoryNameId: category.categoryName?.id,
           categoryName: category.categoryName?.name ?? null,
           items: await Promise.all(
             category.items.map(async (item) => ({
@@ -206,6 +207,7 @@ class BacklogService {
     return await Promise.all(
       items.map(async (item) => ({
         ...item,
+        categoryNameId: item.category?.categoryName?.id,
         categoryName: item.category?.categoryName?.name,
         category: undefined,
         picUrl: await S3Service.generateGetPresignedUrl(item.picKey),
