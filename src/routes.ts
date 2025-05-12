@@ -296,7 +296,7 @@ const models: TsoaRoute.Models = {
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "OrderStatus": {
         "dataType": "refEnum",
-        "enums": ["PENDING","ACCEPTED","PREPARING","READY","DONE"],
+        "enums": ["PENDING","CANCELED","ACCEPTED","PREPARING","READY","DONE"],
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Int": {
@@ -347,7 +347,6 @@ const models: TsoaRoute.Models = {
     "CreateOrderCompactIn": {
         "dataType": "refObject",
         "properties": {
-            "menuId": {"ref":"UUID","required":true},
             "items": {"dataType":"array","array":{"dataType":"refObject","ref":"OrderItemCompactIn"},"required":true},
         },
         "additionalProperties": false,
@@ -997,10 +996,11 @@ export function RegisterRoutes(app: Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsOrderController_createOrder: Record<string, TsoaRoute.ParameterSchema> = {
+                menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"ref":"CreateOrderCompactIn"},
                 req: {"in":"request","name":"req","dataType":"object"},
         };
-        app.post('/orders',
+        app.post('/menus/:menuId/orders',
             authenticateMiddleware([{"":["RESTAURANT_CUSTOMER","RESTAURANT_OWNER"]}]),
             ...(fetchMiddlewares<RequestHandler>(OrderController)),
             ...(fetchMiddlewares<RequestHandler>(OrderController.prototype.createOrder)),
@@ -1022,6 +1022,135 @@ export function RegisterRoutes(app: Router) {
                 next,
                 validatedArgs,
                 successStatus: 201,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsOrderController_getOrders: Record<string, TsoaRoute.ParameterSchema> = {
+                menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
+                req: {"in":"request","name":"req","dataType":"object"},
+        };
+        app.get('/menus/:menuId/orders',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
+            ...(fetchMiddlewares<RequestHandler>(OrderController)),
+            ...(fetchMiddlewares<RequestHandler>(OrderController.prototype.getOrders)),
+
+            async function OrderController_getOrders(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsOrderController_getOrders, request, response });
+
+                const controller = new OrderController();
+
+              await templateService.apiHandler({
+                methodName: 'getOrders',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 200,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsOrderController_getAllOrders: Record<string, TsoaRoute.ParameterSchema> = {
+                branchId: {"in":"path","name":"branchId","required":true,"ref":"UUID"},
+                req: {"in":"request","name":"req","dataType":"object"},
+        };
+        app.get('/branches/:branchId/orders',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
+            ...(fetchMiddlewares<RequestHandler>(OrderController)),
+            ...(fetchMiddlewares<RequestHandler>(OrderController.prototype.getAllOrders)),
+
+            async function OrderController_getAllOrders(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsOrderController_getAllOrders, request, response });
+
+                const controller = new OrderController();
+
+              await templateService.apiHandler({
+                methodName: 'getAllOrders',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 200,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsOrderController_getRecentlyOrders: Record<string, TsoaRoute.ParameterSchema> = {
+                req: {"in":"request","name":"req","dataType":"object"},
+        };
+        app.get('/customer/orders',
+            authenticateMiddleware([{"":["RESTAURANT_CUSTOMER"]}]),
+            ...(fetchMiddlewares<RequestHandler>(OrderController)),
+            ...(fetchMiddlewares<RequestHandler>(OrderController.prototype.getRecentlyOrders)),
+
+            async function OrderController_getRecentlyOrders(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsOrderController_getRecentlyOrders, request, response });
+
+                const controller = new OrderController();
+
+              await templateService.apiHandler({
+                methodName: 'getRecentlyOrders',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 200,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsOrderController_updateOrderStatus: Record<string, TsoaRoute.ParameterSchema> = {
+                menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
+                orderId: {"in":"path","name":"orderId","required":true,"ref":"UUID"},
+                body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"status":{"ref":"OrderStatus","required":true}}},
+                req: {"in":"request","name":"req","dataType":"object"},
+        };
+        app.patch('/menus/:menuId/orders/:orderId',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
+            ...(fetchMiddlewares<RequestHandler>(OrderController)),
+            ...(fetchMiddlewares<RequestHandler>(OrderController.prototype.updateOrderStatus)),
+
+            async function OrderController_updateOrderStatus(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsOrderController_updateOrderStatus, request, response });
+
+                const controller = new OrderController();
+
+              await templateService.apiHandler({
+                methodName: 'updateOrderStatus',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 200,
               });
             } catch (err) {
                 return next(err);

@@ -150,6 +150,17 @@ class OrderService {
       status: order.status as OrderStatus
     })));
   }
+
+  async updateOrderStatus(orderId: UUID, status: OrderStatus) {
+    return this.prisma.order.update({
+      where: {
+        id: orderId
+      },
+      data: {
+        status
+      }
+    });
+  }
 }
 
 export default new OrderService();

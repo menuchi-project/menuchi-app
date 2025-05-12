@@ -1,7 +1,7 @@
-import { Post, Route, Security, SuccessResponse, Tags, Response, Body, Request, Path } from "tsoa";
+import { Post, Route, Security, SuccessResponse, Tags, Response, Body, Request, Path, Get, Patch } from "tsoa";
 import BaseController from "./BaseController";
 import { ForbiddenError, UnauthorizedError } from "../exceptions/AuthError";
-import { PermissionScope, RolesEnum } from "../types/Enums";
+import { OrderStatus, PermissionScope, RolesEnum } from "../types/Enums";
 import express from 'express';
 import OrderService from "../services/OrderService";
 import { CreateOrderCompactIn, OrderCompleteOut } from "../types/OrderTypes";
@@ -29,7 +29,7 @@ export class OrderController extends BaseController {
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @SuccessResponse(200, 'All the menu orders retrieved successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
-  @Post('/menus/{menuId}/orders')
+  @Get('/menus/{menuId}/orders')
   async getOrders(@Path() menuId: UUID, @Request() req?: express.Request): Promise<OrderCompleteOut[]> {
     this.checkPermission(req?.session.user, PermissionScope.Menu, menuId);
     return OrderService.getOrders(menuId);
@@ -39,7 +39,7 @@ export class OrderController extends BaseController {
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @SuccessResponse(200, 'All the branch orders retrieved successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
-  @Post('/branches/{branchId}/orders')
+  @Get('/branches/{branchId}/orders')
   async getAllOrders(@Path() branchId: UUID, @Request() req?: express.Request): Promise<OrderCompleteOut[]> {
     this.checkPermission(req?.session.user, PermissionScope.Branch, branchId);
     return OrderService.getAllOrders(branchId);
@@ -49,8 +49,24 @@ export class OrderController extends BaseController {
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @SuccessResponse(200, 'All the menu orders retrieved successfully.')
   @Security('', [RolesEnum.RestaurantCustomer])
-  @Post('/customer/orders')
+  @Get('/customer/orders')
   async getRecentlyOrders(@Request() req?: express.Request): Promise<OrderCompleteOut[]> {
     return OrderService.getRecentlyOrders(req!.session.user!.recentlyOrderIds!);
+  }
+
+  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
+  @Response<UnauthorizedError>(401, 'Unauthorized user.')
+  @SuccessResponse(200, 'All the menu orders retrieved successfully.')
+  @Security('', [RolesEnum.RestaurantOwner])
+  @Patch('/menus/{menuId}/orders/{orderId}')
+  async updateOrderStatus(
+    @Path() menuId: UUID,
+    @Path() orderId: UUID,
+    @Body() body: { status: OrderStatus },
+    @Request() req?: express.Request
+  ): Promise<null> {
+    this.checkPermission(req?.session.user, PermissionScope.Menu, menuId);
+    await OrderService.updateOrderStatus(orderId, body.status);
+    return null;
   }
 }

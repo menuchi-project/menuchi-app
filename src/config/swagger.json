@@ -796,6 +796,7 @@
 			"OrderStatus": {
 				"enum": [
 					"PENDING",
+					"CANCELED",
 					"ACCEPTED",
 					"PREPARING",
 					"READY",
@@ -949,9 +950,6 @@
 			},
 			"CreateOrderCompactIn": {
 				"properties": {
-					"menuId": {
-						"$ref": "#/components/schemas/UUID"
-					},
 					"items": {
 						"items": {
 							"$ref": "#/components/schemas/OrderItemCompactIn"
@@ -960,7 +958,6 @@
 					}
 				},
 				"required": [
-					"menuId",
 					"items"
 				],
 				"type": "object",
@@ -2885,7 +2882,7 @@
 				]
 			}
 		},
-		"/orders": {
+		"/menus/{menuId}/orders": {
 			"post": {
 				"operationId": "CreateOrder",
 				"responses": {
@@ -2931,13 +2928,278 @@
 						]
 					}
 				],
-				"parameters": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
 				"requestBody": {
 					"required": true,
 					"content": {
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/CreateOrderCompactIn"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "GetOrders",
+				"responses": {
+					"200": {
+						"description": "All the menu orders retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/OrderCompleteOut"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
+			}
+		},
+		"/branches/{branchId}/orders": {
+			"get": {
+				"operationId": "GetAllOrders",
+				"responses": {
+					"200": {
+						"description": "All the branch orders retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/OrderCompleteOut"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "branchId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
+			}
+		},
+		"/customer/orders": {
+			"get": {
+				"operationId": "GetRecentlyOrders",
+				"responses": {
+					"200": {
+						"description": "All the menu orders retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/OrderCompleteOut"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_CUSTOMER"
+						]
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/menus/{menuId}/orders/{orderId}": {
+			"patch": {
+				"operationId": "UpdateOrderStatus",
+				"responses": {
+					"200": {
+						"description": "All the menu orders retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					},
+					{
+						"in": "path",
+						"name": "orderId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"status": {
+										"$ref": "#/components/schemas/OrderStatus"
+									}
+								},
+								"required": [
+									"status"
+								],
+								"type": "object"
 							}
 						}
 					}
