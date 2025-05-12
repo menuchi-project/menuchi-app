@@ -797,7 +797,6 @@
 				"enum": [
 					"PENDING",
 					"CANCELED",
-					"ACCEPTED",
 					"PREPARING",
 					"READY",
 					"DONE"
@@ -3068,6 +3067,31 @@
 						"schema": {
 							"$ref": "#/components/schemas/UUID"
 						}
+					},
+					{
+						"in": "query",
+						"name": "skip",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/Int"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/Int"
+						}
+					},
+					{
+						"description": "Filters orders based on completion status.\r\nSet to `false` to retrieve only ongoing (not completed) orders.\r\nDefaults to `true`, which returns all orders.",
+						"in": "query",
+						"name": "isCompleted",
+						"required": false,
+						"schema": {
+							"type": "boolean"
+						}
 					}
 				]
 			}
@@ -3206,6 +3230,31 @@
 						"required": true,
 						"schema": {
 							"$ref": "#/components/schemas/UUID"
+						}
+					},
+					{
+						"in": "query",
+						"name": "skip",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/Int"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/Int"
+						}
+					},
+					{
+						"description": "Filters orders based on completion status.\r\nSet to `false` to retrieve only ongoing (not completed) orders.\r\nDefaults to `true`, which returns all orders.",
+						"in": "query",
+						"name": "isCompleted",
+						"required": false,
+						"schema": {
+							"type": "boolean"
 						}
 					}
 				]

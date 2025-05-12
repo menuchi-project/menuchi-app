@@ -296,7 +296,7 @@ const models: TsoaRoute.Models = {
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "OrderStatus": {
         "dataType": "refEnum",
-        "enums": ["PENDING","CANCELED","ACCEPTED","PREPARING","READY","DONE"],
+        "enums": ["PENDING","CANCELED","PREPARING","READY","DONE"],
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Int": {
@@ -1085,6 +1085,9 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsOrderController_getOrders: Record<string, TsoaRoute.ParameterSchema> = {
                 menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
+                skip: {"in":"query","name":"skip","ref":"Int"},
+                limit: {"in":"query","name":"limit","ref":"Int"},
+                isCompleted: {"in":"query","name":"isCompleted","dataType":"boolean"},
                 req: {"in":"request","name":"req","dataType":"object"},
         };
         app.get('/menus/:menuId/orders',
@@ -1117,6 +1120,9 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsOrderController_getAllOrders: Record<string, TsoaRoute.ParameterSchema> = {
                 branchId: {"in":"path","name":"branchId","required":true,"ref":"UUID"},
+                skip: {"in":"query","name":"skip","ref":"Int"},
+                limit: {"in":"query","name":"limit","ref":"Int"},
+                isCompleted: {"in":"query","name":"isCompleted","dataType":"boolean"},
                 req: {"in":"request","name":"req","dataType":"object"},
         };
         app.get('/branches/:branchId/orders',
