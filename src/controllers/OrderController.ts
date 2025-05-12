@@ -1,11 +1,11 @@
-import { Post, Route, Security, SuccessResponse, Tags, Response, Body, Request, Path, Get, Patch } from "tsoa";
+import { Post, Route, Security, SuccessResponse, Tags, Response, Body, Request, Path, Get, Patch, Query } from "tsoa";
 import BaseController from "./BaseController";
 import { ForbiddenError, UnauthorizedError } from "../exceptions/AuthError";
 import { OrderStatus, PermissionScope, RolesEnum } from "../types/Enums";
 import express from 'express';
 import OrderService from "../services/OrderService";
 import { CreateOrderCompactIn, CreateOrderCompleteIn, OrderCompleteOut } from "../types/OrderTypes";
-import { UUID } from "../types/TypeAliases";
+import { Int, UUID } from "../types/TypeAliases";
 import { ItemNotFound } from "../exceptions/NotFoundError";
 
 @Route()
@@ -58,9 +58,20 @@ export class OrderController extends BaseController {
   @SuccessResponse(200, 'All the menu orders retrieved successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Get('/menus/{menuId}/orders')
-  async getOrders(@Path() menuId: UUID, @Request() req?: express.Request): Promise<OrderCompleteOut[]> {
+  async getOrders(
+    @Path() menuId: UUID,
+    @Query() skip?: Int,
+    @Query() limit?: Int,
+    /**
+     * Filters orders based on completion status.
+     * Set to `false` to retrieve only ongoing (not completed) orders.
+     * Defaults to `true`, which returns all orders.
+     */
+    @Query() isCompleted?: boolean,
+    @Request() req?: express.Request
+  ): Promise<OrderCompleteOut[]> {
     this.checkPermission(req?.session.user, PermissionScope.Menu, menuId);
-    return OrderService.getOrders(menuId);
+    return OrderService.getOrders(menuId, skip, limit, isCompleted);
   }
 
   /**
@@ -71,7 +82,18 @@ export class OrderController extends BaseController {
   @SuccessResponse(200, 'All the branch orders retrieved successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Get('/branches/{branchId}/orders')
-  async getAllOrders(@Path() branchId: UUID, @Request() req?: express.Request): Promise<OrderCompleteOut[]> {
+  async getAllOrders(
+    @Path() branchId: UUID,
+    @Query() skip?: Int,
+    @Query() limit?: Int,
+    /**
+     * Filters orders based on completion status.
+     * Set to `false` to retrieve only ongoing (not completed) orders.
+     * Defaults to `true`, which returns all orders.
+     */
+    @Query() isCompleted?: boolean,
+    @Request() req?: express.Request
+  ): Promise<OrderCompleteOut[]> {
     this.checkPermission(req?.session.user, PermissionScope.Branch, branchId);
     return OrderService.getAllOrders(branchId);
   }

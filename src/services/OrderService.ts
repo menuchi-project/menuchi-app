@@ -72,10 +72,13 @@ class OrderService {
     });
   }
 
-  async getOrders(menuId: UUID): Promise<OrderCompleteOut[]> {
+  async getOrders(menuId: UUID, skip = 0, take = 10, isCompleted = true): Promise<OrderCompleteOut[]> {
+    const statusWhereClause = isCompleted ? {} :
+                  { in: [OrderStatus.Pending, OrderStatus.Preparing, OrderStatus.Ready] };
     const orders = await this.prisma.order.findMany({
       where: {
-        menuId
+        menuId,
+        status: statusWhereClause
       },
       include: {
         orderItems: {
@@ -83,7 +86,8 @@ class OrderService {
             item: true
           }
         }
-      }
+      },
+      skip, take
     });
 
     return await Promise.all(orders.map(async (order) => ({
@@ -98,12 +102,15 @@ class OrderService {
     })));
   }
 
-  async getAllOrders(branchId: UUID) {
+  async getAllOrders(branchId: UUID, skip = 0, take = 10, isCompleted = true): Promise<OrderCompleteOut[]> {
+    const statusWhereClause = isCompleted ? {} :
+                  { in: [OrderStatus.Pending, OrderStatus.Preparing, OrderStatus.Ready] };
     const orders = await this.prisma.order.findMany({
       where: {
         menu: {
-          branchId
-        }
+          branchId,
+        },
+        status: statusWhereClause
       },
       include: {
         orderItems: {
@@ -111,7 +118,8 @@ class OrderService {
             item: true
           }
         }
-      }
+      },
+      skip, take
     });
 
     return await Promise.all(orders.map(async (order) => ({
