@@ -995,6 +995,14 @@
 						],
 						"nullable": true
 					},
+					"categoryNameId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
 					"categoryName": {
 						"allOf": [
 							{
@@ -1084,6 +1092,14 @@
 						"nullable": true
 					},
 					"backlogId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"categoryNameId": {
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/UUID"
