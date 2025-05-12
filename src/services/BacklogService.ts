@@ -57,10 +57,10 @@ class BacklogService {
           },
         })
         .catch((error: Error) => {
-          if (error.message.includes('categories_backlog_id_fkey (index)'))
+          if (error.message.includes('categories_backlog_id_fkey'))
             throw new BacklogNotFound();
           if (
-            error.message.includes('categories_category_name_id_fkey (index)')
+            error.message.includes('categories_category_name_id_fkey')
           )
             throw new CategoryNameNotFound();
           throw error;
