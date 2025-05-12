@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import prismaClient from '../db/prisma';
-import { Email } from "../types/TypeAliases";
+import { Email, UUID } from "../types/TypeAliases";
 import { CreateOrderCompactIn, OrderCompleteOut } from "../types/OrderTypes";
 import S3Service from "./S3Service";
 import { OrderStatus } from "../types/Enums";
@@ -8,12 +8,17 @@ import { OrderStatus } from "../types/Enums";
 class OrderService {
   constructor(private prisma: PrismaClient = prismaClient) {}
 
-  async createOrder(customerEmail: Email, { menuId, items }: CreateOrderCompactIn): Promise<OrderCompleteOut | never> {
+  async createOrder(customerEmail: Email, menuId: UUID, { items }: CreateOrderCompactIn): Promise<OrderCompleteOut | never> {
     return this.prisma.$transaction(async (tx) => {
       const dbItems = await tx.item.findMany({
         where: {
           id: {
             in: items.map(item => item.itemId)
+          },
+          menuCategory: {
+            cylinder: {
+              menuId
+            }
           }
         },
         select: {
