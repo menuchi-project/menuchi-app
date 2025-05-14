@@ -1039,7 +1039,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"CreateMenuCompleteOut": {
+			"MenuCompactOut": {
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/UUID"
@@ -1142,6 +1142,40 @@
 				},
 				"required": [
 					"branchId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"MenuNotFound": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1348,40 +1382,6 @@
 					"favicon",
 					"isPublished",
 					"cylinders"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"MenuNotFound": {
-				"properties": {
-					"name": {
-						"type": "string"
-					},
-					"message": {
-						"type": "string"
-					},
-					"stack": {
-						"type": "string"
-					},
-					"status": {
-						"type": "number",
-						"format": "double"
-					},
-					"code": {
-						"type": "number",
-						"format": "double"
-					},
-					"details": {
-						"items": {
-							"$ref": "#/components/schemas/ErrorDetail"
-						},
-						"type": "array"
-					}
-				},
-				"required": [
-					"name",
-					"message",
-					"status"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -2687,7 +2687,7 @@
 						}
 					}
 				},
-				"description": "Retrieves full details of a specific restaurant by its ID.",
+				"description": "Retrieves full details of a specific restaurant by its ID, include its branches.",
 				"tags": [
 					"Restaurant"
 				],
@@ -2795,7 +2795,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/CreateMenuCompleteOut"
+									"$ref": "#/components/schemas/MenuCompactOut"
 								}
 							}
 						}
@@ -2853,6 +2853,77 @@
 						}
 					}
 				}
+			}
+		},
+		"/menus/branch/{branchId}": {
+			"get": {
+				"operationId": "GetAllMenus",
+				"responses": {
+					"200": {
+						"description": "Menus are retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/MenuCompactOut"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4048 MenuNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuNotFound"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieves all branch menus.",
+				"tags": [
+					"Menu"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "branchId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
 			}
 		},
 		"/menus/{menuId}": {

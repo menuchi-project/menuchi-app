@@ -12,7 +12,7 @@ export interface MenuCompactIn {
   isPublished?: Boolean | null;
 }
 
-export interface CreateMenuCompleteOut extends CompleteOut {
+export interface MenuCompactOut extends CompleteOut {
   branchId: UUID | null;
   name: DefaultString | null;
   favicon: DefaultString | null;
@@ -57,6 +57,6 @@ interface MenuCategoryCompleteOut extends CreateMenuCategoryCompleteOut {
   items: ItemCompleteOut[] | null;
 }
 
-export interface MenuCompleteOut extends CreateMenuCompleteOut {
+export interface MenuCompleteOut extends MenuCompactOut {
   cylinders: CylinderCompleteOut[] | null;
 }

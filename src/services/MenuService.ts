@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import prismaClient from '../db/prisma';
 import { UUID } from '../types/TypeAliases';
-import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, CreateMenuCompleteOut, MenuCompleteOut, CreateMenuCompactIn } from '../types/MenuTypes';
+import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompactOut, MenuCompleteOut, CreateMenuCompactIn } from '../types/MenuTypes';
 import MenuchiError from '../exceptions/MenuchiError';
 import { BranchNotFound, CategoryNotFound, CylinderNotFound, MenuNotFound } from '../exceptions/NotFoundError';
 import S3Service from './S3Service';
@@ -10,7 +10,7 @@ import { BacklogCompleteOut } from '../types/RestaurantTypes';
 class MenuService {
   constructor(private prisma: PrismaClient = prismaClient) {}
 
-  async createMenu(body: CreateMenuCompactIn): Promise<CreateMenuCompleteOut | never> {
+  async createMenu(body: CreateMenuCompactIn): Promise<MenuCompactOut | never> {
     const newMenu = await this.prisma.menu.create({
       data: body,
       include: {
@@ -363,6 +363,15 @@ class MenuService {
           }))
         ),
       };
+  }
+
+  async getAllMenus(branchId: UUID): Promise<MenuCompactOut[]> {
+    return this.prisma.menu.findMany({
+      where: {
+        branchId,
+        deletedAt: null
+      }
+    });
   }
 
   async getMenu(menuId: UUID): Promise<MenuCompleteOut | never> {
