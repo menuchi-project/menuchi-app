@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 import { CategoryNameController } from "../../src/controllers/CategoryNameController";
 import { RestaurantController } from "../../src/controllers/RestaurantController";
 import { BacklogController } from "../../src/controllers/BacklogController";
-import { returnCategoryName, returnItem, returnRestaurant } from "../factories";
+import { returnCategoryName, returnItem, returnMenu, returnRestaurant } from "../factories";
 import { MenuController } from "../../src/controllers/MenuController";
 
 const categoryNameController = new CategoryNameController();
@@ -12,6 +12,7 @@ const menuController = new MenuController();
 const categoryNameObject = returnCategoryName();
 const restaurantObject = returnRestaurant();
 const itemObject = returnItem();
+const menuObject = returnMenu();
 
 describe('GET /menus/backlog/{backlogId}', () => {
   test('should retrieved backlog successfully.', async () => {
@@ -39,5 +40,14 @@ describe('GET /menus/backlog/{backlogId}', () => {
     // No category containing 'random' was found.
     const backlog2 = await menuController.getBacklog(backlogId!, 'random');
     expect(backlog2.categories?.length).toBe(0);
+  });
+});
+
+describe('POST /menus', () => {
+  test('should create menu successfully.', async () => {
+    const branchId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.id!;
+    const promise = menuController.createMenu({ ...menuObject, branchId });
+
+    await expect(promise).resolves.toMatchObject({ ...menuObject, branchId });
   });
 });
