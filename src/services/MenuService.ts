@@ -55,7 +55,7 @@ class MenuService {
           menuId
         }
       }).catch((error: Error) => {
-        if (error.message.includes('cylinders_menu_id_fkey (index)'))
+        if (error.message.includes('cylinders_menu_id_fkey'))
           throw new MenuNotFound();
         throw error;
       });
@@ -69,7 +69,7 @@ class MenuService {
           positionInMenu
         }
       }).catch((error: Error) => {
-        if (error.message.includes('cylinders_menu_id_fkey (index)'))
+        if (error.message.includes('cylinders_menu_id_fkey'))
           throw new MenuNotFound();
         throw error;
       });

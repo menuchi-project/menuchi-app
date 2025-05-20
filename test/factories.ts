@@ -31,3 +31,13 @@ export const returnMenu = () => ({
   name: 'test-menu',
   isPublished: false
 });
+
+export const returnCylinder = () => ({
+  sat: true,
+  sun: false,
+  mon: true,
+  tue: false,
+  wed: true,
+  thu: false,
+  fri: false
+});

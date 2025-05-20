@@ -2,8 +2,12 @@ import { describe, expect, test } from "vitest";
 import { CategoryNameController } from "../../src/controllers/CategoryNameController";
 import { RestaurantController } from "../../src/controllers/RestaurantController";
 import { BacklogController } from "../../src/controllers/BacklogController";
-import { returnCategoryName, returnItem, returnMenu, returnRestaurant } from "../factories";
+import { returnCategoryName, returnCylinder, returnItem, returnMenu, returnRestaurant } from "../factories";
 import { MenuController } from "../../src/controllers/MenuController";
+import { CylinderValidationError } from "../../src/exceptions/ValidationError";
+import { Prisma } from "@prisma/client";
+import { randomUUID } from "node:crypto";
+import { MenuNotFound } from "../../src/exceptions/NotFoundError";
 
 const categoryNameController = new CategoryNameController();
 const restaurantController = new RestaurantController();
@@ -13,6 +17,7 @@ const categoryNameObject = returnCategoryName();
 const restaurantObject = returnRestaurant();
 const itemObject = returnItem();
 const menuObject = returnMenu();
+const cylinderObject = returnCylinder();
 
 describe('GET /menus/backlog/{backlogId}', () => {
   test('should retrieved backlog successfully.', async () => {
@@ -49,5 +54,40 @@ describe('POST /menus', () => {
     const promise = menuController.createMenu({ ...menuObject, branchId });
 
     await expect(promise).resolves.toMatchObject({ ...menuObject, branchId });
+  });
+});
+
+describe('POST /menus/{menuId}/cylinders', () => {
+  test('should create cylinder successfully.', async () => {
+    const branchId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.id!;
+    const { id: menuId } = await menuController.createMenu({ ...menuObject, branchId });
+    const promise = menuController.createCylinder(menuId, cylinderObject);
+
+    await expect(promise).resolves.toMatchObject(cylinderObject);
+  });
+
+  test('should rejects create cylinder with CylinderValidationError.', async () => {
+    const branchId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.id!;
+    const { id: menuId } = await menuController.createMenu({ ...menuObject, branchId });
+    const promise = menuController.createCylinder(menuId, {}); // or with just false values.
+
+    await expect(promise).rejects.toThrowError(CylinderValidationError);
+  });
+
+  test('should rejects create cylinder with constraint error.', async () => {
+    const branchId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.id!;
+    const { id: menuId } = await menuController.createMenu({ ...menuObject, branchId });
+    await menuController.createCylinder(menuId, cylinderObject);
+    const promise = menuController.createCylinder(menuId, cylinderObject);
+
+    await expect(promise).rejects.toThrowError(Prisma.PrismaClientKnownRequestError);
+  });
+
+  test('should rejects create cylinder with MenuNotFound error.', async () => {
+    const branchId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.id!;
+    await menuController.createMenu({ ...menuObject, branchId });
+    const promise = menuController.createCylinder(randomUUID(), cylinderObject);
+
+    await expect(promise).rejects.toThrowError(MenuNotFound);
   });
 });

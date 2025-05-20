@@ -103,8 +103,6 @@ export class MenuController extends BaseController {
    */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
-  @Response<CylinderNotFound>(404, '4046 CylinderNotFound')
-  @Response<CategoryNotFound>(404, '4048 CategoryNotFound')
   @Response<MenuNotFound>(404, '4048 MenuNotFound')
   @Response<ConstraintsDatabaseError>(409, 'ConstraintsDatabaseError')
   @Response<CylinderValidationError>(422, '4226 CylinderValidationError')
@@ -114,9 +112,9 @@ export class MenuController extends BaseController {
   async createCylinder(
     @Path() menuId: UUID,
     @Body() body: CylinderCompactIn,
-    @Request() req: express.Request
+    @Request() req?: express.Request
   ): Promise<CreateCylinderCompleteOut> {
-    this.checkPermission(req.session.user, PermissionScope.Menu, menuId);
+    this.checkPermission(req?.session.user, PermissionScope.Menu, menuId);
 
     const isValid = Object.values(body).some(value => value);
     if (!isValid) throw new CylinderValidationError();
