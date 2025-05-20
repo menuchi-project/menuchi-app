@@ -163,13 +163,41 @@ class OrderService {
   }
 
   async updateOrderStatus(orderId: UUID, status: OrderStatus) {
-    return this.prisma.order.update({
-      where: {
-        id: orderId
-      },
-      data: {
-        status
+    return this.prisma.$transaction(async (tx) => {
+      if (status === OrderStatus.Ready) {
+        const orderItems = await tx.orderItem.findMany({
+          where: {
+            orderId
+          },
+          select: {
+            itemId: true,
+            amount: true
+          }
+        });
+
+        await Promise.all(orderItems.map(({ itemId, amount }) => {
+          if (!itemId) return Promise.resolve();
+          return tx.item.update({
+            where: {
+              id: itemId
+            },
+            data: {
+              orderCount: {
+                increment: amount ?? 1
+              }
+            }
+          });
+        }));
       }
+
+      return tx.order.update({
+        where: {
+          id: orderId
+        },
+        data: {
+          status
+        }
+      });
     });
   }
 }

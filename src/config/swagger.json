@@ -1109,6 +1109,14 @@
 							}
 						],
 						"nullable": true
+					},
+					"orderCount": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
 					}
 				},
 				"required": [
