@@ -27,10 +27,10 @@ export class MenuController extends BaseController {
   @Get('/backlog/{backlogId}')
   public async getBacklog(
     @Path() backlogId: UUID,
-    @Request() req: express.Request,
-    @Query() search?: DefaultString
+    @Query() search?: DefaultString,
+    @Request() req?: express.Request
   ): Promise<BacklogCompleteOut> {
-    this.checkPermission(req.session.user, PermissionScope.Backlog, backlogId);
+    this.checkPermission(req?.session.user, PermissionScope.Backlog, backlogId);
     return MenuService.getBacklog(backlogId, search);
   }
 

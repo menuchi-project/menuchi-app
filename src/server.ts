@@ -13,7 +13,8 @@ import sessionConfig from './config/SessionConfig';
 import cookieParser from 'cookie-parser';
 
 export default function createServer() {
-  dotenv.config({ path: process.env.NODE_ENV?.trim() === 'test' ? '.test.env' : '.env' });
+  dotenv.config({ path: process.env.NODE_ENV?.trim() === 'test' ? '.env.test' : '.env' });
+
   const app = express();
 
   app.use(cors({ origin: process.env.MENUCHI_FRONT_URL, credentials: true }));

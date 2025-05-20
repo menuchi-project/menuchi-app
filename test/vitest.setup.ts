@@ -1,4 +1,4 @@
-import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, vi } from 'vitest';
 import prisma from '../src/db/prisma';
 import RedisClient from '../src/config/RedisClient';
 import { execSync } from 'child_process';
@@ -11,9 +11,11 @@ afterEach(async () => {
     prisma.userProfile.deleteMany(),
     prisma.role.deleteMany(),
     prisma.categoryName.deleteMany(),
+    prisma.category.deleteMany(),
     prisma.restaurant.deleteMany(),
     prisma.branch.deleteMany(),
-    prisma.backlog.deleteMany()
+    prisma.backlog.deleteMany(),
+    prisma.item.deleteMany()
   ]);
 
   await RedisClient.flushAll();

@@ -8,8 +8,8 @@ const controller = new CategoryNameController();
 
 describe('POST /category-names', async () =>{
   test('should create category name successfully.', async () => {
-    const res = await controller.createCategoryName(categoryNameObject);
-    expect(res.name).toMatch(categoryNameObject.name);
+    const promise = controller.createCategoryName(categoryNameObject);
+    await expect(promise).resolves.toMatchObject({ name: categoryNameObject.name });
   });
 
   test('should reject create category name with constraint error.', async () => {

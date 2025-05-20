@@ -7,9 +7,9 @@
     "dev": "npx tsoa spec-and-routes && ts-node --files ./src/index.ts",
     "build": "npx tsc",
     "start": "node ./build/src/index.js",
-    "db-push": "npx prisma db push --schema=./src/db/schema.prisma",
+    "db-push": "npx prisma db push --schema=./src/db/schema.prisma --accept-data-loss",
     "db-generate": "npx prisma --schema=./src/db/schema.prisma",
-    "test": "cross-env NODE_ENV=test && vitest --config ./test/vitest.config.ts"
+    "test": "dotenv -e .env.test -- vitest --config ./test/vitest.config.ts"
   },
   "repository": {
     "type": "git",
@@ -55,6 +55,7 @@
     "@types/supertest": "^6.0.3",
     "@vitest/ui": "^3.1.2",
     "cross-env": "^7.0.3",
+    "dotenv-cli": "^8.0.0",
     "supertest": "^7.1.0",
     "vitest": "^3.1.2",
     "vitest-mock-extended": "^3.1.0"
