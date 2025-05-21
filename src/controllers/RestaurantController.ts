@@ -42,7 +42,7 @@ export class RestaurantController extends BaseController {
   }
 
   /**
-   * Retrieves full details of a specific restaurant by its ID.
+   * Retrieves full details of a specific restaurant by its ID, include its branches.
    */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
