@@ -2,12 +2,14 @@ import { NextFunction, Request, Response } from 'express';
 import { ValidateError } from 'tsoa';
 import { validationErrorCleaner } from '../utils/utils';
 import {
+  AddressValidationError,
   BranchValidationError,
   CategoryNameValidationError,
   CylinderValidationError,
   ItemValidationError,
   MenuCategoryValidationError,
   MenuValidationError,
+  OpeningTimesValidationError,
   RestaurantValidationError,
   S3ValidationError,
   UserValidationError,
@@ -45,6 +47,14 @@ export function errorPreprocessor(
   if (error instanceof ValidateError) {
     const path = req.path;
     const details = validationErrorCleaner(error);
+
+    if (path.includes('/address')) {
+      throw new AddressValidationError(details);
+    }
+
+    if (path.includes('/opening-times')) {
+      throw new OpeningTimesValidationError(details);
+    }
 
     if (path.includes('/branches')) {
       throw new BranchValidationError(details);

@@ -5,7 +5,7 @@ import { ForbiddenError, UnauthorizedError } from "../exceptions/AuthError";
 import { PermissionScope, RolesEnum } from "../types/Enums";
 import { UUID } from "../types/TypeAliases";
 import BranchService from "../services/BranchService";
-import { BranchCompleteOut, UpdateBranchCompactIn } from "../types/RestaurantTypes";
+import { AddressCompactIn, BranchCompleteOut, UpdateBranchCompactIn } from "../types/RestaurantTypes";
 import { BranchNotFound } from "../exceptions/NotFoundError";
 import { BranchValidationError } from "../exceptions/ValidationError";
 
@@ -43,5 +43,23 @@ export class BranchController extends BaseController {
     this.checkPermission(req?.session.user, PermissionScope.Branch, branchId);
     await BranchService.updateBranch(branchId, body);
     return null;
+  }
+  
+  /**
+   * Create an address for a branch. Overwrite if it called twice.
+   */
+  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
+  @Response<UnauthorizedError>(401, 'Unauthorized user.')
+  @Response<BranchNotFound>(404, '4049 BranchNotFound')
+  @SuccessResponse(201, 'Address created successfully.')
+  @Security('', [RolesEnum.RestaurantOwner])
+  @Post('/{branchId}/address')
+  async createOrUpdateAddress(
+    @Path() branchId: UUID,
+    @Body() body: AddressCompactIn,
+    @Request() req?: express.Request
+  ) {
+    this.checkPermission(req?.session.user, PermissionScope.Branch, branchId);
+    return BranchService.createOrUpdateAddress(branchId, body);
   }
 }

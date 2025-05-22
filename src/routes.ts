@@ -831,6 +831,19 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "AddressCompactIn": {
+        "dataType": "refObject",
+        "properties": {
+            "country": {"ref":"DefaultString"},
+            "region": {"ref":"DefaultString","required":true},
+            "city": {"ref":"DefaultString","required":true},
+            "area": {"ref":"DefaultString"},
+            "street": {"ref":"DefaultString","required":true},
+            "description": {"ref":"DefaultString"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "CreateItemCompleteOut": {
         "dataType": "refObject",
         "properties": {
@@ -2055,6 +2068,39 @@ export function RegisterRoutes(app: Router) {
                 next,
                 validatedArgs,
                 successStatus: 204,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsBranchController_createOrUpdateAddress: Record<string, TsoaRoute.ParameterSchema> = {
+                branchId: {"in":"path","name":"branchId","required":true,"ref":"UUID"},
+                body: {"in":"body","name":"body","required":true,"ref":"AddressCompactIn"},
+                req: {"in":"request","name":"req","dataType":"object"},
+        };
+        app.post('/branches/:branchId/address',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
+            ...(fetchMiddlewares<RequestHandler>(BranchController)),
+            ...(fetchMiddlewares<RequestHandler>(BranchController.prototype.createOrUpdateAddress)),
+
+            async function BranchController_createOrUpdateAddress(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsBranchController_createOrUpdateAddress, request, response });
+
+                const controller = new BranchController();
+
+              await templateService.apiHandler({
+                methodName: 'createOrUpdateAddress',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 201,
               });
             } catch (err) {
                 return next(err);

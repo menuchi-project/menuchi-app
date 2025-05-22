@@ -65,3 +65,15 @@ export class BranchValidationError extends ValidationError {
     super('Branch validation failed', 422, 4229, details);
   }
 }
+
+export class AddressValidationError extends ValidationError {
+  constructor(details?: ErrorDetail[]) {
+    super('Address validation failed', 422, 42210, details);
+  }
+}
+
+export class OpeningTimesValidationError extends ValidationError {
+  constructor(details?: ErrorDetail[]) {
+    super('Opening times validation failed', 422, 42211, details);
+  }
+}

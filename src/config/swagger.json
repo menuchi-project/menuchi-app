@@ -2622,6 +2622,35 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"AddressCompactIn": {
+				"properties": {
+					"country": {
+						"$ref": "#/components/schemas/DefaultString"
+					},
+					"region": {
+						"$ref": "#/components/schemas/DefaultString"
+					},
+					"city": {
+						"$ref": "#/components/schemas/DefaultString"
+					},
+					"area": {
+						"$ref": "#/components/schemas/DefaultString"
+					},
+					"street": {
+						"$ref": "#/components/schemas/DefaultString"
+					},
+					"description": {
+						"$ref": "#/components/schemas/DefaultString"
+					}
+				},
+				"required": [
+					"region",
+					"city",
+					"street"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"CreateItemCompleteOut": {
 				"properties": {
 					"id": {
@@ -5517,6 +5546,84 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/UpdateBranchCompactIn"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/branches/{branchId}/address": {
+			"post": {
+				"operationId": "CreateOrUpdateAddress",
+				"responses": {
+					"201": {
+						"description": "Address created successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/AddressCompleteOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4049 BranchNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BranchNotFound"
+								}
+							}
+						}
+					}
+				},
+				"description": "Create an address for a branch. Overwrite if it called twice.",
+				"tags": [
+					"Branch"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "branchId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/AddressCompactIn"
 							}
 						}
 					}

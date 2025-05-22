@@ -14,7 +14,6 @@ import { RestaurantUpdateSession } from "../types/AuthTypes";
 @Route('/restaurants')
 @Tags('Restaurant')
 export class RestaurantController extends BaseController {
-
   /**
    * Creates a new restaurant along with its first branch and backlog.
    */
