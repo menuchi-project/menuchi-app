@@ -6,6 +6,7 @@ import {
 } from '../types/RestaurantTypes';
 import { UUID } from '../types/TypeAliases';
 import { RestaurantNotFound } from '../exceptions/NotFoundError';
+import S3Service from './S3Service';
 
 class RestaurantService {
   constructor(private prisma: PrismaClient = prismaClient) {}
@@ -39,7 +40,7 @@ class RestaurantService {
   }
 
   async getRestaurant(restaurantId: UUID): Promise<RestaurantCompleteOut> {
-    return this.prisma.restaurant
+    const { avatarKey, coverKey, logoKey, ...restaurant } = await this.prisma.restaurant
       .findUniqueOrThrow({
         where: {
           id: restaurantId,
@@ -58,6 +59,13 @@ class RestaurantService {
         if (error.message.includes('not found')) throw new RestaurantNotFound();
         throw error;
       });
+
+    return {
+      ...restaurant,
+      avatarUrl: await S3Service.generateGetPresignedUrl(avatarKey),
+      coverUrl: await S3Service.generateGetPresignedUrl(coverKey),
+      logoUrl: await S3Service.generateGetPresignedUrl(logoKey)
+    };
   }
 }
 

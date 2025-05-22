@@ -10,3 +10,23 @@ export interface GetItemPicUrlOut {
   itemPicUrl: URL;
   itemPicKey: LongString;
 }
+
+export interface GetRestaurantPicUrlIn {
+  restaurantId: UUID;
+  fileName: ImageFilename;
+}
+
+export interface GetRestaurantCoverPicUrlOut {
+  restaurantCoverPicUrl: URL;
+  restaurantCoverPicKey: LongString;
+}
+
+export interface GetRestaurantAvatarPicUrlOut {
+  restaurantAvatarPicUrl: URL;
+  restaurantAvatarPicKey: LongString;
+}
+
+export interface GetRestaurantLogoPicUrlOut {
+  restaurantLogoPicUrl: URL;
+  restaurantLogoPicKey: LongString;
+}
