@@ -107,3 +107,12 @@ export type ImageFilename = string;
  * @example "12345"
  */
 export type OTP = string;
+
+/**
+ * Time period in 24-hour format.
+ * Must follow the format HH:MM-HH:MM (e.g., 09:00-20:00).
+ * Hours must be from 00 to 23, and minutes from 00 to 59.
+ * @pattern ^([01]\d|2[0-3]):[0-5]\d-([01]\d|2[0-3]):[0-5]\d$
+ * @example 09:00-20:00
+ */
+export type TimePeriod = string;

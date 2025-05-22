@@ -16,6 +16,8 @@ import { MenuController } from './controllers/MenuController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { CategoryNameController } from './controllers/CategoryNameController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { BranchController } from './controllers/BranchController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { BacklogController } from './controllers/BacklogController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { AuthController } from './controllers/AuthController';
@@ -163,6 +165,42 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "GetRestaurantCoverPicUrlOut": {
+        "dataType": "refObject",
+        "properties": {
+            "restaurantCoverPicUrl": {"ref":"URL","required":true},
+            "restaurantCoverPicKey": {"ref":"LongString","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "GetRestaurantPicUrlIn": {
+        "dataType": "refObject",
+        "properties": {
+            "restaurantId": {"ref":"UUID","required":true},
+            "fileName": {"ref":"ImageFilename","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "GetRestaurantAvatarPicUrlOut": {
+        "dataType": "refObject",
+        "properties": {
+            "restaurantAvatarPicUrl": {"ref":"URL","required":true},
+            "restaurantAvatarPicKey": {"ref":"LongString","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "GetRestaurantLogoPicUrlOut": {
+        "dataType": "refObject",
+        "properties": {
+            "restaurantLogoPicUrl": {"ref":"URL","required":true},
+            "restaurantLogoPicKey": {"ref":"LongString","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "DefaultString": {
         "dataType": "refAlias",
         "type": {"dataType":"string","validators":{"isString":{"errorMsg":"should be a string"},"minLength":{"errorMsg":"length must be between 2 and 50","value":2},"maxLength":{"errorMsg":"length must be between 2 and 50","value":50}}},
@@ -190,6 +228,46 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "AddressCompleteOut": {
+        "dataType": "refObject",
+        "properties": {
+            "id": {"ref":"UUID","required":true},
+            "createdAt": {"dataType":"datetime","required":true},
+            "updatedAt": {"dataType":"datetime","required":true},
+            "deletedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}]},
+            "country": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+            "region": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}],"required":true},
+            "city": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}],"required":true},
+            "area": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+            "street": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}],"required":true},
+            "description": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "TimePeriod": {
+        "dataType": "refAlias",
+        "type": {"dataType":"string","validators":{"pattern":{"value":"^([01]\\d|2[0-3]):[0-5]\\d-([01]\\d|2[0-3]):[0-5]\\d$"}}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OpeningTimesCompleteOut": {
+        "dataType": "refObject",
+        "properties": {
+            "sat": {"dataType":"union","subSchemas":[{"ref":"TimePeriod"},{"dataType":"enum","enums":[null]}]},
+            "sun": {"dataType":"union","subSchemas":[{"ref":"TimePeriod"},{"dataType":"enum","enums":[null]}]},
+            "mon": {"dataType":"union","subSchemas":[{"ref":"TimePeriod"},{"dataType":"enum","enums":[null]}]},
+            "tue": {"dataType":"union","subSchemas":[{"ref":"TimePeriod"},{"dataType":"enum","enums":[null]}]},
+            "wed": {"dataType":"union","subSchemas":[{"ref":"TimePeriod"},{"dataType":"enum","enums":[null]}]},
+            "thu": {"dataType":"union","subSchemas":[{"ref":"TimePeriod"},{"dataType":"enum","enums":[null]}]},
+            "fri": {"dataType":"union","subSchemas":[{"ref":"TimePeriod"},{"dataType":"enum","enums":[null]}]},
+            "id": {"ref":"UUID","required":true},
+            "createdAt": {"dataType":"datetime","required":true},
+            "updatedAt": {"dataType":"datetime","required":true},
+            "deletedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}]},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "BranchCompleteOut": {
         "dataType": "refObject",
         "properties": {
@@ -210,6 +288,8 @@ const models: TsoaRoute.Models = {
             "youtube": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
             "eitaa": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
             "backlog": {"dataType":"union","subSchemas":[{"ref":"BacklogCompactOut"},{"dataType":"enum","enums":[null]}],"required":true},
+            "address": {"dataType":"union","subSchemas":[{"ref":"AddressCompleteOut"},{"dataType":"enum","enums":[null]}],"required":true},
+            "openingTimes": {"dataType":"union","subSchemas":[{"ref":"OpeningTimesCompleteOut"},{"dataType":"enum","enums":[null]}],"required":true},
         },
         "additionalProperties": false,
     },
@@ -290,6 +370,24 @@ const models: TsoaRoute.Models = {
             "status": {"dataType":"double","required":true},
             "code": {"dataType":"double"},
             "details": {"dataType":"array","array":{"dataType":"refObject","ref":"ErrorDetail"}},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UpdateRestaurantCompactIn": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"ref":"DefaultString","required":true},
+            "displayName": {"ref":"Slug","required":true},
+            "slang": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}],"validators":{"pattern":{"value":"^[a-zA-Z0-9]*$"}}},
+            "instagram": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+            "telegram": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+            "twitter": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+            "youtube": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+            "eitaa": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+            "avatarKey": {"dataType":"union","subSchemas":[{"ref":"LongString"},{"dataType":"enum","enums":[null]}]},
+            "coverKey": {"dataType":"union","subSchemas":[{"ref":"LongString"},{"dataType":"enum","enums":[null]}]},
+            "logoKey": {"dataType":"union","subSchemas":[{"ref":"LongString"},{"dataType":"enum","enums":[null]}]},
         },
         "additionalProperties": false,
     },
@@ -702,6 +800,89 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "BranchValidationError": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "message": {"dataType":"string","required":true},
+            "stack": {"dataType":"string"},
+            "status": {"dataType":"double","required":true},
+            "code": {"dataType":"double"},
+            "details": {"dataType":"array","array":{"dataType":"refObject","ref":"ErrorDetail"}},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UpdateBranchCompactIn": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+            "displayName": {"dataType":"union","subSchemas":[{"ref":"Slug"},{"dataType":"enum","enums":[null]}]},
+            "iOpen": {"dataType":"union","subSchemas":[{"ref":"Boolean"},{"dataType":"enum","enums":[null]}]},
+            "status": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+            "showRating": {"dataType":"union","subSchemas":[{"ref":"Boolean"},{"dataType":"enum","enums":[null]}]},
+            "instagram": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+            "telegram": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+            "twitter": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+            "youtube": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+            "eitaa": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "AddressValidationError": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "message": {"dataType":"string","required":true},
+            "stack": {"dataType":"string"},
+            "status": {"dataType":"double","required":true},
+            "code": {"dataType":"double"},
+            "details": {"dataType":"array","array":{"dataType":"refObject","ref":"ErrorDetail"}},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "AddressCompactIn": {
+        "dataType": "refObject",
+        "properties": {
+            "country": {"ref":"DefaultString"},
+            "region": {"ref":"DefaultString","required":true},
+            "city": {"ref":"DefaultString","required":true},
+            "area": {"ref":"DefaultString"},
+            "street": {"ref":"DefaultString","required":true},
+            "description": {"ref":"DefaultString"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OpeningTimesValidationError": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "message": {"dataType":"string","required":true},
+            "stack": {"dataType":"string"},
+            "status": {"dataType":"double","required":true},
+            "code": {"dataType":"double"},
+            "details": {"dataType":"array","array":{"dataType":"refObject","ref":"ErrorDetail"}},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OpeningTimesCompactIn": {
+        "dataType": "refObject",
+        "properties": {
+            "sat": {"dataType":"union","subSchemas":[{"ref":"TimePeriod"},{"dataType":"enum","enums":[null]}]},
+            "sun": {"dataType":"union","subSchemas":[{"ref":"TimePeriod"},{"dataType":"enum","enums":[null]}]},
+            "mon": {"dataType":"union","subSchemas":[{"ref":"TimePeriod"},{"dataType":"enum","enums":[null]}]},
+            "tue": {"dataType":"union","subSchemas":[{"ref":"TimePeriod"},{"dataType":"enum","enums":[null]}]},
+            "wed": {"dataType":"union","subSchemas":[{"ref":"TimePeriod"},{"dataType":"enum","enums":[null]}]},
+            "thu": {"dataType":"union","subSchemas":[{"ref":"TimePeriod"},{"dataType":"enum","enums":[null]}]},
+            "fri": {"dataType":"union","subSchemas":[{"ref":"TimePeriod"},{"dataType":"enum","enums":[null]}]},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "CreateItemCompleteOut": {
         "dataType": "refObject",
         "properties": {
@@ -951,6 +1132,102 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsS3Controller_generatePutRestaurantCoverPicPresignedUrl: Record<string, TsoaRoute.ParameterSchema> = {
+                body: {"in":"body","name":"body","required":true,"ref":"GetRestaurantPicUrlIn"},
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+        };
+        app.post('/s3/get-res-cover-pic-url',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
+            ...(fetchMiddlewares<RequestHandler>(S3Controller)),
+            ...(fetchMiddlewares<RequestHandler>(S3Controller.prototype.generatePutRestaurantCoverPicPresignedUrl)),
+
+            async function S3Controller_generatePutRestaurantCoverPicPresignedUrl(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsS3Controller_generatePutRestaurantCoverPicPresignedUrl, request, response });
+
+                const controller = new S3Controller();
+
+              await templateService.apiHandler({
+                methodName: 'generatePutRestaurantCoverPicPresignedUrl',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 201,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsS3Controller_generatePutRestaurantAvatarPicPresignedUrl: Record<string, TsoaRoute.ParameterSchema> = {
+                body: {"in":"body","name":"body","required":true,"ref":"GetRestaurantPicUrlIn"},
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+        };
+        app.post('/s3/get-res-avatar-pic-url',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
+            ...(fetchMiddlewares<RequestHandler>(S3Controller)),
+            ...(fetchMiddlewares<RequestHandler>(S3Controller.prototype.generatePutRestaurantAvatarPicPresignedUrl)),
+
+            async function S3Controller_generatePutRestaurantAvatarPicPresignedUrl(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsS3Controller_generatePutRestaurantAvatarPicPresignedUrl, request, response });
+
+                const controller = new S3Controller();
+
+              await templateService.apiHandler({
+                methodName: 'generatePutRestaurantAvatarPicPresignedUrl',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 201,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsS3Controller_generatePutRestaurantLogoPicPresignedUrl: Record<string, TsoaRoute.ParameterSchema> = {
+                body: {"in":"body","name":"body","required":true,"ref":"GetRestaurantPicUrlIn"},
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+        };
+        app.post('/s3/get-res-logo-pic-url',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
+            ...(fetchMiddlewares<RequestHandler>(S3Controller)),
+            ...(fetchMiddlewares<RequestHandler>(S3Controller.prototype.generatePutRestaurantLogoPicPresignedUrl)),
+
+            async function S3Controller_generatePutRestaurantLogoPicPresignedUrl(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsS3Controller_generatePutRestaurantLogoPicPresignedUrl, request, response });
+
+                const controller = new S3Controller();
+
+              await templateService.apiHandler({
+                methodName: 'generatePutRestaurantLogoPicPresignedUrl',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 201,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsRestaurantController_createRestaurant: Record<string, TsoaRoute.ParameterSchema> = {
                 body: {"in":"body","name":"body","required":true,"ref":"RestaurantCompactIn"},
                 req: {"in":"request","name":"req","dataType":"object"},
@@ -1009,6 +1286,39 @@ export function RegisterRoutes(app: Router) {
                 next,
                 validatedArgs,
                 successStatus: 200,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsRestaurantController_updateBranch: Record<string, TsoaRoute.ParameterSchema> = {
+                restaurantId: {"in":"path","name":"restaurantId","required":true,"ref":"UUID"},
+                body: {"in":"body","name":"body","required":true,"ref":"UpdateRestaurantCompactIn"},
+                req: {"in":"request","name":"req","dataType":"object"},
+        };
+        app.patch('/restaurants/:restaurantId',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
+            ...(fetchMiddlewares<RequestHandler>(RestaurantController)),
+            ...(fetchMiddlewares<RequestHandler>(RestaurantController.prototype.updateBranch)),
+
+            async function RestaurantController_updateBranch(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsRestaurantController_updateBranch, request, response });
+
+                const controller = new RestaurantController();
+
+              await templateService.apiHandler({
+                methodName: 'updateBranch',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 204,
               });
             } catch (err) {
                 return next(err);
@@ -1730,6 +2040,137 @@ export function RegisterRoutes(app: Router) {
                 next,
                 validatedArgs,
                 successStatus: 200,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsBranchController_getBranch: Record<string, TsoaRoute.ParameterSchema> = {
+                branchId: {"in":"path","name":"branchId","required":true,"ref":"UUID"},
+                req: {"in":"request","name":"req","dataType":"object"},
+        };
+        app.get('/branches/:branchId',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
+            ...(fetchMiddlewares<RequestHandler>(BranchController)),
+            ...(fetchMiddlewares<RequestHandler>(BranchController.prototype.getBranch)),
+
+            async function BranchController_getBranch(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsBranchController_getBranch, request, response });
+
+                const controller = new BranchController();
+
+              await templateService.apiHandler({
+                methodName: 'getBranch',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 201,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsBranchController_updateBranch: Record<string, TsoaRoute.ParameterSchema> = {
+                branchId: {"in":"path","name":"branchId","required":true,"ref":"UUID"},
+                body: {"in":"body","name":"body","required":true,"ref":"UpdateBranchCompactIn"},
+                req: {"in":"request","name":"req","dataType":"object"},
+        };
+        app.patch('/branches/:branchId',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
+            ...(fetchMiddlewares<RequestHandler>(BranchController)),
+            ...(fetchMiddlewares<RequestHandler>(BranchController.prototype.updateBranch)),
+
+            async function BranchController_updateBranch(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsBranchController_updateBranch, request, response });
+
+                const controller = new BranchController();
+
+              await templateService.apiHandler({
+                methodName: 'updateBranch',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 204,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsBranchController_createOrUpdateAddress: Record<string, TsoaRoute.ParameterSchema> = {
+                branchId: {"in":"path","name":"branchId","required":true,"ref":"UUID"},
+                body: {"in":"body","name":"body","required":true,"ref":"AddressCompactIn"},
+                req: {"in":"request","name":"req","dataType":"object"},
+        };
+        app.post('/branches/:branchId/address',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
+            ...(fetchMiddlewares<RequestHandler>(BranchController)),
+            ...(fetchMiddlewares<RequestHandler>(BranchController.prototype.createOrUpdateAddress)),
+
+            async function BranchController_createOrUpdateAddress(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsBranchController_createOrUpdateAddress, request, response });
+
+                const controller = new BranchController();
+
+              await templateService.apiHandler({
+                methodName: 'createOrUpdateAddress',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 201,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsBranchController_createOrUpdateOpeningTimes: Record<string, TsoaRoute.ParameterSchema> = {
+                branchId: {"in":"path","name":"branchId","required":true,"ref":"UUID"},
+                body: {"in":"body","name":"body","required":true,"ref":"OpeningTimesCompactIn"},
+                req: {"in":"request","name":"req","dataType":"object"},
+        };
+        app.post('/branches/:branchId/opening-times',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
+            ...(fetchMiddlewares<RequestHandler>(BranchController)),
+            ...(fetchMiddlewares<RequestHandler>(BranchController.prototype.createOrUpdateOpeningTimes)),
+
+            async function BranchController_createOrUpdateOpeningTimes(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsBranchController_createOrUpdateOpeningTimes, request, response });
+
+                const controller = new BranchController();
+
+              await templateService.apiHandler({
+                methodName: 'createOrUpdateOpeningTimes',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 201,
               });
             } catch (err) {
                 return next(err);
