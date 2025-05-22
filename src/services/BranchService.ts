@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import prismaClient from '../db/prisma';
 import { UUID } from '../types/TypeAliases';
 import { BranchNotFound } from '../exceptions/NotFoundError';
-import { AddressCompactIn, AddressCompleteOut, BranchCompleteOut, UpdateBranchCompactIn } from '../types/RestaurantTypes';
+import { AddressCompactIn, AddressCompleteOut, BranchCompleteOut, OpeningTimesCompactIn, OpeningTimesCompleteOut, UpdateBranchCompactIn } from '../types/RestaurantTypes';
 
 class BranchService {
   constructor(private prisma: PrismaClient = prismaClient) {}
@@ -46,9 +46,27 @@ class BranchService {
         ...address,
       },
     }).catch((error: Error) => {
-      if (error.message.includes('addresses_branch_id_fkey')) {
+      if (error.message.includes('addresses_branch_id_fkey'))
         throw new BranchNotFound();
-      }
+      throw error;
+    });
+  }
+
+  async createOrUpdateOpeningTimes(branchId: UUID, openingTimes: OpeningTimesCompactIn): Promise<OpeningTimesCompleteOut | never> {
+    return this.prisma.openingTimes.upsert({
+      where: {
+        branchId
+      },
+      update: {
+        ...openingTimes,
+      },
+      create: {
+        branchId,
+        ...openingTimes,
+      },
+    }).catch((error: Error) => {
+      if (error.message.includes('opening_times_branch_id_fkey'))
+        throw new BranchNotFound();
       throw error;
     });
   }

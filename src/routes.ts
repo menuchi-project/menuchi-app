@@ -831,6 +831,19 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "AddressValidationError": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "message": {"dataType":"string","required":true},
+            "stack": {"dataType":"string"},
+            "status": {"dataType":"double","required":true},
+            "code": {"dataType":"double"},
+            "details": {"dataType":"array","array":{"dataType":"refObject","ref":"ErrorDetail"}},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "AddressCompactIn": {
         "dataType": "refObject",
         "properties": {
@@ -840,6 +853,33 @@ const models: TsoaRoute.Models = {
             "area": {"ref":"DefaultString"},
             "street": {"ref":"DefaultString","required":true},
             "description": {"ref":"DefaultString"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OpeningTimesValidationError": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "message": {"dataType":"string","required":true},
+            "stack": {"dataType":"string"},
+            "status": {"dataType":"double","required":true},
+            "code": {"dataType":"double"},
+            "details": {"dataType":"array","array":{"dataType":"refObject","ref":"ErrorDetail"}},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OpeningTimesCompactIn": {
+        "dataType": "refObject",
+        "properties": {
+            "sat": {"dataType":"union","subSchemas":[{"ref":"TimePeriod"},{"dataType":"enum","enums":[null]}]},
+            "sun": {"dataType":"union","subSchemas":[{"ref":"TimePeriod"},{"dataType":"enum","enums":[null]}]},
+            "mon": {"dataType":"union","subSchemas":[{"ref":"TimePeriod"},{"dataType":"enum","enums":[null]}]},
+            "tue": {"dataType":"union","subSchemas":[{"ref":"TimePeriod"},{"dataType":"enum","enums":[null]}]},
+            "wed": {"dataType":"union","subSchemas":[{"ref":"TimePeriod"},{"dataType":"enum","enums":[null]}]},
+            "thu": {"dataType":"union","subSchemas":[{"ref":"TimePeriod"},{"dataType":"enum","enums":[null]}]},
+            "fri": {"dataType":"union","subSchemas":[{"ref":"TimePeriod"},{"dataType":"enum","enums":[null]}]},
         },
         "additionalProperties": false,
     },
@@ -2096,6 +2136,39 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'createOrUpdateAddress',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 201,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsBranchController_createOrUpdateOpeningTimes: Record<string, TsoaRoute.ParameterSchema> = {
+                branchId: {"in":"path","name":"branchId","required":true,"ref":"UUID"},
+                body: {"in":"body","name":"body","required":true,"ref":"OpeningTimesCompactIn"},
+                req: {"in":"request","name":"req","dataType":"object"},
+        };
+        app.post('/branches/:branchId/opening-times',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
+            ...(fetchMiddlewares<RequestHandler>(BranchController)),
+            ...(fetchMiddlewares<RequestHandler>(BranchController.prototype.createOrUpdateOpeningTimes)),
+
+            async function BranchController_createOrUpdateOpeningTimes(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsBranchController_createOrUpdateOpeningTimes, request, response });
+
+                const controller = new BranchController();
+
+              await templateService.apiHandler({
+                methodName: 'createOrUpdateOpeningTimes',
                 controller,
                 response,
                 next,
