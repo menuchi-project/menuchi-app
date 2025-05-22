@@ -36,6 +36,10 @@
         "description": "Restaurant operations"
       },
       {
+        "name": "Branch",
+        "description": "Branch management"
+      },
+      {
         "name": "Backlog",
         "description": "Backlog handling for restaurant branches"
       },

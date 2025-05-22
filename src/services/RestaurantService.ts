@@ -30,6 +30,8 @@ class RestaurantService {
         branches: {
           include: {
             backlog: true,
+            address: true,
+            openingTimes: true
           },
         },
       },
@@ -46,6 +48,8 @@ class RestaurantService {
           branches: {
             include: {
               backlog: true,
+              address: true,
+              openingTimes: true
             },
           },
         },

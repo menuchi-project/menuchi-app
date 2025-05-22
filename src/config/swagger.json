@@ -346,6 +346,172 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"AddressCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"country": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"region": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"city": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"area": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"street": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"description": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"region",
+					"city",
+					"street"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"TimePeriod": {
+				"type": "string",
+				"description": "Time period in 24-hour format.\r\nMust follow the format HH:MM-HH:MM (e.g., 09:00-20:00).\r\nHours must be from 00 to 23, and minutes from 00 to 59.",
+				"pattern": "^([01]\\d|2[0-3]):[0-5]\\d-([01]\\d|2[0-3]):[0-5]\\d$"
+			},
+			"OpeningTimesCompleteOut": {
+				"properties": {
+					"sat": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/TimePeriod"
+							}
+						],
+						"nullable": true
+					},
+					"sun": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/TimePeriod"
+							}
+						],
+						"nullable": true
+					},
+					"mon": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/TimePeriod"
+							}
+						],
+						"nullable": true
+					},
+					"tue": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/TimePeriod"
+							}
+						],
+						"nullable": true
+					},
+					"wed": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/TimePeriod"
+							}
+						],
+						"nullable": true
+					},
+					"thu": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/TimePeriod"
+							}
+						],
+						"nullable": true
+					},
+					"fri": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/TimePeriod"
+							}
+						],
+						"nullable": true
+					},
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"BranchCompleteOut": {
 				"properties": {
 					"id": {
@@ -466,6 +632,22 @@
 							}
 						],
 						"nullable": true
+					},
+					"address": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/AddressCompleteOut"
+							}
+						],
+						"nullable": true
+					},
+					"openingTimes": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/OpeningTimesCompleteOut"
+							}
+						],
+						"nullable": true
 					}
 				},
 				"required": [
@@ -473,7 +655,9 @@
 					"createdAt",
 					"updatedAt",
 					"restaurantId",
-					"backlog"
+					"backlog",
+					"address",
+					"openingTimes"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -4631,6 +4815,74 @@
 				"parameters": []
 			}
 		},
+		"/branches/{branchId}": {
+			"get": {
+				"operationId": "GetBranch",
+				"responses": {
+					"201": {
+						"description": "Branch retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BranchCompleteOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4049 BranchNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BranchNotFound"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieves a branch by its id.",
+				"tags": [
+					"Branch"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "branchId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
+			}
+		},
 		"/backlog/{backlogId}/items": {
 			"post": {
 				"operationId": "CreateItem",
@@ -5528,6 +5780,10 @@
 		{
 			"name": "Restaurant",
 			"description": "Restaurant operations"
+		},
+		{
+			"name": "Branch",
+			"description": "Branch management"
 		},
 		{
 			"name": "Backlog",

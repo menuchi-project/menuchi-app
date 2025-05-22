@@ -1,6 +1,6 @@
 import { CompleteOut } from './BaseTypes';
 import { CategoryCompleteOut } from './CategoryTypes';
-import { Boolean, DefaultString, LongString, Slug, URL, UUID } from './TypeAliases';
+import { Boolean, DefaultString, LongString, Slug, TimePeriod, URL, UUID } from './TypeAliases';
 
 export interface RestaurantCompactIn {
   name: DefaultString;
@@ -53,6 +53,8 @@ export interface BranchCompleteOut extends CompleteOut {
   youtube?: DefaultString | null;
   eitaa?: DefaultString | null;
   backlog: BacklogCompactOut | null;
+  address: AddressCompleteOut | null;
+  openingTimes: OpeningTimesCompleteOut | null;
 }
 
 export interface BacklogCompactOut extends CompleteOut {
@@ -63,3 +65,33 @@ export interface BacklogCompleteOut extends CompleteOut {
   branchId: UUID | null;
   categories?: CategoryCompleteOut[] | null;
 }
+
+export interface AddressCompactIn {
+  country?: DefaultString;
+  region: DefaultString;
+  city: DefaultString;
+  area?: DefaultString;
+  street: DefaultString;
+  description?: DefaultString;
+}
+
+export interface AddressCompleteOut extends CompleteOut {
+  country?: DefaultString | null;
+  region: DefaultString | null;
+  city: DefaultString | null;
+  area?: DefaultString | null;
+  street: DefaultString | null;
+  description?: DefaultString | null;
+}
+
+export interface OpeningTimesCompactIn {
+  sat?: TimePeriod | null;
+  sun?: TimePeriod | null;
+  mon?: TimePeriod | null;
+  tue?: TimePeriod | null;
+  wed?: TimePeriod | null;
+  thu?: TimePeriod | null;
+  fri?: TimePeriod | null;
+}
+
+export interface OpeningTimesCompleteOut extends OpeningTimesCompactIn, CompleteOut {}
