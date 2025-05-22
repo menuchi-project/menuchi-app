@@ -20,3 +20,11 @@ export enum SessionUpdateScope {
   Restaurant,
   Menu
 }
+
+export enum OrderStatus {
+  Pending = 'PENDING',
+  Canceled = 'CANCELED',
+  Preparing = 'PREPARING',
+  Ready = 'READY',
+  Done = 'DONE'
+}

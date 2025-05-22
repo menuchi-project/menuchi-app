@@ -32,6 +32,7 @@ export interface ItemCompleteOut extends CompleteOut {
   picUrl?: URL | null;
   positionInItemsList?: Int | null;
   positionInCategory?: Int | null;
+  orderCount?: Int | null;
 }
 
 export interface UpdateItemIn {

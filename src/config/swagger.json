@@ -100,6 +100,12 @@
 							"$ref": "#/components/schemas/RestaurantSession"
 						},
 						"type": "array"
+					},
+					"recentlyOrderIds": {
+						"items": {
+							"$ref": "#/components/schemas/UUID"
+						},
+						"type": "array"
 					}
 				},
 				"required": [
@@ -787,9 +793,227 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"OrderStatus": {
+				"enum": [
+					"PENDING",
+					"CANCELED",
+					"PREPARING",
+					"READY",
+					"DONE"
+				],
+				"type": "string"
+			},
 			"Int": {
 				"type": "integer",
 				"format": "int32"
+			},
+			"OrderItemCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"pikUrl": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/URL"
+							}
+						],
+						"nullable": true
+					},
+					"price": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"amount": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"OrderCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"menuId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"customerEmail": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Email"
+							}
+						],
+						"nullable": true
+					},
+					"totalPrice": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"status": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/OrderStatus"
+							}
+						],
+						"nullable": true
+					},
+					"orderItems": {
+						"items": {
+							"$ref": "#/components/schemas/OrderItemCompleteOut"
+						},
+						"type": "array",
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"menuId",
+					"customerEmail",
+					"totalPrice",
+					"status",
+					"orderItems"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ItemNotFound": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"OrderItemCompactIn": {
+				"properties": {
+					"itemId": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"amount": {
+						"$ref": "#/components/schemas/Int"
+					}
+				},
+				"required": [
+					"itemId",
+					"amount"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CreateOrderCompactIn": {
+				"properties": {
+					"items": {
+						"items": {
+							"$ref": "#/components/schemas/OrderItemCompactIn"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"items"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CreateOrderCompleteIn": {
+				"properties": {
+					"customerEmail": {
+						"$ref": "#/components/schemas/Email"
+					},
+					"items": {
+						"items": {
+							"$ref": "#/components/schemas/OrderItemCompactIn"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"customerEmail",
+					"items"
+				],
+				"type": "object",
+				"additionalProperties": false
 			},
 			"ItemCompleteOut": {
 				"properties": {
@@ -879,6 +1103,14 @@
 						"nullable": true
 					},
 					"positionInCategory": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					},
+					"orderCount": {
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/Int"
@@ -2708,6 +2940,545 @@
 						}
 					}
 				]
+			}
+		},
+		"/menus/{menuId}/orders": {
+			"post": {
+				"operationId": "CreateOrder",
+				"responses": {
+					"201": {
+						"description": "Order created successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrderCompleteOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4043 ItemNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ItemNotFound"
+								}
+							}
+						}
+					}
+				},
+				"description": "Creates a new order for a specific menu.\r\nAccessible to both restaurant customers.",
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_CUSTOMER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateOrderCompactIn"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "GetOrders",
+				"responses": {
+					"200": {
+						"description": "All the menu orders retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/OrderCompleteOut"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieves all orders for a specific menu.",
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					},
+					{
+						"in": "query",
+						"name": "skip",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/Int"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/Int"
+						}
+					},
+					{
+						"description": "Filters orders based on completion status.\r\nSet to `false` to retrieve only ongoing (not completed) orders.\r\nDefaults to `true`, which returns all orders.",
+						"in": "query",
+						"name": "isCompleted",
+						"required": false,
+						"schema": {
+							"type": "boolean"
+						}
+					}
+				]
+			},
+			"patch": {
+				"operationId": "DeleteOrders",
+				"responses": {
+					"204": {
+						"description": "Orders deleted successfully. It doesn't retrieve anything.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Deletes multiple orders from a menu.",
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"items": {
+									"$ref": "#/components/schemas/UUID"
+								},
+								"type": "array"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/menus/{menuId}/orders/by-owner": {
+			"post": {
+				"operationId": "CreateOrderByOwner",
+				"responses": {
+					"201": {
+						"description": "Order created successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrderCompleteOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4043 ItemNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ItemNotFound"
+								}
+							}
+						}
+					}
+				},
+				"description": "Creates a new order for a specific menu.\r\nAccessible to both restaurant owners.",
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateOrderCompleteIn"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/branches/{branchId}/orders": {
+			"get": {
+				"operationId": "GetAllOrders",
+				"responses": {
+					"200": {
+						"description": "All the branch orders retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/OrderCompleteOut"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieves all orders for a specific branch (all its menus's orders).",
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "branchId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					},
+					{
+						"in": "query",
+						"name": "skip",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/Int"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/Int"
+						}
+					},
+					{
+						"description": "Filters orders based on completion status.\r\nSet to `false` to retrieve only ongoing (not completed) orders.\r\nDefaults to `true`, which returns all orders.",
+						"in": "query",
+						"name": "isCompleted",
+						"required": false,
+						"schema": {
+							"type": "boolean"
+						}
+					}
+				]
+			}
+		},
+		"/customer/orders": {
+			"get": {
+				"operationId": "GetRecentlyOrders",
+				"responses": {
+					"200": {
+						"description": "All the menu orders retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/OrderCompleteOut"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieves the current customer's recently created orders.",
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_CUSTOMER"
+						]
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/menus/{menuId}/orders/{orderId}": {
+			"patch": {
+				"operationId": "UpdateOrderStatus",
+				"responses": {
+					"200": {
+						"description": "All the menu orders retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Updates the status of a specific order within a menu.",
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					},
+					{
+						"in": "path",
+						"name": "orderId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"status": {
+										"$ref": "#/components/schemas/OrderStatus"
+									}
+								},
+								"required": [
+									"status"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/menus/backlog/{backlogId}": {
@@ -4765,6 +5536,10 @@
 		{
 			"name": "Menu",
 			"description": "Menu management"
+		},
+		{
+			"name": "Order",
+			"description": "Order management"
 		},
 		{
 			"name": "S3",
