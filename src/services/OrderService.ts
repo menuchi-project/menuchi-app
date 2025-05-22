@@ -78,7 +78,8 @@ class OrderService {
     const orders = await this.prisma.order.findMany({
       where: {
         menuId,
-        status: statusWhereClause
+        status: statusWhereClause,
+        deletedAt: null
       },
       include: {
         orderItems: {
@@ -110,7 +111,8 @@ class OrderService {
         menu: {
           branchId,
         },
-        status: statusWhereClause
+        status: statusWhereClause,
+        deletedAt: null
       },
       include: {
         orderItems: {
@@ -196,6 +198,38 @@ class OrderService {
         },
         data: {
           status
+        }
+      });
+    });
+  }
+
+  async deleteOrders(menuId: UUID, ordersId: UUID[]) {
+    return this.prisma.$transaction(async (tx) => {
+      await tx.order.updateMany({
+        where: {
+          id: {
+            in: ordersId
+          },
+          menuId,
+          deletedAt: null
+        },
+        data: {
+          deletedAt: new Date()
+        }
+      });
+
+      await tx.orderItem.updateMany({
+        where: {
+          orderId: {
+            in: ordersId
+          },
+          order: {
+            menuId
+          },
+          deletedAt: null
+        },
+        data: {
+          deletedAt: new Date()
         }
       });
     });

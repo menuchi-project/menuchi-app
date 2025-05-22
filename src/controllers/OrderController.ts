@@ -128,4 +128,22 @@ export class OrderController extends BaseController {
     await OrderService.updateOrderStatus(orderId, body.status);
     return null;
   }
+
+  /**
+   * Deletes multiple orders from a menu.
+   */
+  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
+  @Response<UnauthorizedError>(401, 'Unauthorized user.')
+  @SuccessResponse(204, 'Orders deleted successfully. It doesn\'t retrieve anything.')
+  @Security('', [RolesEnum.RestaurantOwner])
+  @Patch('/menus/{menuId}/orders')
+  async deleteOrders(
+    @Path() menuId: UUID,
+    @Body() orderItemsId: UUID[],
+    @Request() req?: express.Request
+  ): Promise<null> {
+    this.checkPermission(req?.session.user, PermissionScope.Menu, menuId);
+    await OrderService.deleteOrders(menuId, orderItemsId);
+    return null;
+  }
 }

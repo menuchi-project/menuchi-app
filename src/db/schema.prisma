@@ -17,7 +17,7 @@ model User {
   isEmailVerified       Boolean?     @map("is_email_verified")
   restaurants           Restaurant[]
   roles                 Role[]
-  staff                 Staff[]
+  // staff                 Staff[]
   userProfile           UserProfile?
   createdAt             DateTime     @default(now()) @map("created_at")
   updatedAt             DateTime     @updatedAt @map("updated_at")
@@ -112,7 +112,7 @@ model Branch {
   restaurant   Restaurant?   @relation(fields: [restaurantId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   menus        Menu[]
   openingTimes OpeningTimes?
-  staff        Staff[]
+  // staff        Staff[]
   createdAt    DateTime      @default(now()) @map("created_at")
   updatedAt    DateTime      @updatedAt @map("updated_at")
   deletedAt    DateTime?     @map("deleted_at")
@@ -120,6 +120,7 @@ model Branch {
   @@map("branches")
 }
 
+/*
 model Staff {
   id        String    @id @default(uuid()) @db.Uuid
   userId    String?   @map("user_id") @db.Uuid
@@ -133,6 +134,7 @@ model Staff {
   @@unique([userId, branchId])
   @@map("staff")
 }
+*/
 
 model OpeningTimes {
   id        String    @id @default(uuid()) @db.Uuid
@@ -200,7 +202,7 @@ model Category {
   categoryName      CategoryName?  @relation(fields: [categoryNameId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   positionInBacklog Int?           @map("position_in_backlog")
   items             Item[]
-  subCategories     SubCategory[]
+  // subCategories     SubCategory[]
   menuCategory      MenuCategory[]
   createdAt         DateTime       @default(now()) @map("created_at")
   updatedAt         DateTime       @updatedAt @map("updated_at")
@@ -210,6 +212,7 @@ model Category {
   @@map("categories")
 }
 
+/*
 model SubCategory {
   id                 String    @id @default(uuid()) @db.Uuid
   categoryId         String?   @map("category_id") @db.Uuid
@@ -223,6 +226,7 @@ model SubCategory {
 
   @@map("sub_categories")
 }
+*/
 
 model Item {
   id                     String        @id @default(uuid()) @db.Uuid
@@ -240,7 +244,7 @@ model Item {
   orderCount             Int?          @default(0) @map("order_count")
   orderItems             OrderItem[]
   category               Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  subCategory            SubCategory?  @relation(fields: [subCategoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  // subCategory            SubCategory?  @relation(fields: [subCategoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   menuCategory           MenuCategory? @relation(fields: [menuCategoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   createdAt              DateTime      @default(now()) @map("created_at")
   updatedAt              DateTime      @updatedAt @map("updated_at")
