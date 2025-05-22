@@ -1,6 +1,6 @@
-import { Body, Get, Path, Post, Request, Response, Route, Security, SuccessResponse, Tags } from "tsoa";
+import { Body, Get, Patch, Path, Post, Request, Response, Route, Security, SuccessResponse, Tags } from "tsoa";
 import RestaurantService from "../services/RestaurantService";
-import { RestaurantCompactIn, RestaurantCompleteOut } from "../types/RestaurantTypes";
+import { RestaurantCompactIn, RestaurantCompleteOut, UpdateRestaurantCompactIn } from "../types/RestaurantTypes";
 import { RestaurantValidationError } from "../exceptions/ValidationError";
 import { ConstraintsDatabaseError } from "../exceptions/DatabaseError";
 import { UUID } from "../types/TypeAliases";
@@ -53,5 +53,24 @@ export class RestaurantController extends BaseController {
   public async getRestaurant(@Path() restaurantId: UUID, @Request() req?: express.Request): Promise<RestaurantCompleteOut> {
     this.checkPermission(req?.session.user, PermissionScope.Restaurant, restaurantId);    
     return RestaurantService.getRestaurant(restaurantId);
+  }
+
+  /**
+   * Updates a restaurant.
+   */
+  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
+  @Response<UnauthorizedError>(401, 'Unauthorized user.')
+  @Response<RestaurantValidationError>(422, '4221 RestaurantValidationError')
+  @SuccessResponse(204, 'Restaurant updated successfully. It doesn\'t retrieve anything.')
+  @Security('', [RolesEnum.RestaurantOwner])
+  @Patch('/{restaurantId}')
+  async updateBranch(
+    @Path() restaurantId: UUID,
+    @Body() body: UpdateRestaurantCompactIn,
+    @Request() req?: express.Request
+  ): Promise<null> {
+    this.checkPermission(req?.session.user, PermissionScope.Restaurant, restaurantId);
+    await RestaurantService.updateRestaurant(restaurantId, body);
+    return null;
   }
 }

@@ -34,6 +34,23 @@ export interface RestaurantCompleteOut extends CompleteOut {
   logoUrl?: URL | null;
 }
 
+export interface UpdateRestaurantCompactIn {
+  name: DefaultString;
+  displayName: Slug;
+  /**
+   * @pattern ^[a-zA-Z0-9]*$
+   */
+  slang?: DefaultString | null;
+  instagram?: DefaultString | null;
+  telegram?: DefaultString | null;
+  twitter?: DefaultString | null;
+  youtube?: DefaultString | null;
+  eitaa?: DefaultString | null;
+  avatarKey?: LongString | null;
+  coverKey?: LongString | null;
+  logoKey?: LongString | null;
+}
+
 export interface BranchCompleteOut extends CompleteOut {
   restaurantId: UUID | null;
   name?: DefaultString | null;

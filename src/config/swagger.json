@@ -291,6 +291,70 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"GetRestaurantCoverPicUrlOut": {
+				"properties": {
+					"restaurantCoverPicUrl": {
+						"$ref": "#/components/schemas/URL"
+					},
+					"restaurantCoverPicKey": {
+						"$ref": "#/components/schemas/LongString"
+					}
+				},
+				"required": [
+					"restaurantCoverPicUrl",
+					"restaurantCoverPicKey"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"GetRestaurantPicUrlIn": {
+				"properties": {
+					"restaurantId": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"fileName": {
+						"$ref": "#/components/schemas/ImageFilename"
+					}
+				},
+				"required": [
+					"restaurantId",
+					"fileName"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"GetRestaurantAvatarPicUrlOut": {
+				"properties": {
+					"restaurantAvatarPicUrl": {
+						"$ref": "#/components/schemas/URL"
+					},
+					"restaurantAvatarPicKey": {
+						"$ref": "#/components/schemas/LongString"
+					}
+				},
+				"required": [
+					"restaurantAvatarPicUrl",
+					"restaurantAvatarPicKey"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"GetRestaurantLogoPicUrlOut": {
+				"properties": {
+					"restaurantLogoPicUrl": {
+						"$ref": "#/components/schemas/URL"
+					},
+					"restaurantLogoPicKey": {
+						"$ref": "#/components/schemas/LongString"
+					}
+				},
+				"required": [
+					"restaurantLogoPicUrl",
+					"restaurantLogoPicKey"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"DefaultString": {
 				"type": "string",
 				"example": "string",
@@ -973,6 +1037,95 @@
 					"name",
 					"message",
 					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UpdateRestaurantCompactIn": {
+				"properties": {
+					"name": {
+						"$ref": "#/components/schemas/DefaultString"
+					},
+					"displayName": {
+						"$ref": "#/components/schemas/Slug"
+					},
+					"slang": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true,
+						"pattern": "^[a-zA-Z0-9]*$"
+					},
+					"instagram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"telegram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"twitter": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"youtube": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"eitaa": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"avatarKey": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/LongString"
+							}
+						],
+						"nullable": true
+					},
+					"coverKey": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/LongString"
+							}
+						],
+						"nullable": true
+					},
+					"logoKey": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/LongString"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"name",
+					"displayName"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -3099,6 +3252,213 @@
 				}
 			}
 		},
+		"/s3/get-res-cover-pic-url": {
+			"post": {
+				"operationId": "GeneratePutRestaurantCoverPicPresignedUrl",
+				"responses": {
+					"201": {
+						"description": "Restaurant cover pic presigned url generated successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GetRestaurantCoverPicUrlOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "4224 S3ValidationError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/S3ValidationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Generates a pre-signed URL for uploading an restaurant cover picture to S3.",
+				"tags": [
+					"S3"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/GetRestaurantPicUrlIn"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/s3/get-res-avatar-pic-url": {
+			"post": {
+				"operationId": "GeneratePutRestaurantAvatarPicPresignedUrl",
+				"responses": {
+					"201": {
+						"description": "Restaurant avatar pic presigned url generated successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GetRestaurantAvatarPicUrlOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "4224 S3ValidationError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/S3ValidationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Generates a pre-signed URL for uploading an restaurant avatar picture to S3.",
+				"tags": [
+					"S3"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/GetRestaurantPicUrlIn"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/s3/get-res-logo-pic-url": {
+			"post": {
+				"operationId": "GeneratePutRestaurantLogoPicPresignedUrl",
+				"responses": {
+					"201": {
+						"description": "Restaurant logo pic presigned url generated successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GetRestaurantLogoPicUrlOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "4224 S3ValidationError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/S3ValidationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Generates a pre-signed URL for uploading an restaurant logo picture to S3.",
+				"tags": [
+					"S3"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/GetRestaurantPicUrlIn"
+							}
+						}
+					}
+				}
+			}
+		},
 		"/restaurants": {
 			"post": {
 				"operationId": "CreateRestaurant",
@@ -3244,6 +3604,86 @@
 						}
 					}
 				]
+			},
+			"patch": {
+				"operationId": "UpdateBranch",
+				"responses": {
+					"204": {
+						"description": "Restaurant updated successfully. It doesn't retrieve anything.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "4221 RestaurantValidationError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RestaurantValidationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Updates a restaurant.",
+				"tags": [
+					"Restaurant"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "restaurantId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateRestaurantCompactIn"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/menus/{menuId}/orders": {
