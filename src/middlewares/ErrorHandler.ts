@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { ValidateError } from 'tsoa';
 import { validationErrorCleaner } from '../utils/utils';
 import {
+  BranchValidationError,
   CategoryNameValidationError,
   CylinderValidationError,
   ItemValidationError,
@@ -15,13 +16,11 @@ import {
 import MenuchiError from '../exceptions/MenuchiError';
 import {
   ConstraintsDatabaseError,
-  DatabaseError,
   ValidationDatabaseError,
 } from '../exceptions/DatabaseError';
 import { ErrorDetail } from '../types/ErrorTypes';
 import { Prisma } from '@prisma/client';
-import { NotFoundError } from '../exceptions/NotFoundError';
-import { ForbiddenError, InvalidTokenError, UnauthorizedError } from '../exceptions/AuthError';
+import { InvalidTokenError } from '../exceptions/AuthError';
 import { JsonWebTokenError } from 'jsonwebtoken';
 import { PrismaClientInitializationError } from '@prisma/client/runtime/library';
 
@@ -46,6 +45,10 @@ export function errorPreprocessor(
   if (error instanceof ValidateError) {
     const path = req.path;
     const details = validationErrorCleaner(error);
+
+    if (path.includes('/branches')) {
+      throw new BranchValidationError(details);
+    }
 
     if (path.includes('/items')) {
       throw new ItemValidationError(details);

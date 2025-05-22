@@ -59,3 +59,9 @@ export class MenuValidationError extends ValidationError {
     super('Menu validation failed', 422, 4228, details);
   }
 }
+
+export class BranchValidationError extends ValidationError {
+  constructor(details?: ErrorDetail[]) {
+    super('Branch validation failed', 422, 4229, details);
+  }
+}

@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import prismaClient from '../db/prisma';
 import { UUID } from '../types/TypeAliases';
 import { BranchNotFound } from '../exceptions/NotFoundError';
-import { BranchCompleteOut } from '../types/RestaurantTypes';
+import { BranchCompleteOut, UpdateBranchCompactIn } from '../types/RestaurantTypes';
 
 class BranchService {
   constructor(private prisma: PrismaClient = prismaClient) {}
@@ -22,6 +22,15 @@ class BranchService {
         throw new BranchNotFound();
       throw error;
     })
+  }
+
+  async updateBranch(branchId: UUID, branchDTO: UpdateBranchCompactIn) {
+    return this.prisma.branch.update({
+      where: {
+        id: branchId
+      },
+      data: branchDTO
+    });
   }
 }
 

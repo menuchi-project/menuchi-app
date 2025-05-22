@@ -57,6 +57,19 @@ export interface BranchCompleteOut extends CompleteOut {
   openingTimes: OpeningTimesCompleteOut | null;
 }
 
+export interface UpdateBranchCompactIn {
+  name?: DefaultString | null;
+  displayName?: Slug | null;
+  iOpen?: Boolean | null;
+  status?: DefaultString | null;
+  showRating?: Boolean | null;
+  instagram?: DefaultString | null;
+  telegram?: DefaultString | null;
+  twitter?: DefaultString | null;
+  youtube?: DefaultString | null;
+  eitaa?: DefaultString | null;
+}
+
 export interface BacklogCompactOut extends CompleteOut {
   branchId: UUID | null;
 }
