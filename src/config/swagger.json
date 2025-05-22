@@ -1057,14 +1057,6 @@
 						],
 						"nullable": true
 					},
-					"subCategoryId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/UUID"
-							}
-						],
-						"nullable": true
-					},
 					"name": {
 						"allOf": [
 							{
@@ -2199,14 +2191,6 @@
 						],
 						"nullable": true
 					},
-					"subCategoryId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/UUID"
-							}
-						],
-						"nullable": true
-					},
 					"name": {
 						"allOf": [
 							{
@@ -2403,14 +2387,6 @@
 			"UpdateItemIn": {
 				"properties": {
 					"categoryId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/UUID"
-							}
-						],
-						"nullable": true
-					},
-					"subCategoryId": {
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/UUID"

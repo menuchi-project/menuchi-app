@@ -217,6 +217,9 @@ class BacklogService {
   }
 
   async updateItem(backlogId: UUID, itemId: UUID, itemDTO: UpdateItemIn) {
+    itemDTO = Object.fromEntries(
+      Object.entries(itemDTO).filter(([key, value]) => value !== null)
+    );
     return this.prisma.item.update({
       where: {
         id: itemId,
