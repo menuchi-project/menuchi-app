@@ -265,7 +265,7 @@ class BacklogService {
   }
 
   async reorderItemsInList(backlogId: UUID, itemsId: UUID[]) {
-    await this.isValidItemsId(backlogId, itemsId);
+    await this.isValidItemsId(backlogId, itemsId, false);
     return this.prisma.$executeRaw`
       UPDATE "items"
       SET "position_in_items_list" = CASE "id"
@@ -276,25 +276,35 @@ class BacklogService {
     `;
   }
 
-  private async isValidItemsId(backlogId: UUID, itemsId: UUID[]): Promise<void | never> {
+  private async isValidItemsId(backlogId: UUID, itemsId: UUID[], areSameCategory = true): Promise<void | never> {
     const items = await this.prisma.item.findMany({
-      where: {
-        deletedAt: null,
-        category: {
+        where: {
+          id: {
+            in: itemsId
+          },
           deletedAt: null,
-          backlog: {
-            id: backlogId,
+          category: {
+            deletedAt: null,
+            backlog: {
+              id: backlogId,
+            },
           },
         },
-      },
-      select: {
-        id: true
-      }
+        select: {
+          id: true,
+          categoryId: true,
+        },
     });
-    
-    const isValidQuery = (items.length === itemsId.length) &&
-            items.every(item => itemsId.some(itemId => itemId === item.id ));
-    if (!isValidQuery) throw new MenuchiError('All item IDs must be in the request.', 400);
+
+    if (items.length !== itemsId.length) {
+      throw new MenuchiError('Some item IDs are invalid or do not belong to the backlog.', 400);
+    }
+
+    if (areSameCategory) {
+      const categoryIds = new Set(items.map(item => item.categoryId));
+      if (categoryIds.size > 1)
+        throw new MenuchiError('All item IDs must belong to the same category.', 400);
+    }
   }
 
   async reorderCategoriesInBacklog(backlogId: UUID, categoriesId: UUID[]) {

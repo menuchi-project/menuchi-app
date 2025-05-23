@@ -6408,7 +6408,7 @@
 						}
 					},
 					"400": {
-						"description": "All item IDs must be in the request.",
+						"description": "Some item IDs are invalid or do not belong to the backlog.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -6490,7 +6490,7 @@
 						}
 					},
 					"400": {
-						"description": "All item IDs must be in the request.",
+						"description": "Some item IDs are invalid or do not belong to the backlog.",
 						"content": {
 							"application/json": {
 								"schema": {

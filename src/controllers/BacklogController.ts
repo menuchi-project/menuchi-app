@@ -96,7 +96,8 @@ export class BacklogController extends BaseController {
    */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
-  @Response<MenuchiError>(400, 'All item IDs must be in the request.')
+  @Response<MenuchiError>(400, 'All item IDs must belong to the same category.')
+  @Response<MenuchiError>(400, 'Some item IDs are invalid or do not belong to the backlog.')
   @SuccessResponse(204, 'Item orders in the category updated successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Patch('/{backlogId}/reorder-items/in-category')
@@ -114,7 +115,7 @@ export class BacklogController extends BaseController {
    */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
-  @Response<MenuchiError>(400, 'All item IDs must be in the request.')
+  @Response<MenuchiError>(400, 'Some item IDs are invalid or do not belong to the backlog.')
   @SuccessResponse(204, 'Item orders in the list updated successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Patch('/{backlogId}/reorder-items/in-list')
