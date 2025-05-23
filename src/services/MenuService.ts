@@ -255,29 +255,41 @@ class MenuService {
     });
   }
 
-  private async isValidMenuItemsId(menuId: UUID, itemsId: UUID[]): Promise<void | never> {
-      const items = await this.prisma.item.findMany({
-        where: {
-          deletedAt: null,
-          menuCategory: {
-            cylinder: {
-              menuId
-            }
-          }
+  private async isValidMenuItemsId(menuId: UUID, itemsId: UUID[], areSameMenuCategory = true): Promise<void | never> {
+    const items = await this.prisma.item.findMany({
+      where: {
+        id: {
+          in: itemsId
         },
-        select: {
-          id: true
+        deletedAt: null,
+        menuCategory: {
+          cylinder: {
+            menuId
+          }
         }
-      });
-      
-      const isValidQuery = (items.length === itemsId.length) &&
-              items.every(item => itemsId.some(itemId => itemId === item.id ));
-      if (!isValidQuery) throw new MenuchiError('All menu items IDs must be in the request.', 400);
+      },
+      select: {
+         id: true,
+         menuCategoryId: true
+      }
+    });
+  
+    if (items.length !== itemsId.length)
+      throw new MenuchiError('Some item IDs are invalid or do not belong to the menu.', 400);
+
+    if (areSameMenuCategory) {
+      const menuCategoryIds = new Set(items.map(item => item.menuCategoryId));
+      if (menuCategoryIds.size > 1)
+        throw new MenuchiError('All item IDs must belong to the same menu category.', 400);
+    }
   }
 
   private async isValidMenuCategoriesId(menuId: UUID, menuCategoriesId: UUID[]): Promise<void | never> {
     const menuCategories = await this.prisma.menuCategory.findMany({
       where: {
+        id: {
+          in: menuCategoriesId
+        },
         cylinder: {
           menuId
         }
@@ -287,9 +299,8 @@ class MenuService {
       }
     });
     
-    const isValidQuery = (menuCategories.length === menuCategoriesId.length) &&
-            menuCategories.every(menuCategory => menuCategoriesId.some(menuCategoryId => menuCategoryId === menuCategory.id ));
-    if (!isValidQuery) throw new MenuchiError('All menu category IDs must be in the request.', 400);
+    if (menuCategories.length !== menuCategoriesId.length)
+      throw new MenuchiError('All menu category IDs must be in the request.', 400);
   }
 
   private async isValidCylindersId(menuId: UUID, cylindersId: UUID[]): Promise<void | never> {

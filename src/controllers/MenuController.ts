@@ -186,7 +186,8 @@ export class MenuController extends BaseController {
    */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
-  @Response<MenuchiError>(400, 'All menu item IDs must be in the request.')
+  @Response<MenuchiError>(400, 'All item IDs must belong to the same menu category.')
+  @Response<MenuchiError>(400, 'Some item IDs are invalid or do not belong to the menu.')
   @SuccessResponse(204, 'Menu item orders in the menu category updated successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Patch('/{menuId}/categories')

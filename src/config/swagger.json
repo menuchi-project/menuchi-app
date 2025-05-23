@@ -5126,7 +5126,7 @@
 						}
 					},
 					"400": {
-						"description": "All menu item IDs must be in the request.",
+						"description": "Some item IDs are invalid or do not belong to the menu.",
 						"content": {
 							"application/json": {
 								"schema": {
