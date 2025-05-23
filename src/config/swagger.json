@@ -2524,6 +2524,100 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"Days": {
+				"enum": [
+					"sat",
+					"sun",
+					"mon",
+					"tue",
+					"wed",
+					"thu",
+					"fri"
+				],
+				"type": "string"
+			},
+			"CustomerPreviewCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"branchId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"favicon": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"isPublished": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
+						"nullable": true
+					},
+					"restaurantId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"currentDay": {
+						"$ref": "#/components/schemas/Days"
+					},
+					"menuCategories": {
+						"items": {
+							"$ref": "#/components/schemas/MenuCategoryCompleteOut"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"branchId",
+					"name",
+					"favicon",
+					"isPublished",
+					"currentDay",
+					"menuCategories"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"CategoryNameCompleteOut": {
 				"properties": {
 					"id": {
@@ -5574,6 +5668,68 @@
 						]
 					}
 				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
+			}
+		},
+		"/menus/{menuId}/preview/customer": {
+			"get": {
+				"operationId": "GetCustomerMenuPreview",
+				"responses": {
+					"200": {
+						"description": "Menu preview is retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CustomerPreviewCompleteOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4048 MenuNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuNotFound"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieves a menu preview by its id for customer.\r\nPublicly accessible. No authentication required.",
+				"tags": [
+					"Menu"
+				],
+				"security": [],
 				"parameters": [
 					{
 						"in": "path",

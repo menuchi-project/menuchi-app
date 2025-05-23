@@ -1,7 +1,7 @@
 import { Body, Delete, Get, Patch, Path, Post, Query, Request, Response, Route, Security, SuccessResponse, Tags } from "tsoa";
 import { DefaultString, UUID } from "../types/TypeAliases";
 import MenuService from "../services/MenuService";
-import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompactOut, MenuCompleteOut, CreateMenuCompactIn, OwnerPreviewCompleteOut } from "../types/MenuTypes";
+import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompactOut, MenuCompleteOut, CreateMenuCompactIn, OwnerPreviewCompleteOut, CustomerPreviewCompleteOut } from "../types/MenuTypes";
 import { CylinderValidationError, MenuCategoryValidationError, MenuValidationError } from "../exceptions/ValidationError";
 import { ConstraintsDatabaseError } from "../exceptions/DatabaseError";
 import MenuchiError from "../exceptions/MenuchiError";
@@ -292,5 +292,18 @@ export class MenuController extends BaseController {
   ): Promise<OwnerPreviewCompleteOut> {
     this.checkPermission(req.session.user, PermissionScope.Menu, menuId);
     return MenuService.getMenuPreview(menuId);
+  }
+
+  /**
+   * Retrieves a menu preview by its id for customer.
+   * Publicly accessible. No authentication required.
+   */
+  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
+  @Response<UnauthorizedError>(401, 'Unauthorized user.')
+  @Response<MenuNotFound>(404, '4048 MenuNotFound')
+  @SuccessResponse(200, 'Menu preview is retrieved successfully.')
+  @Get('/{menuId}/preview/customer')
+  public async getCustomerMenuPreview(@Path() menuId: UUID): Promise<CustomerPreviewCompleteOut> {
+    return MenuService.getCustomerMenuPreview(menuId);
   }
 }

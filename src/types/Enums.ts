@@ -28,3 +28,13 @@ export enum OrderStatus {
   Ready = 'READY',
   Done = 'DONE'
 }
+
+export enum Days {
+  Saturday ='sat',
+  Sunday = 'sun',
+  Monday = 'mon',
+  Tuesday = 'tue',
+  Wednesday = 'wed',
+  Thursday = 'thu',
+  Friday = 'fri'
+}

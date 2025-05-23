@@ -1,11 +1,12 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import prismaClient from '../db/prisma';
 import { UUID } from '../types/TypeAliases';
-import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompactOut, MenuCompleteOut, CreateMenuCompactIn, OwnerPreviewCompactOut, OwnerPreviewCompleteOut } from '../types/MenuTypes';
+import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompactOut, MenuCompleteOut, CreateMenuCompactIn, OwnerPreviewCompactOut, OwnerPreviewCompleteOut, CustomerPreviewCompleteOut } from '../types/MenuTypes';
 import MenuchiError from '../exceptions/MenuchiError';
 import { BranchNotFound, CategoryNotFound, CylinderNotFound, MenuNotFound } from '../exceptions/NotFoundError';
 import S3Service from './S3Service';
 import { BacklogCompleteOut } from '../types/RestaurantTypes';
+import { Days } from '../types/Enums';
 
 class MenuService {
   constructor(private prisma: PrismaClient = prismaClient) {}
@@ -497,10 +498,9 @@ class MenuService {
       throw error;
     });
 
-    const days = ['sat', 'sun', 'mon', 'tue', 'wed', 'thu', 'fri'] as const;
-    const previewByDay = days.reduce((acc, day) => {
+    const previewByDay = Object.values(Days).reduce((acc, day) => {
        acc[day] = cylinders
-         .filter(cylinder => cylinder[day])
+        .filter(cylinder => cylinder[day])
         .flatMap(cylinder =>
           cylinder.menuCategories.map(mc => ({
             ...mc.category,
@@ -517,6 +517,55 @@ class MenuService {
       ...previewByDay
     };
   }
+
+  async getCustomerMenuPreview(menuId: UUID): Promise<CustomerPreviewCompleteOut | never> {
+    const { cylinders, ...menu } = await this.prisma.menu.findUniqueOrThrow({
+      where: {
+        id: menuId
+      },
+      include: {
+        cylinders: {
+          include: {
+            menuCategories: {
+              include: {
+                items: true,
+                category: {
+                  include: {
+                    categoryName: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }).catch((error: Error) => {
+      if (error.message.includes('not found'))
+        throw new MenuNotFound();
+      throw error;
+    });
+
+    const days = Object.values(Days);
+    const currentDay = days[new Date().getDay()];
+
+    const dayMenu = cylinders
+      .filter(cylinder => cylinder[currentDay])
+      .flatMap(cylinder =>
+        cylinder.menuCategories.map(mc => ({
+          ...mc.category,
+          ...mc,
+          categoryName: mc.category?.categoryName?.name ?? null,
+          category: undefined
+        }))
+      );
+
+    return {
+      ...menu,
+      currentDay,
+      menuCategories: dayMenu
+    };
+  }
+
 }
 
 export default new MenuService();

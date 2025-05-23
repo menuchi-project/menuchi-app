@@ -1,4 +1,5 @@
 import { CompleteOut } from './BaseTypes';
+import { Days } from './Enums';
 import { ItemCompleteOut } from './ItemTypes';
 import { Boolean, DefaultString, Int, UUID } from './TypeAliases';
 
@@ -72,3 +73,8 @@ export interface OwnerPreviewCompactOut {
 }
 
 export interface OwnerPreviewCompleteOut extends OwnerPreviewCompactOut, MenuCompactOut {}
+
+export interface CustomerPreviewCompleteOut extends MenuCompactOut {
+  currentDay: Days;
+  menuCategories: MenuCategoryCompleteOut[];
+}
