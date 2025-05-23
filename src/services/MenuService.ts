@@ -97,6 +97,26 @@ class MenuService {
     }: MenuCategoryCompactIn
   ): Promise<CreateMenuCategoryCompleteOut | never> {
     return this.prisma.$transaction(async (tx) => {
+      const validItems = await tx.item.findMany({
+        where: {
+          id: {
+            in: items
+          },
+          categoryId: categoryId,
+          deletedAt: null,
+        },
+        orderBy: {
+          positionInCategory: 'asc',
+        },
+        select: {
+          id: true
+        },
+      });
+
+      if (validItems.length !== items.length) {
+        throw new MenuchiError('All item IDs must belong to the specified category.', 400);
+      }
+
       const maxPositionInCylinder = await tx.menuCategory.aggregate({
         _max: {
           positionInCylinder: true
@@ -107,7 +127,7 @@ class MenuService {
           }
         }
       }).catch((error: Error) => {
-        if (error.message.includes('cylinders_menu_id_fkey (index)'))
+        if (error.message.includes('cylinders_menu_id_fkey'))
           throw new MenuNotFound();
         throw error;
       });
@@ -137,13 +157,13 @@ class MenuService {
         data: {
           categoryId, cylinderId, positionInCylinder,
           items: {
-            connect: items.map(itemId => ({ id: itemId }))
+            connect: validItems.map(item => ({ id: item.id }))
           }
         }
       }).catch((error: Error) => {
-        if (error.message.includes('menu_categories_menu_id_fkey (index)'))
+        if (error.message.includes('menu_categories_menu_id_fkey'))
           throw new MenuNotFound();
-        if (error.message.includes('menu_categories_cylinder_id_fkey (index)'))
+        if (error.message.includes('menu_categories_cylinder_id_fkey'))
           throw new CylinderNotFound();
         if (error.message.includes('menu_categories_category_id_fkey'))
           throw new CategoryNotFound();
@@ -153,10 +173,10 @@ class MenuService {
       await tx.$executeRaw`
         UPDATE "items"
         SET "position_in_menu_categories" = CASE "id"
-          ${Prisma.join(items.map((itemId, index) => Prisma.sql`WHEN ${itemId}::uuid THEN ${index + 1}`), ' ')}
+          ${Prisma.join(validItems.map((item, index) => Prisma.sql`WHEN ${item.id}::uuid THEN ${index + 1}`), ' ')}
         ELSE "position_in_menu_categories"
         END
-        WHERE "id" IN (${Prisma.join(items.map(id => Prisma.sql`${id}::uuid`))})
+        WHERE "id" IN (${Prisma.join(validItems.map(item => Prisma.sql`${item.id}::uuid`))})
       `;
 
       return newMenuCategory;
@@ -306,6 +326,9 @@ class MenuService {
   private async isValidCylindersId(menuId: UUID, cylindersId: UUID[]): Promise<void | never> {
     const cylinders = await this.prisma.cylinder.findMany({
       where: {
+        id: {
+          in: cylindersId
+        },
         menuId
       },
       select: {
@@ -313,9 +336,7 @@ class MenuService {
       }
     });
     
-    const isValidQuery = (cylinders.length === cylindersId.length) &&
-            cylinders.every(cylinder => cylindersId.some(cylinderId => cylinderId === cylinder.id ));
-    if (!isValidQuery) throw new MenuchiError('All cylinder IDs must be in the request.', 400);
+    if (cylinders.length !== cylindersId.length) throw new MenuchiError('All cylinder IDs must be in the request.', 400);
   }
 
   async getBacklog(backlogId: UUID, search = ''): Promise<BacklogCompleteOut | never> {

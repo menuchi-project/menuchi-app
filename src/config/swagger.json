@@ -5038,6 +5038,16 @@
 							}
 						}
 					},
+					"400": {
+						"description": "All item IDs must belong to the specified category.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuchiError"
+								}
+							}
+						}
+					},
 					"401": {
 						"description": "Unauthorized user.",
 						"content": {
@@ -5054,6 +5064,16 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4048 MenuNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuNotFound"
 								}
 							}
 						}
