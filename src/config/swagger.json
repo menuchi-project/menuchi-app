@@ -1806,7 +1806,6 @@
 					"categoryId",
 					"cylinderId",
 					"positionInCylinder",
-					"categoryName",
 					"items"
 				],
 				"type": "object",
@@ -2408,6 +2407,119 @@
 					"categoryId",
 					"cylinderId",
 					"items"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"OwnerPreviewCompleteOut": {
+				"properties": {
+					"sat": {
+						"items": {
+							"$ref": "#/components/schemas/MenuCategoryCompleteOut"
+						},
+						"type": "array"
+					},
+					"sun": {
+						"items": {
+							"$ref": "#/components/schemas/MenuCategoryCompleteOut"
+						},
+						"type": "array"
+					},
+					"mon": {
+						"items": {
+							"$ref": "#/components/schemas/MenuCategoryCompleteOut"
+						},
+						"type": "array"
+					},
+					"tue": {
+						"items": {
+							"$ref": "#/components/schemas/MenuCategoryCompleteOut"
+						},
+						"type": "array"
+					},
+					"wed": {
+						"items": {
+							"$ref": "#/components/schemas/MenuCategoryCompleteOut"
+						},
+						"type": "array"
+					},
+					"thu": {
+						"items": {
+							"$ref": "#/components/schemas/MenuCategoryCompleteOut"
+						},
+						"type": "array"
+					},
+					"fri": {
+						"items": {
+							"$ref": "#/components/schemas/MenuCategoryCompleteOut"
+						},
+						"type": "array"
+					},
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"branchId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"favicon": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"isPublished": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
+						"nullable": true
+					},
+					"restaurantId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"branchId",
+					"name",
+					"favicon",
+					"isPublished"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -5381,6 +5493,74 @@
 						"required": true,
 						"schema": {
 							"type": "boolean"
+						}
+					}
+				]
+			}
+		},
+		"/menus/{menuId}/preview": {
+			"get": {
+				"operationId": "GetMenuPreview",
+				"responses": {
+					"200": {
+						"description": "Menu preview is retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OwnerPreviewCompleteOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4048 MenuNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuNotFound"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieves a menu preview by its id.",
+				"tags": [
+					"Menu"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
 						}
 					}
 				]

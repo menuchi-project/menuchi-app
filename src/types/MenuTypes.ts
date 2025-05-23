@@ -53,10 +53,22 @@ interface CylinderCompleteOut extends CompleteOut {
 }
 
 interface MenuCategoryCompleteOut extends CreateMenuCategoryCompleteOut {
-  categoryName: DefaultString | null;
+  categoryName?: DefaultString | null;
   items: ItemCompleteOut[] | null;
 }
 
 export interface MenuCompleteOut extends MenuCompactOut {
   cylinders: CylinderCompleteOut[] | null;
 }
+
+export interface OwnerPreviewCompactOut {
+  sat?: MenuCategoryCompleteOut[];
+  sun?: MenuCategoryCompleteOut[];
+  mon?: MenuCategoryCompleteOut[];
+  tue?: MenuCategoryCompleteOut[];
+  wed?: MenuCategoryCompleteOut[];
+  thu?: MenuCategoryCompleteOut[];
+  fri?: MenuCategoryCompleteOut[];
+}
+
+export interface OwnerPreviewCompleteOut extends OwnerPreviewCompactOut, MenuCompactOut {}
