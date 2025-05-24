@@ -11,6 +11,7 @@ import { PermissionScope, RolesEnum } from "../types/Enums";
 import { ForbiddenError, UnauthorizedError } from "../exceptions/AuthError";
 import MenuchiError from "../exceptions/MenuchiError";
 import TransformersRedisClient from "../config/TransformersRedisClient";
+import { CategoryNameCompleteOut } from "../types/CategoryTypes";
 
 @Route('/backlog')
 @Tags('Backlog')
@@ -180,5 +181,21 @@ export class BacklogController extends BaseController {
     this.checkPermission(req?.session.user, PermissionScope.Backlog, backlogId);
     await BacklogService.deleteCategory(backlogId, categoryId);
     return null;
+  }
+
+  /**
+   * Retrieves all category names used in the specific backlog.
+   */
+  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
+  @Response<UnauthorizedError>(401, 'Unauthorized user.')
+  @SuccessResponse(200, 'All category names retrieved successfully.')
+  @Security('', [RolesEnum.RestaurantOwner])
+  @Get('/{backlogId}/category-names')
+  public async getAllCategoryNames(
+    @Path() backlogId: UUID,
+    @Request() req?: express.Request
+  ): Promise<CategoryNameCompleteOut[]> {
+    this.checkPermission(req?.session.user, PermissionScope.Backlog, backlogId);
+    return BacklogService.getAllCategoryNames(backlogId);
   }
 }

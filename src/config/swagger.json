@@ -6884,6 +6884,67 @@
 				]
 			}
 		},
+		"/backlog/{backlogId}/category-names": {
+			"get": {
+				"operationId": "GetAllCategoryNames",
+				"responses": {
+					"200": {
+						"description": "All category names retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/CategoryNameCompleteOut"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieves all category names used in the specific backlog.",
+				"tags": [
+					"Backlog"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "backlogId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
+			}
+		},
 		"/auth/res-signup": {
 			"post": {
 				"operationId": "RestaurantOwnerSignup",

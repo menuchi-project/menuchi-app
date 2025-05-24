@@ -2581,6 +2581,38 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsBacklogController_getAllCategoryNames: Record<string, TsoaRoute.ParameterSchema> = {
+                backlogId: {"in":"path","name":"backlogId","required":true,"ref":"UUID"},
+                req: {"in":"request","name":"req","dataType":"object"},
+        };
+        app.get('/backlog/:backlogId/category-names',
+            authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
+            ...(fetchMiddlewares<RequestHandler>(BacklogController)),
+            ...(fetchMiddlewares<RequestHandler>(BacklogController.prototype.getAllCategoryNames)),
+
+            async function BacklogController_getAllCategoryNames(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsBacklogController_getAllCategoryNames, request, response });
+
+                const controller = new BacklogController();
+
+              await templateService.apiHandler({
+                methodName: 'getAllCategoryNames',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 200,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsAuthController_restaurantOwnerSignup: Record<string, TsoaRoute.ParameterSchema> = {
                 body: {"in":"body","name":"body","required":true,"ref":"UserCompactIn"},
         };

@@ -16,7 +16,7 @@ import {
 import { BacklogCompleteOut } from '../types/RestaurantTypes';
 import S3Service from './S3Service';
 import MenuchiError from '../exceptions/MenuchiError';
-import { CategoryCompleteOut } from '../types/CategoryTypes';
+import { CategoryCompleteOut, CategoryNameCompleteOut } from '../types/CategoryTypes';
 
 class BacklogService {
   constructor(private prisma: PrismaClient = prismaClient) {}
@@ -360,6 +360,18 @@ class BacklogService {
     const isValidQuery = (categories.length === categoriesId.length) &&
             categories.every(category => categoriesId.some(categoryId => categoryId === category.id ));
     if (!isValidQuery) throw new MenuchiError('All category IDs must be in the request.', 400);
+  }
+
+  async getAllCategoryNames(backlogId: UUID): Promise<CategoryNameCompleteOut[]> {
+    return this.prisma.categoryName.findMany({
+      where: {
+        categories: {
+          some: {
+            backlogId
+          }
+        }
+      }
+    });
   }
 }
 
