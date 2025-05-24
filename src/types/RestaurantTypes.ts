@@ -51,7 +51,7 @@ export interface UpdateRestaurantCompactIn {
   logoKey?: LongString | null;
 }
 
-export interface BranchCompleteOut extends CompleteOut {
+export interface BranchCompactOut extends CompleteOut {
   restaurantId: UUID | null;
   name?: DefaultString | null;
   displayName?: Slug | null;
@@ -70,8 +70,23 @@ export interface BranchCompleteOut extends CompleteOut {
   youtube?: DefaultString | null;
   eitaa?: DefaultString | null;
   backlog: BacklogCompactOut | null;
+}
+
+export interface BranchCompleteOut extends BranchCompactOut {
   address: AddressCompleteOut | null;
   openingTimes: OpeningTimesCompleteOut | null;
+}
+
+export interface CreateBranchCompactIn {
+  restaurantId: UUID;
+  name?: DefaultString | null;
+  displayName: Slug;
+  showRating?: Boolean | null;
+  instagram?: DefaultString | null;
+  telegram?: DefaultString | null;
+  twitter?: DefaultString | null;
+  youtube?: DefaultString | null;
+  eitaa?: DefaultString | null;
 }
 
 export interface UpdateBranchCompactIn {

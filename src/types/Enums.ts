@@ -18,6 +18,7 @@ export enum PermissionScope {
 
 export enum SessionUpdateScope {
   Restaurant,
+  Branch,
   Menu
 }
 

@@ -370,46 +370,6 @@
 				"minLength": 2,
 				"maxLength": 50
 			},
-			"Boolean": {
-				"type": "boolean",
-				"example": true
-			},
-			"BacklogCompactOut": {
-				"properties": {
-					"id": {
-						"$ref": "#/components/schemas/UUID"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"deletedAt": {
-						"type": "string",
-						"format": "date-time",
-						"nullable": true
-					},
-					"branchId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/UUID"
-							}
-						],
-						"nullable": true
-					}
-				},
-				"required": [
-					"id",
-					"createdAt",
-					"updatedAt",
-					"branchId"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
 			"AddressCompleteOut": {
 				"properties": {
 					"id": {
@@ -572,6 +532,46 @@
 					"id",
 					"createdAt",
 					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Boolean": {
+				"type": "boolean",
+				"example": true
+			},
+			"BacklogCompactOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"branchId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"branchId"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -2700,6 +2700,138 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"BranchCompactOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"restaurantId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"displayName": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Slug"
+							}
+						],
+						"nullable": true
+					},
+					"iOpen": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
+						"nullable": true
+					},
+					"status": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"rating": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"minimum": 0,
+						"maximum": 5
+					},
+					"showRating": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
+						"nullable": true
+					},
+					"instagram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"telegram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"twitter": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"youtube": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"eitaa": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"backlog": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/BacklogCompactOut"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"restaurantId",
+					"backlog"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"BranchValidationError": {
 				"properties": {
 					"name": {
@@ -2730,6 +2862,78 @@
 					"name",
 					"message",
 					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CreateBranchCompactIn": {
+				"properties": {
+					"restaurantId": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"displayName": {
+						"$ref": "#/components/schemas/Slug"
+					},
+					"showRating": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
+						"nullable": true
+					},
+					"instagram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"telegram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"twitter": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"youtube": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"eitaa": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"restaurantId",
+					"displayName"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -3880,7 +4084,7 @@
 						}
 					},
 					"409": {
-						"description": "ConstraintsDatabaseError -> A restaurant with the provided displayName already exists.",
+						"description": "ConstraintsDatabaseError -> A restaurant or branch with the provided displayName already exists.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -5911,6 +6115,95 @@
 				"parameters": []
 			}
 		},
+		"/branches": {
+			"post": {
+				"operationId": "CreateBranch",
+				"responses": {
+					"201": {
+						"description": "Branch created successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BranchCompactOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4041 RestaurantNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RestaurantNotFound"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "ConstraintsDatabaseError -> A branch with the provided displayName already exists.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ConstraintsDatabaseError"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "4229 BranchValidationError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BranchValidationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Create a new branch.",
+				"tags": [
+					"Branch"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateBranchCompactIn"
+							}
+						}
+					}
+				}
+			}
+		},
 		"/branches/{branchId}": {
 			"get": {
 				"operationId": "GetBranch",
@@ -6011,6 +6304,16 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "ConstraintsDatabaseError -> A branch with the provided displayName already exists.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ConstraintsDatabaseError"
 								}
 							}
 						}
