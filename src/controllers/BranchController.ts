@@ -1,15 +1,16 @@
-import { Body, Get, Path, Post, Response, Route, Security, SuccessResponse, Tags, Request, Patch } from "tsoa";
+import { Body, Get, Path, Post, Response, Route, Security, SuccessResponse, Tags, Request, Patch, Res, TsoaResponse } from "tsoa";
 import express from "express";
 import BaseController from "./BaseController";
 import { ForbiddenError, UnauthorizedError } from "../exceptions/AuthError";
 import { PermissionScope, RolesEnum, SessionUpdateScope } from "../types/Enums";
 import { UUID } from "../types/TypeAliases";
 import BranchService from "../services/BranchService";
-import { AddressCompactIn, AddressCompleteOut, BranchCompactOut, BranchCompleteOut, CreateBranchCompactIn, OpeningTimesCompactIn, OpeningTimesCompleteOut, UpdateBranchCompactIn } from "../types/RestaurantTypes";
+import { AddressCompactIn, AddressCompleteOut, BranchCompleteOut, CreateBranchCompactIn, CreateBranchCompleteOut, OpeningTimesCompactIn, OpeningTimesCompleteOut, UpdateBranchCompactIn } from "../types/RestaurantTypes";
 import { BranchNotFound, RestaurantNotFound } from "../exceptions/NotFoundError";
 import { AddressValidationError, BranchValidationError, OpeningTimesValidationError } from "../exceptions/ValidationError";
 import { BranchUpdateSession } from "../types/AuthTypes";
 import { ConstraintsDatabaseError } from "../exceptions/DatabaseError";
+import { CustomerPreviewCompleteOut } from "../types/MenuTypes";
 
 @Route('/branches')
 @Tags('Branch')
@@ -28,7 +29,7 @@ export class BranchController extends BaseController {
   async createBranch(
     @Body() body: CreateBranchCompactIn,
     @Request() req?: express.Request
-  ): Promise<BranchCompactOut> {
+  ): Promise<CreateBranchCompleteOut> {
     this.checkPermission(req?.session.user, PermissionScope.Restaurant, body.restaurantId);
     const branch = await BranchService.createBranch(body);
 
@@ -51,12 +52,43 @@ export class BranchController extends BaseController {
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<BranchNotFound>(404, '4049 BranchNotFound')
-  @SuccessResponse(201, 'Branch retrieved successfully.')
+  @SuccessResponse(200, 'Branch retrieved successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Get('/{branchId}')
-  async getBranch(@Path() branchId: UUID, @Request() req?: express.Request): Promise<BranchCompleteOut> {
+  async getBranch(
+    @Path() branchId: UUID,
+    @Request() req?: express.Request
+  ): Promise<BranchCompleteOut> {
     this.checkPermission(req?.session.user, PermissionScope.Branch, branchId);
     return BranchService.getBranch(branchId);
+  }
+
+  /**
+   * Retrieves a branch by its slug.
+   * 
+   * It redirects to the menu customer preview if our branch has only one menu.
+   * 
+   * Publicly accessible. No authentication required.
+   */
+  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
+  @Response<UnauthorizedError>(401, 'Unauthorized user.')
+  @Response<BranchNotFound>(404, '4049 BranchNotFound')
+  @Response<void>(302, 'Redirects to the customer menu preview page if the branch has only one menu.')
+  @SuccessResponse(200, 'Branch retrieved successfully.')
+  @Get('/by-slug/{slug}')
+  async getBranchBySlug(
+    @Path() slug: string,
+    @Res() redirect: TsoaResponse<302, void>
+  ): Promise<BranchCompleteOut | void> {
+    const branch = await BranchService.getBranchBySlug(slug);
+
+    if (branch.menus?.length! === 1) {
+      return redirect(302, undefined, {
+        Location: `/menus/${branch.menus?.[0]?.id}/preview/customer`
+      });
+    }
+
+    return branch;
   }
 
   /**

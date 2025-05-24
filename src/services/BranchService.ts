@@ -2,12 +2,12 @@ import { PrismaClient } from '@prisma/client';
 import prismaClient from '../db/prisma';
 import { UUID } from '../types/TypeAliases';
 import { BranchNotFound, RestaurantNotFound } from '../exceptions/NotFoundError';
-import { AddressCompactIn, AddressCompleteOut, BranchCompactOut, BranchCompleteOut, CreateBranchCompactIn, OpeningTimesCompactIn, OpeningTimesCompleteOut, UpdateBranchCompactIn } from '../types/RestaurantTypes';
+import { AddressCompactIn, AddressCompleteOut, BranchBySlugCompleteOut, BranchCompleteOut, CreateBranchCompactIn, CreateBranchCompleteOut, OpeningTimesCompactIn, OpeningTimesCompleteOut, UpdateBranchCompactIn } from '../types/RestaurantTypes';
 
 class BranchService {
   constructor(private prisma: PrismaClient = prismaClient) {}
 
-  async createBranch(branch: CreateBranchCompactIn): Promise<BranchCompactOut | never> {
+  async createBranch(branch: CreateBranchCompactIn): Promise<CreateBranchCompleteOut | never> {
     return this.prisma.branch.create({
       data: {
         ...branch,
@@ -40,6 +40,24 @@ class BranchService {
         throw new BranchNotFound();
       throw error;
     })
+  }
+
+  async getBranchBySlug(slug: string): Promise<BranchBySlugCompleteOut | never> {
+    return this.prisma.branch.findFirstOrThrow({
+      where: {
+        displayName: slug
+      },
+      include: {
+        backlog: true,
+        address: true,
+        openingTimes: true,
+        menus: true
+      }
+    }).catch((error: Error) => {
+      if (error.message.includes('not found'))
+        throw new BranchNotFound();
+      throw error; 
+    });
   }
 
   async updateBranch(branchId: UUID, branchDTO: UpdateBranchCompactIn) {

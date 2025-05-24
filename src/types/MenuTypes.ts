@@ -1,6 +1,7 @@
 import { CompleteOut } from './BaseTypes';
 import { Days } from './Enums';
 import { ItemCompleteOut } from './ItemTypes';
+import { BranchCompactOut } from './RestaurantTypes';
 import { Boolean, DefaultString, Int, UUID } from './TypeAliases';
 
 export interface CreateMenuCompactIn extends MenuCompactIn {
@@ -76,5 +77,6 @@ export interface OwnerPreviewCompleteOut extends OwnerPreviewCompactOut, MenuCom
 
 export interface CustomerPreviewCompleteOut extends MenuCompactOut {
   currentDay: Days;
+  branch: BranchCompactOut | null;
   menuCategories: MenuCategoryCompleteOut[];
 }

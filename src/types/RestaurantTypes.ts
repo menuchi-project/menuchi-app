@@ -1,5 +1,6 @@
 import { CompleteOut } from './BaseTypes';
 import { CategoryCompleteOut } from './CategoryTypes';
+import { MenuCompactOut, MenuCompleteOut } from './MenuTypes';
 import { Boolean, DefaultString, LongString, Slug, TimePeriod, URL, UUID } from './TypeAliases';
 
 export interface RestaurantCompactIn {
@@ -51,7 +52,7 @@ export interface UpdateRestaurantCompactIn {
   logoKey?: LongString | null;
 }
 
-export interface BranchCompactOut extends CompleteOut {
+export interface CreateBranchCompleteOut extends BranchCompactOut {
   restaurantId: UUID | null;
   name?: DefaultString | null;
   displayName?: Slug | null;
@@ -72,9 +73,34 @@ export interface BranchCompactOut extends CompleteOut {
   backlog: BacklogCompactOut | null;
 }
 
+export interface BranchCompactOut extends CompleteOut {
+  restaurantId: UUID | null;
+  name?: DefaultString | null;
+  displayName?: Slug | null;
+  iOpen?: Boolean | null;
+  status?: DefaultString | null;
+  /**
+   * @isNumber should be a number
+   * @minimum 0
+   * @maximum 5
+   */
+  rating?: number | null;
+  showRating?: Boolean | null;
+  instagram?: DefaultString | null;
+  telegram?: DefaultString | null;
+  twitter?: DefaultString | null;
+  youtube?: DefaultString | null;
+  eitaa?: DefaultString | null;
+}
+
 export interface BranchCompleteOut extends BranchCompactOut {
+  backlog: BacklogCompactOut | null;
   address: AddressCompleteOut | null;
   openingTimes: OpeningTimesCompleteOut | null;
+}
+
+export interface BranchBySlugCompleteOut extends BranchCompleteOut {
+  menus: MenuCompactOut[] | null;
 }
 
 export interface CreateBranchCompactIn {

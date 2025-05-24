@@ -370,6 +370,42 @@
 				"minLength": 2,
 				"maxLength": 50
 			},
+			"BacklogCompactOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"branchId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"branchId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"AddressCompleteOut": {
 				"properties": {
 					"id": {
@@ -539,42 +575,6 @@
 			"Boolean": {
 				"type": "boolean",
 				"example": true
-			},
-			"BacklogCompactOut": {
-				"properties": {
-					"id": {
-						"$ref": "#/components/schemas/UUID"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"deletedAt": {
-						"type": "string",
-						"format": "date-time",
-						"nullable": true
-					},
-					"branchId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/UUID"
-							}
-						],
-						"nullable": true
-					}
-				},
-				"required": [
-					"id",
-					"createdAt",
-					"updatedAt",
-					"branchId"
-				],
-				"type": "object",
-				"additionalProperties": false
 			},
 			"BranchCompleteOut": {
 				"properties": {
@@ -2536,6 +2536,129 @@
 				],
 				"type": "string"
 			},
+			"BranchCompactOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"restaurantId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"displayName": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Slug"
+							}
+						],
+						"nullable": true
+					},
+					"iOpen": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
+						"nullable": true
+					},
+					"status": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"rating": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"minimum": 0,
+						"maximum": 5
+					},
+					"showRating": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
+						"nullable": true
+					},
+					"instagram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"telegram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"twitter": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"youtube": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"eitaa": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"restaurantId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"CustomerPreviewCompleteOut": {
 				"properties": {
 					"id": {
@@ -2597,6 +2720,14 @@
 					"currentDay": {
 						"$ref": "#/components/schemas/Days"
 					},
+					"branch": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/BranchCompactOut"
+							}
+						],
+						"nullable": true
+					},
 					"menuCategories": {
 						"items": {
 							"$ref": "#/components/schemas/MenuCategoryCompleteOut"
@@ -2613,6 +2744,7 @@
 					"favicon",
 					"isPublished",
 					"currentDay",
+					"branch",
 					"menuCategories"
 				],
 				"type": "object",
@@ -2700,7 +2832,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"BranchCompactOut": {
+			"CreateBranchCompleteOut": {
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/UUID"
@@ -4321,7 +4453,7 @@
 						}
 					}
 				},
-				"description": "Creates a new order for a specific menu.\r\nAccessible to both restaurant customers.",
+				"description": "Creates a new order for a specific menu.\r\n\r\nAccessible to restaurant customers.",
 				"tags": [
 					"Order"
 				],
@@ -4427,7 +4559,7 @@
 						}
 					},
 					{
-						"description": "Filters orders based on completion status.\r\nSet to `false` to retrieve only ongoing (not completed) orders.\r\nDefaults to `true`, which returns all orders.",
+						"description": "Filters orders based on completion status.\r\n\r\nSet to `false` to retrieve only ongoing (not completed) orders.\r\n\r\nDefaults to `true`, which returns all orders.",
 						"in": "query",
 						"name": "isCompleted",
 						"required": false,
@@ -4556,7 +4688,7 @@
 						}
 					}
 				},
-				"description": "Creates a new order for a specific menu.\r\nAccessible to both restaurant owners.",
+				"description": "Creates a new order for a specific menu.\r\n\r\nAccessible to restaurant owners.",
 				"tags": [
 					"Order"
 				],
@@ -4664,7 +4796,7 @@
 						}
 					},
 					{
-						"description": "Filters orders based on completion status.\r\nSet to `false` to retrieve only ongoing (not completed) orders.\r\nDefaults to `true`, which returns all orders.",
+						"description": "Filters orders based on completion status.\r\n\r\nSet to `false` to retrieve only ongoing (not completed) orders.\r\n\r\nDefaults to `true`, which returns all orders.",
 						"in": "query",
 						"name": "isCompleted",
 						"required": false,
@@ -5974,7 +6106,7 @@
 						}
 					}
 				},
-				"description": "Retrieves a menu preview by its id for customer.\r\nPublicly accessible. No authentication required.",
+				"description": "Retrieves a menu preview by its id for customer.\r\n\r\nPublicly accessible. No authentication required.",
 				"tags": [
 					"Menu"
 				],
@@ -6124,7 +6256,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/BranchCompactOut"
+									"$ref": "#/components/schemas/CreateBranchCompleteOut"
 								}
 							}
 						}
@@ -6208,7 +6340,7 @@
 			"get": {
 				"operationId": "GetBranch",
 				"responses": {
-					"201": {
+					"200": {
 						"description": "Branch retrieved successfully.",
 						"content": {
 							"application/json": {
@@ -6360,6 +6492,76 @@
 						}
 					}
 				}
+			}
+		},
+		"/branches/by-slug/{slug}": {
+			"get": {
+				"operationId": "GetBranchBySlug",
+				"responses": {
+					"200": {
+						"description": "Branch retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"$ref": "#/components/schemas/BranchCompleteOut"
+										},
+										{}
+									]
+								}
+							}
+						}
+					},
+					"302": {
+						"description": ""
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4049 BranchNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BranchNotFound"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieves a branch by its slug.\r\n\r\nIt redirects to the menu customer preview if our branch has only one menu.\r\n\r\nPublicly accessible. No authentication required.",
+				"tags": [
+					"Branch"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "slug",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		},
 		"/branches/{branchId}/address": {

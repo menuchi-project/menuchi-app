@@ -524,6 +524,12 @@ class MenuService {
         id: menuId
       },
       include: {
+        branch: {
+          include: {
+            address: true,
+            openingTimes: true
+          }
+        },
         cylinders: {
           include: {
             menuCategories: {

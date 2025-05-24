@@ -296,6 +296,7 @@ export class MenuController extends BaseController {
 
   /**
    * Retrieves a menu preview by its id for customer.
+   * 
    * Publicly accessible. No authentication required.
    */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')

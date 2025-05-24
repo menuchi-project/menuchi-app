@@ -13,7 +13,8 @@ import { ItemNotFound } from "../exceptions/NotFoundError";
 export class OrderController extends BaseController {
   /**
    * Creates a new order for a specific menu.
-   * Accessible to both restaurant customers.
+   * 
+   * Accessible to restaurant customers.
    */
   @Response<ItemNotFound>(404, '4043 ItemNotFound')
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
@@ -33,7 +34,8 @@ export class OrderController extends BaseController {
 
   /**
    * Creates a new order for a specific menu.
-   * Accessible to both restaurant owners.
+   * 
+   * Accessible to restaurant owners.
    */
   @Response<ItemNotFound>(404, '4043 ItemNotFound')
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
@@ -64,7 +66,9 @@ export class OrderController extends BaseController {
     @Query() limit?: Int,
     /**
      * Filters orders based on completion status.
+     * 
      * Set to `false` to retrieve only ongoing (not completed) orders.
+     * 
      * Defaults to `true`, which returns all orders.
      */
     @Query() isCompleted?: boolean,
@@ -88,7 +92,9 @@ export class OrderController extends BaseController {
     @Query() limit?: Int,
     /**
      * Filters orders based on completion status.
+     * 
      * Set to `false` to retrieve only ongoing (not completed) orders.
+     * 
      * Defaults to `true`, which returns all orders.
      */
     @Query() isCompleted?: boolean,
