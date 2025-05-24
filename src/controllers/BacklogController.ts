@@ -11,13 +11,14 @@ import { PermissionScope, RolesEnum } from "../types/Enums";
 import { ForbiddenError, UnauthorizedError } from "../exceptions/AuthError";
 import MenuchiError from "../exceptions/MenuchiError";
 import TransformersRedisClient from "../config/TransformersRedisClient";
-import { CategoryNameCompleteOut } from "../types/CategoryTypes";
+import { CategoryCompactOut, CategoryNameCompleteOut, CreateCategoryCompactIn } from "../types/CategoryTypes";
+import { ConstraintsDatabaseError } from "../exceptions/DatabaseError";
 
 @Route('/backlog')
 @Tags('Backlog')
 export class BacklogController extends BaseController {
   /**
-   * Creates a new item in a backlog.
+   * Creates a new backlog item and a category (if needed), using an existing category name.
    */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
@@ -145,6 +146,24 @@ export class BacklogController extends BaseController {
     this.checkPermission(req?.session.user, PermissionScope.Backlog, backlogId);
     await BacklogService.deleteItems(backlogId, body);
     return null;
+  }
+
+  /**
+   * Creates a new backlog. Alternatively, creating an item will automatically create its category (if needed).
+   */
+  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
+  @Response<UnauthorizedError>(401, 'Unauthorized user.')
+  @Response<ConstraintsDatabaseError>(409, 'ConstraintsDatabaseError -> This category name is already used in this backlog.')
+  @Security('', [RolesEnum.RestaurantOwner])
+  @SuccessResponse(201, 'Category created successfully.')
+  @Post('/{backlogId}/categories')
+  public async createCategory(
+    @Path() backlogId: UUID,
+    @Body() body: CreateCategoryCompactIn,
+    @Request() req?: express.Request
+  ): Promise<CategoryCompactOut> {
+    this.checkPermission(req?.session.user, PermissionScope.Backlog, backlogId);
+    return BacklogService.createCategory(backlogId, body);
   }
 
   /**

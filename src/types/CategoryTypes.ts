@@ -10,10 +10,17 @@ export interface CategoryNameCompleteOut extends CompleteOut {
   name: DefaultString | null;
 }
 
-export interface CategoryCompleteOut extends CompleteOut {
+export interface CreateCategoryCompactIn {
+  categoryNameId: UUID;
+}
+
+export interface CategoryCompactOut {
   backlogId: UUID | null;
   categoryNameId?: UUID | null;
-  categoryName?: DefaultString | null;
   positionInBacklog?: Int | null;
+}
+
+export interface CategoryCompleteOut extends CategoryCompactOut, CompleteOut {
+  categoryName?: DefaultString | null;
   items?: ItemCompleteOut[] | null;
 }

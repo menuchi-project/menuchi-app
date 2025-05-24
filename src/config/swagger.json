@@ -1458,22 +1458,6 @@
 			},
 			"CategoryCompleteOut": {
 				"properties": {
-					"id": {
-						"$ref": "#/components/schemas/UUID"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"deletedAt": {
-						"type": "string",
-						"format": "date-time",
-						"nullable": true
-					},
 					"backlogId": {
 						"allOf": [
 							{
@@ -1490,18 +1474,34 @@
 						],
 						"nullable": true
 					},
-					"categoryName": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
 					"positionInBacklog": {
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					},
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"categoryName": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
 							}
 						],
 						"nullable": true
@@ -1515,10 +1515,10 @@
 					}
 				},
 				"required": [
+					"backlogId",
 					"id",
 					"createdAt",
-					"updatedAt",
-					"backlogId"
+					"updatedAt"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -3246,6 +3246,51 @@
 						"nullable": true
 					}
 				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CategoryCompactOut": {
+				"properties": {
+					"backlogId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"categoryNameId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"positionInBacklog": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"backlogId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CreateCategoryCompactIn": {
+				"properties": {
+					"categoryNameId": {
+						"$ref": "#/components/schemas/UUID"
+					}
+				},
+				"required": [
+					"categoryNameId"
+				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -6245,7 +6290,7 @@
 						}
 					}
 				},
-				"description": "Creates a new item in a backlog.",
+				"description": "Creates a new backlog item and a category (if needed), using an existing category name.",
 				"tags": [
 					"Backlog"
 				],
@@ -6726,6 +6771,84 @@
 									"$ref": "#/components/schemas/UUID"
 								},
 								"type": "array"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/backlog/{backlogId}/categories": {
+			"post": {
+				"operationId": "CreateCategory",
+				"responses": {
+					"201": {
+						"description": "Category created successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CategoryCompactOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "ConstraintsDatabaseError -> This category name is already used in this backlog.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ConstraintsDatabaseError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Creates a new backlog. Alternatively, creating an item will automatically create its category (if needed).",
+				"tags": [
+					"Backlog"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "backlogId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateCategoryCompactIn"
 							}
 						}
 					}

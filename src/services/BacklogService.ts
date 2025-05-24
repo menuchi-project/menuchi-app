@@ -16,7 +16,7 @@ import {
 import { BacklogCompleteOut } from '../types/RestaurantTypes';
 import S3Service from './S3Service';
 import MenuchiError from '../exceptions/MenuchiError';
-import { CategoryCompleteOut, CategoryNameCompleteOut } from '../types/CategoryTypes';
+import { CategoryCompactOut, CategoryCompleteOut, CategoryNameCompleteOut, CreateCategoryCompactIn } from '../types/CategoryTypes';
 
 class BacklogService {
   constructor(private prisma: PrismaClient = prismaClient) {}
@@ -249,6 +249,33 @@ class BacklogService {
       data: {
         deletedAt: new Date(),
       },
+    });
+  }
+
+  async createCategory(
+    backlogId: UUID,
+    { categoryNameId }: CreateCategoryCompactIn
+  ): Promise<CategoryCompactOut | never> {
+    return this.prisma.$transaction(async (tx) => {
+      const maxCategoryPosition = await tx.category.aggregate({
+        _max: {
+          positionInBacklog: true,
+        },
+        where: {
+          backlogId,
+        },
+      });
+
+      const positionInBacklog =
+        (maxCategoryPosition._max.positionInBacklog ?? 0) + 1;
+
+      return tx.category.create({
+        data: {
+          backlogId,
+          categoryNameId,
+          positionInBacklog
+        }
+      });
     });
   }
 
