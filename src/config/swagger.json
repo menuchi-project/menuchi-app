@@ -3880,7 +3880,7 @@
 						}
 					},
 					"409": {
-						"description": "ConstraintsDatabaseError",
+						"description": "ConstraintsDatabaseError -> A restaurant with the provided displayName already exists.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -5030,7 +5030,7 @@
 						}
 					},
 					"409": {
-						"description": "ConstraintsDatabaseError",
+						"description": "ConstraintsDatabaseError -> A cylinder with the same provided days are already exists.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -5218,7 +5218,7 @@
 						}
 					},
 					"409": {
-						"description": "ConstraintsDatabaseError",
+						"description": "ConstraintsDatabaseError -> A menu category with the same name already exists within the specified cylinder.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -5822,7 +5822,7 @@
 						}
 					},
 					"409": {
-						"description": "ConstraintsDatabaseError",
+						"description": "ConstraintsDatabaseError -> A category name with the provided name already exists.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -7083,7 +7083,7 @@
 						}
 					},
 					"409": {
-						"description": "ConstraintsDatabaseError",
+						"description": "ConstraintsDatabaseError -> A user with the provided credentials already exists.",
 						"content": {
 							"application/json": {
 								"schema": {
