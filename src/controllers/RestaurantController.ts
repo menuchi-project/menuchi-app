@@ -19,7 +19,7 @@ export class RestaurantController extends BaseController {
    */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
-  @Response<ConstraintsDatabaseError>(409, 'ConstraintsDatabaseError')
+  @Response<ConstraintsDatabaseError>(409, 'ConstraintsDatabaseError -> A restaurant or branch with the provided displayName already exists.')
   @Response<RestaurantValidationError>(422, '4221 RestaurantValidationError')
   @SuccessResponse(201, 'Restaurant, a branch and its backlog created successfully.')
   @Security('', [RolesEnum.RestaurantOwner])

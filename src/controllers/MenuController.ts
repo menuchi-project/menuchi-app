@@ -1,7 +1,7 @@
 import { Body, Delete, Get, Patch, Path, Post, Query, Request, Response, Route, Security, SuccessResponse, Tags } from "tsoa";
 import { DefaultString, UUID } from "../types/TypeAliases";
 import MenuService from "../services/MenuService";
-import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompactOut, MenuCompleteOut, CreateMenuCompactIn } from "../types/MenuTypes";
+import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompactOut, MenuCompleteOut, CreateMenuCompactIn, OwnerPreviewCompleteOut, CustomerPreviewCompleteOut } from "../types/MenuTypes";
 import { CylinderValidationError, MenuCategoryValidationError, MenuValidationError } from "../exceptions/ValidationError";
 import { ConstraintsDatabaseError } from "../exceptions/DatabaseError";
 import MenuchiError from "../exceptions/MenuchiError";
@@ -121,9 +121,9 @@ export class MenuController extends BaseController {
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<CylinderNotFound>(404, '4046 CylinderNotFound')
-  @Response<CategoryNotFound>(404, '4048 CategoryNotFound')
+  @Response<CategoryNotFound>(404, '40412 CategoryNotFound')
   @Response<MenuNotFound>(404, '4048 MenuNotFound')
-  @Response<ConstraintsDatabaseError>(409, 'ConstraintsDatabaseError')
+  @Response<ConstraintsDatabaseError>(409, 'ConstraintsDatabaseError -> A cylinder with the same provided days are already exists.')
   @Response<CylinderValidationError>(422, '4226 CylinderValidationError')
   @SuccessResponse(201, 'Cylinder created successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
@@ -164,7 +164,11 @@ export class MenuController extends BaseController {
    */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
-  @Response<ConstraintsDatabaseError>(409, 'ConstraintsDatabaseError')
+  @Response<CategoryNotFound>(404, '40412 CategoryNotFound')
+  @Response<CylinderNotFound>(404, '4046 CylinderNotFound')
+  @Response<MenuNotFound>(404, '4048 MenuNotFound')
+  @Response<MenuchiError>(400, 'All item IDs must belong to the specified category.')
+  @Response<ConstraintsDatabaseError>(409, 'ConstraintsDatabaseError -> A menu category with the same name already exists within the specified cylinder.')
   @Response<MenuCategoryValidationError>(422, '4227 MenuCategoryValidationError')
   @SuccessResponse(201, 'Menu Category created successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
@@ -186,7 +190,8 @@ export class MenuController extends BaseController {
    */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
-  @Response<MenuchiError>(400, 'All menu item IDs must be in the request.')
+  @Response<MenuchiError>(400, 'All item IDs must belong to the same menu category.')
+  @Response<MenuchiError>(400, 'Some item IDs are invalid or do not belong to the menu.')
   @SuccessResponse(204, 'Menu item orders in the menu category updated successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Patch('/{menuId}/categories')
@@ -270,5 +275,36 @@ export class MenuController extends BaseController {
     this.checkPermission(req.session.user, PermissionScope.Menu, menuId);
     await MenuService.deleteMenuItems(menuId, body);
     return null;
+  }
+
+  /**
+   * Retrieves a menu preview by its id.
+   */
+  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
+  @Response<UnauthorizedError>(401, 'Unauthorized user.')
+  @Response<MenuNotFound>(404, '4048 MenuNotFound')
+  @SuccessResponse(200, 'Menu preview is retrieved successfully.')
+  @Security('', [RolesEnum.RestaurantOwner])
+  @Get('/{menuId}/preview')
+  public async getMenuPreview(
+    @Path() menuId: UUID,
+    @Request() req: express.Request
+  ): Promise<OwnerPreviewCompleteOut> {
+    this.checkPermission(req.session.user, PermissionScope.Menu, menuId);
+    return MenuService.getMenuPreview(menuId);
+  }
+
+  /**
+   * Retrieves a menu preview by its id for customer.
+   * 
+   * Publicly accessible. No authentication required.
+   */
+  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
+  @Response<UnauthorizedError>(401, 'Unauthorized user.')
+  @Response<MenuNotFound>(404, '4048 MenuNotFound')
+  @SuccessResponse(200, 'Menu preview is retrieved successfully.')
+  @Get('/{menuId}/preview/customer')
+  public async getCustomerMenuPreview(@Path() menuId: UUID): Promise<CustomerPreviewCompleteOut> {
+    return MenuService.getCustomerMenuPreview(menuId);
   }
 }

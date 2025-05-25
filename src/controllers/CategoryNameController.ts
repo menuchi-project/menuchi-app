@@ -15,7 +15,7 @@ export class CategoryNameController extends BaseController {
    */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
-  @Response<ConstraintsDatabaseError>(409, 'ConstraintsDatabaseError')
+  @Response<ConstraintsDatabaseError>(409, 'ConstraintsDatabaseError -> A category name with the provided name already exists.')
   @Response<CategoryNameValidationError>(422, '4222 CategoryNameValidationError')
   @SuccessResponse(201, 'Category name created successfully.')
   // @Security('', [RolesEnum.Admin]) TODO

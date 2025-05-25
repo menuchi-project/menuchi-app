@@ -22,6 +22,7 @@ class RestaurantService {
         ...restaurantDTO,
         branches: {
           create: {
+            displayName: restaurantDTO.displayName,
             backlog: {
               create: {},
             },

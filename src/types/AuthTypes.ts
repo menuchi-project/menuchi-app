@@ -35,7 +35,7 @@ export interface BranchSession {
   menus?: UUID[];
 }
 
-export interface BaseUpdateSession {
+interface BaseUpdateSession {
   userSession: UserSession;
 }
 
@@ -43,6 +43,8 @@ export interface RestaurantUpdateSession extends BaseUpdateSession {
   restaurantId: UUID;
   branch: BranchSession;
 }
+
+export interface BranchUpdateSession extends RestaurantUpdateSession {}
 
 export interface MenuUpdateSession extends BaseUpdateSession {
   restaurantId: UUID;
