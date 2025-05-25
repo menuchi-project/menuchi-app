@@ -45,9 +45,9 @@ export class MenuController extends BaseController {
   @Post()
   async createMenu(
     @Body() body: CreateMenuCompactIn,
-    @Request() req: express.Request
+    @Request() req?: express.Request
   ): Promise<MenuCompactOut> {
-    this.checkPermission(req.session.user, PermissionScope.Branch, body.branchId);
+    this.checkPermission(req?.session.user, PermissionScope.Branch, body.branchId);
     const menu = await MenuService.createMenu(body);
 
     const updateSession = {

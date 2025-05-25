@@ -9,7 +9,7 @@
     "start": "node ./build/src/index.js",
     "db-push": "npx prisma db push --schema=./src/db/schema.prisma --accept-data-loss",
     "db-generate": "npx prisma --schema=./src/db/schema.prisma",
-    "test": "cross-env NODE_ENV=test && vitest --config ./test/vitest.config.ts"
+    "test": "dotenv -e .env.test -- vitest --config ./test/vitest.config.ts"
   },
   "repository": {
     "type": "git",

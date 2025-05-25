@@ -1689,8 +1689,8 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsMenuController_getBacklog: Record<string, TsoaRoute.ParameterSchema> = {
                 backlogId: {"in":"path","name":"backlogId","required":true,"ref":"UUID"},
-                req: {"in":"request","name":"req","required":true,"dataType":"object"},
                 search: {"in":"query","name":"search","ref":"DefaultString"},
+                req: {"in":"request","name":"req","dataType":"object"},
         };
         app.get('/menus/backlog/:backlogId',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
@@ -1852,7 +1852,7 @@ export function RegisterRoutes(app: Router) {
         const argsMenuController_createCylinder: Record<string, TsoaRoute.ParameterSchema> = {
                 menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"ref":"CylinderCompactIn"},
-                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                req: {"in":"request","name":"req","dataType":"object"},
         };
         app.post('/menus/:menuId/cylinders',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
