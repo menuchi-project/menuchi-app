@@ -1,5 +1,7 @@
 import { CompleteOut } from './BaseTypes';
+import { Days } from './Enums';
 import { ItemCompleteOut } from './ItemTypes';
+import { BranchCompleteOut } from './RestaurantTypes';
 import { Boolean, DefaultString, Int, UUID } from './TypeAliases';
 
 export interface CreateMenuCompactIn extends MenuCompactIn {
@@ -12,7 +14,7 @@ export interface MenuCompactIn {
   isPublished?: Boolean | null;
 }
 
-export interface CreateMenuCompleteOut extends CompleteOut {
+export interface MenuCompactOut extends CompleteOut {
   branchId: UUID | null;
   name: DefaultString | null;
   favicon: DefaultString | null;
@@ -53,10 +55,28 @@ interface CylinderCompleteOut extends CompleteOut {
 }
 
 interface MenuCategoryCompleteOut extends CreateMenuCategoryCompleteOut {
-  categoryName: DefaultString | null;
+  categoryName?: DefaultString | null;
   items: ItemCompleteOut[] | null;
 }
 
-export interface MenuCompleteOut extends CreateMenuCompleteOut {
+export interface MenuCompleteOut extends MenuCompactOut {
   cylinders: CylinderCompleteOut[] | null;
+}
+
+export interface OwnerPreviewCompactOut {
+  sat?: MenuCategoryCompleteOut[];
+  sun?: MenuCategoryCompleteOut[];
+  mon?: MenuCategoryCompleteOut[];
+  tue?: MenuCategoryCompleteOut[];
+  wed?: MenuCategoryCompleteOut[];
+  thu?: MenuCategoryCompleteOut[];
+  fri?: MenuCategoryCompleteOut[];
+}
+
+export interface OwnerPreviewCompleteOut extends OwnerPreviewCompactOut, MenuCompactOut {}
+
+export interface CustomerPreviewCompleteOut extends MenuCompactOut {
+  currentDay: Days;
+  branch: BranchCompleteOut | null;
+  menuCategories: MenuCategoryCompleteOut[];
 }

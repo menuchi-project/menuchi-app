@@ -1,5 +1,5 @@
 import { Controller } from 'tsoa';
-import { MenuUpdateSession, RestaurantUpdateSession, SessionUpdate, UserSession } from '../types/AuthTypes';
+import { BranchUpdateSession, MenuUpdateSession, RestaurantUpdateSession, SessionUpdate, UserSession } from '../types/AuthTypes';
 import { UUID } from '../types/TypeAliases';
 import { PermissionScope, SessionUpdateScope } from '../types/Enums';
 import { ForbiddenError } from '../exceptions/AuthError';
@@ -58,6 +58,15 @@ export default class BaseController extends Controller {
         userSession.restaurants?.push({ 
           id: restaurantUpdate.restaurantId, 
           branches: [restaurantUpdate.branch] 
+        });
+        break;
+      
+      case SessionUpdateScope.Branch:
+        const branchUpdate = update as BranchUpdateSession;
+        const res = userSession.restaurants?.find(r => r.id === branchUpdate.restaurantId);
+        res?.branches.push({
+          id: branchUpdate.branch.id,
+          backlogId: branchUpdate.branch.backlogId
         });
         break;
       

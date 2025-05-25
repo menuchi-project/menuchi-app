@@ -18,13 +18,24 @@ export enum PermissionScope {
 
 export enum SessionUpdateScope {
   Restaurant,
+  Branch,
   Menu
 }
 
 export enum OrderStatus {
   Pending = 'PENDING',
-  Accepted = 'ACCEPTED',
+  Canceled = 'CANCELED',
   Preparing = 'PREPARING',
   Ready = 'READY',
   Done = 'DONE'
+}
+
+export enum Days {
+  Saturday ='sat',
+  Sunday = 'sun',
+  Monday = 'mon',
+  Tuesday = 'tue',
+  Wednesday = 'wed',
+  Thursday = 'thu',
+  Friday = 'fri'
 }

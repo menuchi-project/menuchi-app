@@ -12,7 +12,7 @@ export interface ItemCompactIn {
 export interface CreateItemCompleteOut extends CompleteOut {
   categoryId?: UUID | null;
   categoryName?: DefaultString | null;
-  subCategoryId?: UUID | null;
+  // subCategoryId?: UUID | null;
   name?: DefaultString | null;
   ingredients?: LongString | null;
   price?: number | null;
@@ -25,18 +25,19 @@ export interface ItemCompleteOut extends CompleteOut {
   categoryId?: UUID | null;
   categoryNameId?: UUID | null;
   categoryName?: DefaultString | null;
-  subCategoryId?: UUID | null;
+  // subCategoryId?: UUID | null;
   name?: DefaultString | null;
   ingredients?: LongString | null;
   price?: number | null;
   picUrl?: URL | null;
   positionInItemsList?: Int | null;
   positionInCategory?: Int | null;
+  orderCount?: Int | null;
 }
 
 export interface UpdateItemIn {
   categoryId?: UUID | null;
-  subCategoryId?: UUID | null;
+  // subCategoryId?: UUID | null;
   name?: DefaultString | null;
   ingredients?: LongString | null;
   price?: number | null;

@@ -3,9 +3,11 @@ import prismaClient from '../db/prisma';
 import {
   RestaurantCompactIn,
   RestaurantCompleteOut,
+  UpdateRestaurantCompactIn,
 } from '../types/RestaurantTypes';
 import { UUID } from '../types/TypeAliases';
 import { RestaurantNotFound } from '../exceptions/NotFoundError';
+import S3Service from './S3Service';
 
 class RestaurantService {
   constructor(private prisma: PrismaClient = prismaClient) {}
@@ -20,6 +22,7 @@ class RestaurantService {
         ...restaurantDTO,
         branches: {
           create: {
+            displayName: restaurantDTO.displayName,
             backlog: {
               create: {},
             },
@@ -30,6 +33,8 @@ class RestaurantService {
         branches: {
           include: {
             backlog: true,
+            address: true,
+            openingTimes: true
           },
         },
       },
@@ -37,7 +42,7 @@ class RestaurantService {
   }
 
   async getRestaurant(restaurantId: UUID): Promise<RestaurantCompleteOut> {
-    return this.prisma.restaurant
+    const { avatarKey, coverKey, logoKey, ...restaurant } = await this.prisma.restaurant
       .findUniqueOrThrow({
         where: {
           id: restaurantId,
@@ -46,6 +51,8 @@ class RestaurantService {
           branches: {
             include: {
               backlog: true,
+              address: true,
+              openingTimes: true
             },
           },
         },
@@ -54,6 +61,23 @@ class RestaurantService {
         if (error.message.includes('not found')) throw new RestaurantNotFound();
         throw error;
       });
+
+    return {
+      ...restaurant,
+      avatarUrl: await S3Service.generateGetPresignedUrl(avatarKey) ?? null,
+      coverUrl: await S3Service.generateGetPresignedUrl(coverKey) ?? null,
+      logoUrl: await S3Service.generateGetPresignedUrl(logoKey) ?? null
+    };
+  }
+
+  
+  async updateRestaurant(restaurantId: UUID, restaurantDTO: UpdateRestaurantCompactIn) {
+    return this.prisma.restaurant.update({
+      where: {
+        id: restaurantId
+      },
+      data: restaurantDTO
+    });
   }
 }
 

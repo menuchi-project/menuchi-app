@@ -4,7 +4,11 @@ import { DefaultString, Email, Int, URL, UUID } from "./TypeAliases";
 
 
 export interface CreateOrderCompactIn {
-  menuId: UUID;
+  items: OrderItemCompactIn[];
+}
+
+export interface CreateOrderCompleteIn {
+  customerEmail: Email;
   items: OrderItemCompactIn[];
 }
 

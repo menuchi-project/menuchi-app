@@ -17,7 +17,7 @@ model User {
   isEmailVerified       Boolean?     @map("is_email_verified")
   restaurants           Restaurant[]
   roles                 Role[]
-  staff                 Staff[]
+  // staff                 Staff[]
   userProfile           UserProfile?
   createdAt             DateTime     @default(now()) @map("created_at")
   updatedAt             DateTime     @updatedAt @map("updated_at")
@@ -112,7 +112,7 @@ model Branch {
   restaurant   Restaurant?   @relation(fields: [restaurantId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   menus        Menu[]
   openingTimes OpeningTimes?
-  staff        Staff[]
+  // staff        Staff[]
   createdAt    DateTime      @default(now()) @map("created_at")
   updatedAt    DateTime      @updatedAt @map("updated_at")
   deletedAt    DateTime?     @map("deleted_at")
@@ -120,6 +120,7 @@ model Branch {
   @@map("branches")
 }
 
+/*
 model Staff {
   id        String    @id @default(uuid()) @db.Uuid
   userId    String?   @map("user_id") @db.Uuid
@@ -133,6 +134,7 @@ model Staff {
   @@unique([userId, branchId])
   @@map("staff")
 }
+*/
 
 model OpeningTimes {
   id        String    @id @default(uuid()) @db.Uuid
@@ -200,7 +202,7 @@ model Category {
   categoryName      CategoryName?  @relation(fields: [categoryNameId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   positionInBacklog Int?           @map("position_in_backlog")
   items             Item[]
-  subCategories     SubCategory[]
+  // subCategories     SubCategory[]
   menuCategory      MenuCategory[]
   createdAt         DateTime       @default(now()) @map("created_at")
   updatedAt         DateTime       @updatedAt @map("updated_at")
@@ -210,6 +212,7 @@ model Category {
   @@map("categories")
 }
 
+/*
 model SubCategory {
   id                 String    @id @default(uuid()) @db.Uuid
   categoryId         String?   @map("category_id") @db.Uuid
@@ -223,6 +226,7 @@ model SubCategory {
 
   @@map("sub_categories")
 }
+*/
 
 model Item {
   id                     String        @id @default(uuid()) @db.Uuid
@@ -237,9 +241,10 @@ model Item {
   positionInCategory     Int?          @map("position_in_category")
   positionInMenuCategory Int?          @map("position_in_menu_categories")
   isActive               Boolean?      @default(true) @map("is_active")
+  orderCount             Int?          @default(0) @map("order_count")
   orderItems             OrderItem[]
   category               Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  subCategory            SubCategory?  @relation(fields: [subCategoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  // subCategory            SubCategory?  @relation(fields: [subCategoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   menuCategory           MenuCategory? @relation(fields: [menuCategoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   createdAt              DateTime      @default(now()) @map("created_at")
   updatedAt              DateTime      @updatedAt @map("updated_at")
@@ -302,31 +307,31 @@ model Menu {
 }
 
 model Order {
-  id            String      @id @default(uuid()) @db.Uuid
-  menuId        String?     @map("menu_id") @db.Uuid
-  customerEmail String?     @map("customer_email")
-  totalPrice    Float?      @default(0)
+  id            String       @id @default(uuid()) @db.Uuid
+  menuId        String?      @map("menu_id") @db.Uuid
+  customerEmail String?      @map("customer_email")
+  totalPrice    Float?       @default(0)
   status        OrderStatus? @default(PENDING)
   orderItems    OrderItem[]
-  menu          Menu?       @relation(fields: [menuId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  createdAt   DateTime   @default(now()) @map("created_at")
-  updatedAt   DateTime   @updatedAt @map("updated_at")
-  deletedAt   DateTime?  @map("deleted_at")
+  menu          Menu?        @relation(fields: [menuId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  deletedAt     DateTime?    @map("deleted_at")
 
   @@map("orders")
 }
 
 model OrderItem {
-  id      String  @id @default(uuid()) @db.Uuid
-  orderId String? @map("order_id") @db.Uuid
-  itemId  String? @map("item_id") @db.Uuid
-  price   Float?  @default(0)
-  amount  Int?    @default(1)
-  order   Order?  @relation(fields: [orderId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  item    Item?   @relation(fields: [itemId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  createdAt   DateTime   @default(now()) @map("created_at")
-  updatedAt   DateTime   @updatedAt @map("updated_at")
-  deletedAt   DateTime?  @map("deleted_at")
+  id        String    @id @default(uuid()) @db.Uuid
+  orderId   String?   @map("order_id") @db.Uuid
+  itemId    String?   @map("item_id") @db.Uuid
+  price     Float?    @default(0)
+  amount    Int?      @default(1)
+  order     Order?    @relation(fields: [orderId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  item      Item?     @relation(fields: [itemId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
 
   @@unique([orderId, itemId])
   @@map("order_items")
@@ -334,7 +339,7 @@ model OrderItem {
 
 enum OrderStatus {
   PENDING
-  ACCEPTED
+  CANCELED
   PREPARING
   READY
   DONE

@@ -16,7 +16,7 @@ import {
 import { BacklogCompleteOut } from '../types/RestaurantTypes';
 import S3Service from './S3Service';
 import MenuchiError from '../exceptions/MenuchiError';
-import { CategoryCompleteOut } from '../types/CategoryTypes';
+import { CategoryCompactOut, CategoryCompleteOut, CategoryNameCompleteOut, CreateCategoryCompactIn } from '../types/CategoryTypes';
 
 class BacklogService {
   constructor(private prisma: PrismaClient = prismaClient) {}
@@ -146,13 +146,16 @@ class BacklogService {
                   deletedAt: null,
                 },
                 orderBy: {
-                  positionInCategory: 'asc',
-                },
+                  positionInCategory: 'asc'
+                }
               },
             },
             omit: {
               categoryNameId: true,
             },
+            orderBy: {
+              positionInBacklog: 'asc'
+            }
           },
         },
       })
@@ -217,6 +220,9 @@ class BacklogService {
   }
 
   async updateItem(backlogId: UUID, itemId: UUID, itemDTO: UpdateItemIn) {
+    itemDTO = Object.fromEntries(
+      Object.entries(itemDTO).filter(([key, value]) => value !== null)
+    );
     return this.prisma.item.update({
       where: {
         id: itemId,
@@ -249,6 +255,33 @@ class BacklogService {
     });
   }
 
+  async createCategory(
+    backlogId: UUID,
+    { categoryNameId }: CreateCategoryCompactIn
+  ): Promise<CategoryCompactOut | never> {
+    return this.prisma.$transaction(async (tx) => {
+      const maxCategoryPosition = await tx.category.aggregate({
+        _max: {
+          positionInBacklog: true,
+        },
+        where: {
+          backlogId,
+        },
+      });
+
+      const positionInBacklog =
+        (maxCategoryPosition._max.positionInBacklog ?? 0) + 1;
+
+      return tx.category.create({
+        data: {
+          backlogId,
+          categoryNameId,
+          positionInBacklog
+        }
+      });
+    });
+  }
+
   async reorderItemsInCategory(backlogId: UUID, itemsId: UUID[]) {
     await this.isValidItemsId(backlogId, itemsId);
     return this.prisma.$executeRaw`
@@ -262,7 +295,7 @@ class BacklogService {
   }
 
   async reorderItemsInList(backlogId: UUID, itemsId: UUID[]) {
-    await this.isValidItemsId(backlogId, itemsId);
+    await this.isValidItemsId(backlogId, itemsId, false);
     return this.prisma.$executeRaw`
       UPDATE "items"
       SET "position_in_items_list" = CASE "id"
@@ -273,25 +306,35 @@ class BacklogService {
     `;
   }
 
-  private async isValidItemsId(backlogId: UUID, itemsId: UUID[]): Promise<void | never> {
+  private async isValidItemsId(backlogId: UUID, itemsId: UUID[], areSameCategory = true): Promise<void | never> {
     const items = await this.prisma.item.findMany({
-      where: {
-        deletedAt: null,
-        category: {
+        where: {
+          id: {
+            in: itemsId
+          },
           deletedAt: null,
-          backlog: {
-            id: backlogId,
+          category: {
+            deletedAt: null,
+            backlog: {
+              id: backlogId,
+            },
           },
         },
-      },
-      select: {
-        id: true
-      }
+        select: {
+          id: true,
+          categoryId: true,
+        },
     });
-    
-    const isValidQuery = (items.length === itemsId.length) &&
-            items.every(item => itemsId.some(itemId => itemId === item.id ));
-    if (!isValidQuery) throw new MenuchiError('All item IDs must be in the request.', 400);
+
+    if (items.length !== itemsId.length) {
+      throw new MenuchiError('Some item IDs are invalid or do not belong to the backlog.', 400);
+    }
+
+    if (areSameCategory) {
+      const categoryIds = new Set(items.map(item => item.categoryId));
+      if (categoryIds.size > 1)
+        throw new MenuchiError('All item IDs must belong to the same category.', 400);
+    }
   }
 
   async reorderCategoriesInBacklog(backlogId: UUID, categoriesId: UUID[]) {
@@ -347,6 +390,31 @@ class BacklogService {
     const isValidQuery = (categories.length === categoriesId.length) &&
             categories.every(category => categoriesId.some(categoryId => categoryId === category.id ));
     if (!isValidQuery) throw new MenuchiError('All category IDs must be in the request.', 400);
+  }
+
+  async getAllCategoryNames(backlogId: UUID): Promise<CategoryNameCompleteOut[]> {
+    const categoryNames = await this.prisma.categoryName.findMany({
+      where: {
+        categories: {
+          some: {
+            backlogId
+          }
+        }
+      },
+      include: {
+        categories: {
+          where: {
+            backlogId
+          }
+        }
+      }
+    });
+
+    return categoryNames.map(cn => ({
+      ...cn,
+      categoryId: cn.categories[0].id,
+      categories: undefined
+    }));
   }
 }
 

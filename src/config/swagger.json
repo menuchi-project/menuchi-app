@@ -291,6 +291,70 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"GetRestaurantCoverPicUrlOut": {
+				"properties": {
+					"restaurantCoverPicUrl": {
+						"$ref": "#/components/schemas/URL"
+					},
+					"restaurantCoverPicKey": {
+						"$ref": "#/components/schemas/LongString"
+					}
+				},
+				"required": [
+					"restaurantCoverPicUrl",
+					"restaurantCoverPicKey"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"GetRestaurantPicUrlIn": {
+				"properties": {
+					"restaurantId": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"fileName": {
+						"$ref": "#/components/schemas/ImageFilename"
+					}
+				},
+				"required": [
+					"restaurantId",
+					"fileName"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"GetRestaurantAvatarPicUrlOut": {
+				"properties": {
+					"restaurantAvatarPicUrl": {
+						"$ref": "#/components/schemas/URL"
+					},
+					"restaurantAvatarPicKey": {
+						"$ref": "#/components/schemas/LongString"
+					}
+				},
+				"required": [
+					"restaurantAvatarPicUrl",
+					"restaurantAvatarPicKey"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"GetRestaurantLogoPicUrlOut": {
+				"properties": {
+					"restaurantLogoPicUrl": {
+						"$ref": "#/components/schemas/URL"
+					},
+					"restaurantLogoPicKey": {
+						"$ref": "#/components/schemas/LongString"
+					}
+				},
+				"required": [
+					"restaurantLogoPicUrl",
+					"restaurantLogoPicKey"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"DefaultString": {
 				"type": "string",
 				"example": "string",
@@ -305,10 +369,6 @@
 				"pattern": "^[a-zA-Z0-9-]+$",
 				"minLength": 2,
 				"maxLength": 50
-			},
-			"Boolean": {
-				"type": "boolean",
-				"example": true
 			},
 			"BacklogCompactOut": {
 				"properties": {
@@ -346,7 +406,177 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"BranchCompleteOut": {
+			"AddressCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"country": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"region": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"city": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"area": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"street": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"description": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"region",
+					"city",
+					"street"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"TimePeriod": {
+				"type": "string",
+				"description": "Time period in 24-hour format.\r\nMust follow the format HH:MM-HH:MM (e.g., 09:00-20:00).\r\nHours must be from 00 to 23, and minutes from 00 to 59.",
+				"pattern": "^([01]\\d|2[0-3]):[0-5]\\d-([01]\\d|2[0-3]):[0-5]\\d$"
+			},
+			"OpeningTimesCompleteOut": {
+				"properties": {
+					"sat": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/TimePeriod"
+							}
+						],
+						"nullable": true
+					},
+					"sun": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/TimePeriod"
+							}
+						],
+						"nullable": true
+					},
+					"mon": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/TimePeriod"
+							}
+						],
+						"nullable": true
+					},
+					"tue": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/TimePeriod"
+							}
+						],
+						"nullable": true
+					},
+					"wed": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/TimePeriod"
+							}
+						],
+						"nullable": true
+					},
+					"thu": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/TimePeriod"
+							}
+						],
+						"nullable": true
+					},
+					"fri": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/TimePeriod"
+							}
+						],
+						"nullable": true
+					},
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Boolean": {
+				"type": "boolean",
+				"example": true
+			},
+			"BranchCompletePlusOut": {
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/UUID"
@@ -466,6 +696,22 @@
 							}
 						],
 						"nullable": true
+					},
+					"address": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/AddressCompleteOut"
+							}
+						],
+						"nullable": true
+					},
+					"openingTimes": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/OpeningTimesCompleteOut"
+							}
+						],
+						"nullable": true
 					}
 				},
 				"required": [
@@ -473,7 +719,9 @@
 					"createdAt",
 					"updatedAt",
 					"restaurantId",
-					"backlog"
+					"backlog",
+					"address",
+					"openingTimes"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -514,7 +762,7 @@
 					},
 					"branches": {
 						"items": {
-							"$ref": "#/components/schemas/BranchCompleteOut"
+							"$ref": "#/components/schemas/BranchCompletePlusOut"
 						},
 						"type": "array",
 						"nullable": true
@@ -793,10 +1041,99 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"UpdateRestaurantCompactIn": {
+				"properties": {
+					"name": {
+						"$ref": "#/components/schemas/DefaultString"
+					},
+					"displayName": {
+						"$ref": "#/components/schemas/Slug"
+					},
+					"slang": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true,
+						"pattern": "^[a-zA-Z0-9]*$"
+					},
+					"instagram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"telegram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"twitter": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"youtube": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"eitaa": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"avatarKey": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/LongString"
+							}
+						],
+						"nullable": true
+					},
+					"coverKey": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/LongString"
+							}
+						],
+						"nullable": true
+					},
+					"logoKey": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/LongString"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"name",
+					"displayName"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"OrderStatus": {
 				"enum": [
 					"PENDING",
-					"ACCEPTED",
+					"CANCELED",
 					"PREPARING",
 					"READY",
 					"DONE"
@@ -931,6 +1268,40 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"ItemNotFound": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"OrderItemCompactIn": {
 				"properties": {
 					"itemId": {
@@ -949,8 +1320,23 @@
 			},
 			"CreateOrderCompactIn": {
 				"properties": {
-					"menuId": {
-						"$ref": "#/components/schemas/UUID"
+					"items": {
+						"items": {
+							"$ref": "#/components/schemas/OrderItemCompactIn"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"items"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CreateOrderCompleteIn": {
+				"properties": {
+					"customerEmail": {
+						"$ref": "#/components/schemas/Email"
 					},
 					"items": {
 						"items": {
@@ -960,7 +1346,7 @@
 					}
 				},
 				"required": [
-					"menuId",
+					"customerEmail",
 					"items"
 				],
 				"type": "object",
@@ -1004,14 +1390,6 @@
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"subCategoryId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/UUID"
 							}
 						],
 						"nullable": true
@@ -1060,6 +1438,14 @@
 							}
 						],
 						"nullable": true
+					},
+					"orderCount": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
 					}
 				},
 				"required": [
@@ -1072,22 +1458,6 @@
 			},
 			"CategoryCompleteOut": {
 				"properties": {
-					"id": {
-						"$ref": "#/components/schemas/UUID"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"deletedAt": {
-						"type": "string",
-						"format": "date-time",
-						"nullable": true
-					},
 					"backlogId": {
 						"allOf": [
 							{
@@ -1104,18 +1474,34 @@
 						],
 						"nullable": true
 					},
-					"categoryName": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
 					"positionInBacklog": {
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					},
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"categoryName": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
 							}
 						],
 						"nullable": true
@@ -1129,10 +1515,10 @@
 					}
 				},
 				"required": [
+					"backlogId",
 					"id",
 					"createdAt",
-					"updatedAt",
-					"backlogId"
+					"updatedAt"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1214,7 +1600,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"CreateMenuCompleteOut": {
+			"MenuCompactOut": {
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/UUID"
@@ -1321,6 +1707,40 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"MenuNotFound": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"MenuCategoryCompleteOut": {
 				"properties": {
 					"id": {
@@ -1386,7 +1806,6 @@
 					"categoryId",
 					"cylinderId",
 					"positionInCylinder",
-					"categoryName",
 					"items"
 				],
 				"type": "object",
@@ -1523,40 +1942,6 @@
 					"favicon",
 					"isPublished",
 					"cylinders"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"MenuNotFound": {
-				"properties": {
-					"name": {
-						"type": "string"
-					},
-					"message": {
-						"type": "string"
-					},
-					"stack": {
-						"type": "string"
-					},
-					"status": {
-						"type": "number",
-						"format": "double"
-					},
-					"code": {
-						"type": "number",
-						"format": "double"
-					},
-					"details": {
-						"items": {
-							"$ref": "#/components/schemas/ErrorDetail"
-						},
-						"type": "array"
-					}
-				},
-				"required": [
-					"name",
-					"message",
-					"status"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -2026,6 +2411,345 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"OwnerPreviewCompleteOut": {
+				"properties": {
+					"sat": {
+						"items": {
+							"$ref": "#/components/schemas/MenuCategoryCompleteOut"
+						},
+						"type": "array"
+					},
+					"sun": {
+						"items": {
+							"$ref": "#/components/schemas/MenuCategoryCompleteOut"
+						},
+						"type": "array"
+					},
+					"mon": {
+						"items": {
+							"$ref": "#/components/schemas/MenuCategoryCompleteOut"
+						},
+						"type": "array"
+					},
+					"tue": {
+						"items": {
+							"$ref": "#/components/schemas/MenuCategoryCompleteOut"
+						},
+						"type": "array"
+					},
+					"wed": {
+						"items": {
+							"$ref": "#/components/schemas/MenuCategoryCompleteOut"
+						},
+						"type": "array"
+					},
+					"thu": {
+						"items": {
+							"$ref": "#/components/schemas/MenuCategoryCompleteOut"
+						},
+						"type": "array"
+					},
+					"fri": {
+						"items": {
+							"$ref": "#/components/schemas/MenuCategoryCompleteOut"
+						},
+						"type": "array"
+					},
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"branchId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"favicon": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"isPublished": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
+						"nullable": true
+					},
+					"restaurantId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"branchId",
+					"name",
+					"favicon",
+					"isPublished"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Days": {
+				"enum": [
+					"sat",
+					"sun",
+					"mon",
+					"tue",
+					"wed",
+					"thu",
+					"fri"
+				],
+				"type": "string"
+			},
+			"BranchCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"restaurantId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"displayName": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Slug"
+							}
+						],
+						"nullable": true
+					},
+					"iOpen": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
+						"nullable": true
+					},
+					"status": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"rating": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"minimum": 0,
+						"maximum": 5
+					},
+					"showRating": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
+						"nullable": true
+					},
+					"instagram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"telegram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"twitter": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"youtube": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"eitaa": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"restaurantId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CustomerPreviewCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"branchId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"favicon": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"isPublished": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
+						"nullable": true
+					},
+					"restaurantId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"currentDay": {
+						"$ref": "#/components/schemas/Days"
+					},
+					"branch": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/BranchCompleteOut"
+							}
+						],
+						"nullable": true
+					},
+					"menuCategories": {
+						"items": {
+							"$ref": "#/components/schemas/MenuCategoryCompleteOut"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"branchId",
+					"name",
+					"favicon",
+					"isPublished",
+					"currentDay",
+					"branch",
+					"menuCategories"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"CategoryNameCompleteOut": {
 				"properties": {
 					"id": {
@@ -2108,6 +2832,489 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"CreateBranchCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"restaurantId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"displayName": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Slug"
+							}
+						],
+						"nullable": true
+					},
+					"iOpen": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
+						"nullable": true
+					},
+					"status": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"rating": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"minimum": 0,
+						"maximum": 5
+					},
+					"showRating": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
+						"nullable": true
+					},
+					"instagram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"telegram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"twitter": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"youtube": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"eitaa": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"backlog": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/BacklogCompactOut"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"restaurantId",
+					"backlog"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"BranchValidationError": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CreateBranchCompactIn": {
+				"properties": {
+					"restaurantId": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"displayName": {
+						"$ref": "#/components/schemas/Slug"
+					},
+					"showRating": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
+						"nullable": true
+					},
+					"instagram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"telegram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"twitter": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"youtube": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"eitaa": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"restaurantId",
+					"displayName"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UpdateBranchCompactIn": {
+				"properties": {
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"displayName": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Slug"
+							}
+						],
+						"nullable": true
+					},
+					"iOpen": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
+						"nullable": true
+					},
+					"status": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"showRating": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
+						"nullable": true
+					},
+					"instagram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"telegram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"twitter": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"youtube": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"eitaa": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AddressValidationError": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AddressCompactIn": {
+				"properties": {
+					"country": {
+						"$ref": "#/components/schemas/DefaultString"
+					},
+					"region": {
+						"$ref": "#/components/schemas/DefaultString"
+					},
+					"city": {
+						"$ref": "#/components/schemas/DefaultString"
+					},
+					"area": {
+						"$ref": "#/components/schemas/DefaultString"
+					},
+					"street": {
+						"$ref": "#/components/schemas/DefaultString"
+					},
+					"description": {
+						"$ref": "#/components/schemas/DefaultString"
+					}
+				},
+				"required": [
+					"region",
+					"city",
+					"street"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"OpeningTimesValidationError": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"OpeningTimesCompactIn": {
+				"properties": {
+					"sat": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/TimePeriod"
+							}
+						],
+						"nullable": true
+					},
+					"sun": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/TimePeriod"
+							}
+						],
+						"nullable": true
+					},
+					"mon": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/TimePeriod"
+							}
+						],
+						"nullable": true
+					},
+					"tue": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/TimePeriod"
+							}
+						],
+						"nullable": true
+					},
+					"wed": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/TimePeriod"
+							}
+						],
+						"nullable": true
+					},
+					"thu": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/TimePeriod"
+							}
+						],
+						"nullable": true
+					},
+					"fri": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/TimePeriod"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
 			"CreateItemCompleteOut": {
 				"properties": {
 					"id": {
@@ -2138,14 +3345,6 @@
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"subCategoryId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/UUID"
 							}
 						],
 						"nullable": true
@@ -2353,14 +3552,6 @@
 						],
 						"nullable": true
 					},
-					"subCategoryId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/UUID"
-							}
-						],
-						"nullable": true
-					},
 					"name": {
 						"allOf": [
 							{
@@ -2391,6 +3582,51 @@
 						"nullable": true
 					}
 				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CategoryCompactOut": {
+				"properties": {
+					"backlogId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"categoryNameId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"positionInBacklog": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"backlogId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CreateCategoryCompactIn": {
+				"properties": {
+					"categoryNameId": {
+						"$ref": "#/components/schemas/UUID"
+					}
+				},
+				"required": [
+					"categoryNameId"
+				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -2738,6 +3974,213 @@
 				}
 			}
 		},
+		"/s3/get-res-cover-pic-url": {
+			"post": {
+				"operationId": "GeneratePutRestaurantCoverPicPresignedUrl",
+				"responses": {
+					"201": {
+						"description": "Restaurant cover pic presigned url generated successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GetRestaurantCoverPicUrlOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "4224 S3ValidationError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/S3ValidationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Generates a pre-signed URL for uploading an restaurant cover picture to S3.",
+				"tags": [
+					"S3"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/GetRestaurantPicUrlIn"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/s3/get-res-avatar-pic-url": {
+			"post": {
+				"operationId": "GeneratePutRestaurantAvatarPicPresignedUrl",
+				"responses": {
+					"201": {
+						"description": "Restaurant avatar pic presigned url generated successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GetRestaurantAvatarPicUrlOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "4224 S3ValidationError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/S3ValidationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Generates a pre-signed URL for uploading an restaurant avatar picture to S3.",
+				"tags": [
+					"S3"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/GetRestaurantPicUrlIn"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/s3/get-res-logo-pic-url": {
+			"post": {
+				"operationId": "GeneratePutRestaurantLogoPicPresignedUrl",
+				"responses": {
+					"201": {
+						"description": "Restaurant logo pic presigned url generated successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GetRestaurantLogoPicUrlOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "4224 S3ValidationError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/S3ValidationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Generates a pre-signed URL for uploading an restaurant logo picture to S3.",
+				"tags": [
+					"S3"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/GetRestaurantPicUrlIn"
+							}
+						}
+					}
+				}
+			}
+		},
 		"/restaurants": {
 			"post": {
 				"operationId": "CreateRestaurant",
@@ -2773,7 +4216,7 @@
 						}
 					},
 					"409": {
-						"description": "ConstraintsDatabaseError",
+						"description": "ConstraintsDatabaseError -> A restaurant or branch with the provided displayName already exists.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -2862,7 +4305,7 @@
 						}
 					}
 				},
-				"description": "Retrieves full details of a specific restaurant by its ID.",
+				"description": "Retrieves full details of a specific restaurant by its ID, include its branches.",
 				"tags": [
 					"Restaurant"
 				],
@@ -2883,9 +4326,89 @@
 						}
 					}
 				]
+			},
+			"patch": {
+				"operationId": "UpdateBranch",
+				"responses": {
+					"204": {
+						"description": "Restaurant updated successfully. It doesn't retrieve anything.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "4221 RestaurantValidationError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RestaurantValidationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Updates a restaurant.",
+				"tags": [
+					"Restaurant"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "restaurantId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateRestaurantCompactIn"
+							}
+						}
+					}
+				}
 			}
 		},
-		"/orders": {
+		"/menus/{menuId}/orders": {
 			"post": {
 				"operationId": "CreateOrder",
 				"responses": {
@@ -2918,26 +4441,506 @@
 								}
 							}
 						}
+					},
+					"404": {
+						"description": "4043 ItemNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ItemNotFound"
+								}
+							}
+						}
 					}
 				},
+				"description": "Creates a new order for a specific menu.\r\n\r\nAccessible to restaurant customers.",
 				"tags": [
 					"Order"
 				],
 				"security": [
 					{
 						"": [
-							"RESTAURANT_CUSTOMER",
-							"RESTAURANT_OWNER"
+							"RESTAURANT_CUSTOMER"
 						]
 					}
 				],
-				"parameters": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
 				"requestBody": {
 					"required": true,
 					"content": {
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/CreateOrderCompactIn"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "GetOrders",
+				"responses": {
+					"200": {
+						"description": "All the menu orders retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/OrderCompleteOut"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieves all orders for a specific menu.",
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					},
+					{
+						"in": "query",
+						"name": "skip",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/Int"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/Int"
+						}
+					},
+					{
+						"description": "Filters orders based on completion status.\r\n\r\nSet to `false` to retrieve only ongoing (not completed) orders.\r\n\r\nDefaults to `true`, which returns all orders.",
+						"in": "query",
+						"name": "isCompleted",
+						"required": false,
+						"schema": {
+							"type": "boolean"
+						}
+					}
+				]
+			},
+			"patch": {
+				"operationId": "DeleteOrders",
+				"responses": {
+					"204": {
+						"description": "Orders deleted successfully. It doesn't retrieve anything.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Deletes multiple orders from a menu.",
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"items": {
+									"$ref": "#/components/schemas/UUID"
+								},
+								"type": "array"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/menus/{menuId}/orders/by-owner": {
+			"post": {
+				"operationId": "CreateOrderByOwner",
+				"responses": {
+					"201": {
+						"description": "Order created successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrderCompleteOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4043 ItemNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ItemNotFound"
+								}
+							}
+						}
+					}
+				},
+				"description": "Creates a new order for a specific menu.\r\n\r\nAccessible to restaurant owners.",
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateOrderCompleteIn"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/branches/{branchId}/orders": {
+			"get": {
+				"operationId": "GetAllOrders",
+				"responses": {
+					"200": {
+						"description": "All the branch orders retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/OrderCompleteOut"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieves all orders for a specific branch (all its menus's orders).",
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "branchId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					},
+					{
+						"in": "query",
+						"name": "skip",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/Int"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/Int"
+						}
+					},
+					{
+						"description": "Filters orders based on completion status.\r\n\r\nSet to `false` to retrieve only ongoing (not completed) orders.\r\n\r\nDefaults to `true`, which returns all orders.",
+						"in": "query",
+						"name": "isCompleted",
+						"required": false,
+						"schema": {
+							"type": "boolean"
+						}
+					}
+				]
+			}
+		},
+		"/customer/orders": {
+			"get": {
+				"operationId": "GetRecentlyOrders",
+				"responses": {
+					"200": {
+						"description": "All the menu orders retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/OrderCompleteOut"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieves the current customer's recently created orders.",
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_CUSTOMER"
+						]
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/menus/{menuId}/orders/{orderId}": {
+			"patch": {
+				"operationId": "UpdateOrderStatus",
+				"responses": {
+					"200": {
+						"description": "All the menu orders retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Updates the status of a specific order within a menu.",
+				"tags": [
+					"Order"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					},
+					{
+						"in": "path",
+						"name": "orderId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"status": {
+										"$ref": "#/components/schemas/OrderStatus"
+									}
+								},
+								"required": [
+									"status"
+								],
+								"type": "object"
 							}
 						}
 					}
@@ -3029,7 +5032,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/CreateMenuCompleteOut"
+									"$ref": "#/components/schemas/MenuCompactOut"
 								}
 							}
 						}
@@ -3087,6 +5090,77 @@
 						}
 					}
 				}
+			}
+		},
+		"/menus/branch/{branchId}": {
+			"get": {
+				"operationId": "GetAllMenus",
+				"responses": {
+					"200": {
+						"description": "Menus are retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/MenuCompactOut"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4048 MenuNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuNotFound"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieves all branch menus.",
+				"tags": [
+					"Menu"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "branchId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
 			}
 		},
 		"/menus/{menuId}": {
@@ -3292,7 +5366,7 @@
 						}
 					},
 					"409": {
-						"description": "ConstraintsDatabaseError",
+						"description": "ConstraintsDatabaseError -> A cylinder with the same provided days are already exists.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -3439,6 +5513,16 @@
 							}
 						}
 					},
+					"400": {
+						"description": "All item IDs must belong to the specified category.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuchiError"
+								}
+							}
+						}
+					},
 					"401": {
 						"description": "Unauthorized user.",
 						"content": {
@@ -3459,8 +5543,18 @@
 							}
 						}
 					},
+					"404": {
+						"description": "4048 MenuNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuNotFound"
+								}
+							}
+						}
+					},
 					"409": {
-						"description": "ConstraintsDatabaseError",
+						"description": "ConstraintsDatabaseError -> A menu category with the same name already exists within the specified cylinder.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -3527,7 +5621,7 @@
 						}
 					},
 					"400": {
-						"description": "All menu item IDs must be in the request.",
+						"description": "Some item IDs are invalid or do not belong to the menu.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -3899,6 +5993,136 @@
 				]
 			}
 		},
+		"/menus/{menuId}/preview": {
+			"get": {
+				"operationId": "GetMenuPreview",
+				"responses": {
+					"200": {
+						"description": "Menu preview is retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OwnerPreviewCompleteOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4048 MenuNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuNotFound"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieves a menu preview by its id.",
+				"tags": [
+					"Menu"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
+			}
+		},
+		"/menus/{menuId}/preview/customer": {
+			"get": {
+				"operationId": "GetCustomerMenuPreview",
+				"responses": {
+					"200": {
+						"description": "Menu preview is retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CustomerPreviewCompleteOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4048 MenuNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuNotFound"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieves a menu preview by its id for customer.\r\n\r\nPublicly accessible. No authentication required.",
+				"tags": [
+					"Menu"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
+			}
+		},
 		"/category-names": {
 			"post": {
 				"operationId": "CreateCategoryName",
@@ -3934,7 +6158,7 @@
 						}
 					},
 					"409": {
-						"description": "ConstraintsDatabaseError",
+						"description": "ConstraintsDatabaseError -> A category name with the provided name already exists.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -4023,6 +6247,499 @@
 				"parameters": []
 			}
 		},
+		"/branches": {
+			"post": {
+				"operationId": "CreateBranch",
+				"responses": {
+					"201": {
+						"description": "Branch created successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CreateBranchCompleteOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4041 RestaurantNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RestaurantNotFound"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "ConstraintsDatabaseError -> A branch with the provided displayName already exists.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ConstraintsDatabaseError"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "4229 BranchValidationError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BranchValidationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Create a new branch.",
+				"tags": [
+					"Branch"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateBranchCompactIn"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/branches/{branchId}": {
+			"get": {
+				"operationId": "GetBranch",
+				"responses": {
+					"200": {
+						"description": "Branch retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BranchCompletePlusOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4049 BranchNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BranchNotFound"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieves a branch by its id.",
+				"tags": [
+					"Branch"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "branchId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
+			},
+			"patch": {
+				"operationId": "UpdateBranch",
+				"responses": {
+					"204": {
+						"description": "Branch updated successfully. It doesn't retrieve anything.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "ConstraintsDatabaseError -> A branch with the provided displayName already exists.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ConstraintsDatabaseError"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "4229 BranchValidationError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BranchValidationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Updates a branch.",
+				"tags": [
+					"Branch"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "branchId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateBranchCompactIn"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/branches/by-slug/{slug}": {
+			"get": {
+				"operationId": "GetBranchBySlug",
+				"responses": {
+					"200": {
+						"description": "Branch retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"$ref": "#/components/schemas/BranchCompletePlusOut"
+										},
+										{}
+									]
+								}
+							}
+						}
+					},
+					"302": {
+						"description": ""
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4049 BranchNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BranchNotFound"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieves a branch by its slug.\r\n\r\nIt redirects to the [GET /menus/{menuId}/preview/customer](#/Menu/GetCustomerMenuPreview) if our branch has only one menu.\r\n\r\nPublicly accessible. No authentication required.",
+				"tags": [
+					"Branch"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "slug",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/branches/{branchId}/address": {
+			"post": {
+				"operationId": "CreateOrUpdateAddress",
+				"responses": {
+					"201": {
+						"description": "Address created successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/AddressCompleteOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4049 BranchNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BranchNotFound"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "42210 AddressValidationError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/AddressValidationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Add an address for a branch. Overwrite if it called twice.",
+				"tags": [
+					"Branch"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "branchId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/AddressCompactIn"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/branches/{branchId}/opening-times": {
+			"post": {
+				"operationId": "CreateOrUpdateOpeningTimes",
+				"responses": {
+					"201": {
+						"description": "Opening times created successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OpeningTimesCompleteOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4049 BranchNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BranchNotFound"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "42211 OpeningTimesValidationError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OpeningTimesValidationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Add an opening times for a branch. Overwrite if it called twice.",
+				"tags": [
+					"Branch"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "branchId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/OpeningTimesCompactIn"
+							}
+						}
+					}
+				}
+			}
+		},
 		"/backlog/{backlogId}/items": {
 			"post": {
 				"operationId": "CreateItem",
@@ -4078,7 +6795,7 @@
 						}
 					}
 				},
-				"description": "Creates a new item in a backlog.",
+				"description": "Creates a new backlog item and a category (if needed), using an existing category name.",
 				"tags": [
 					"Backlog"
 				],
@@ -4417,7 +7134,7 @@
 						}
 					},
 					"400": {
-						"description": "All item IDs must be in the request.",
+						"description": "Some item IDs are invalid or do not belong to the backlog.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -4499,7 +7216,7 @@
 						}
 					},
 					"400": {
-						"description": "All item IDs must be in the request.",
+						"description": "Some item IDs are invalid or do not belong to the backlog.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -4559,6 +7276,84 @@
 									"$ref": "#/components/schemas/UUID"
 								},
 								"type": "array"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/backlog/{backlogId}/categories": {
+			"post": {
+				"operationId": "CreateCategory",
+				"responses": {
+					"201": {
+						"description": "Category created successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CategoryCompactOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "ConstraintsDatabaseError -> This category name is already used in this backlog.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ConstraintsDatabaseError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Creates a new backlog. Alternatively, creating an item will automatically create its category (if needed).",
+				"tags": [
+					"Backlog"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "backlogId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateCategoryCompactIn"
 							}
 						}
 					}
@@ -4717,6 +7512,67 @@
 				]
 			}
 		},
+		"/backlog/{backlogId}/category-names": {
+			"get": {
+				"operationId": "GetAllCategoryNames",
+				"responses": {
+					"200": {
+						"description": "All category names retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/CategoryNameCompleteOut"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieves all category names used in the specific backlog.",
+				"tags": [
+					"Backlog"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "backlogId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
+			}
+		},
 		"/auth/res-signup": {
 			"post": {
 				"operationId": "RestaurantOwnerSignup",
@@ -4732,7 +7588,7 @@
 						}
 					},
 					"409": {
-						"description": "ConstraintsDatabaseError",
+						"description": "ConstraintsDatabaseError -> A user with the provided credentials already exists.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -4920,6 +7776,10 @@
 		{
 			"name": "Restaurant",
 			"description": "Restaurant operations"
+		},
+		{
+			"name": "Branch",
+			"description": "Branch management"
 		},
 		{
 			"name": "Backlog",

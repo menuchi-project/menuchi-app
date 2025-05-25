@@ -48,7 +48,7 @@ export class CylinderNotFound extends NotFoundError {
 
 export class CategoryNotFound extends NotFoundError {
   constructor() {
-    super('Category with the given id not found', 404, 4048);
+    super('Category with the given id not found', 404, 40412);
   }
 }
 

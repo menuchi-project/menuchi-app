@@ -24,7 +24,7 @@ export class AuthController extends BaseController {
   /**
    * Registers a new restaurant owner.
    */
-  @Response<ConstraintsDatabaseError>(409, 'ConstraintsDatabaseError')
+  @Response<ConstraintsDatabaseError>(409, 'ConstraintsDatabaseError -> A user with the provided credentials already exists.')
   @Response<UserValidationError>(422, '4225 UserValidationError')
   @SuccessResponse(201, 'User signed up successfully.')
   @Post('/res-signup')
