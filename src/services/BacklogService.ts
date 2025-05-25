@@ -402,14 +402,18 @@ class BacklogService {
         }
       },
       include: {
-        categories: true
+        categories: {
+          where: {
+            backlogId
+          }
+        }
       }
     });
 
     return categoryNames.map(cn => ({
       ...cn,
       categoryId: cn.categories[0].id,
-      category: undefined
+      categories: undefined
     }));
   }
 }
