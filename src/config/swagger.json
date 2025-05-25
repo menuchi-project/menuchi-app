@@ -576,7 +576,7 @@
 				"type": "boolean",
 				"example": true
 			},
-			"BranchCompleteOut": {
+			"BranchCompletePlusOut": {
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/UUID"
@@ -762,7 +762,7 @@
 					},
 					"branches": {
 						"items": {
-							"$ref": "#/components/schemas/BranchCompleteOut"
+							"$ref": "#/components/schemas/BranchCompletePlusOut"
 						},
 						"type": "array",
 						"nullable": true
@@ -2536,7 +2536,7 @@
 				],
 				"type": "string"
 			},
-			"BranchCompactOut": {
+			"BranchCompleteOut": {
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/UUID"
@@ -2723,7 +2723,7 @@
 					"branch": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/BranchCompactOut"
+								"$ref": "#/components/schemas/BranchCompleteOut"
 							}
 						],
 						"nullable": true
@@ -6345,7 +6345,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/BranchCompleteOut"
+									"$ref": "#/components/schemas/BranchCompletePlusOut"
 								}
 							}
 						}
@@ -6505,7 +6505,7 @@
 								"schema": {
 									"anyOf": [
 										{
-											"$ref": "#/components/schemas/BranchCompleteOut"
+											"$ref": "#/components/schemas/BranchCompletePlusOut"
 										},
 										{}
 									]
@@ -6547,7 +6547,7 @@
 						}
 					}
 				},
-				"description": "Retrieves a branch by its slug.\r\n\r\nIt redirects to the menu customer preview if our branch has only one menu.\r\n\r\nPublicly accessible. No authentication required.",
+				"description": "Retrieves a branch by its slug.\r\n\r\nIt redirects to the [GET /menus/{menuId}/preview/customer](#/Menu/GetCustomerMenuPreview) if our branch has only one menu.\r\n\r\nPublicly accessible. No authentication required.",
 				"tags": [
 					"Branch"
 				],

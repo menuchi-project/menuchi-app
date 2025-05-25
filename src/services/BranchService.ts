@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import prismaClient from '../db/prisma';
 import { UUID } from '../types/TypeAliases';
 import { BranchNotFound, RestaurantNotFound } from '../exceptions/NotFoundError';
-import { AddressCompactIn, AddressCompleteOut, BranchBySlugCompleteOut, BranchCompleteOut, CreateBranchCompactIn, CreateBranchCompleteOut, OpeningTimesCompactIn, OpeningTimesCompleteOut, UpdateBranchCompactIn } from '../types/RestaurantTypes';
+import { AddressCompactIn, AddressCompleteOut, BranchBySlugCompleteOut, BranchCompletePlusOut, CreateBranchCompactIn, CreateBranchCompleteOut, OpeningTimesCompactIn, OpeningTimesCompleteOut, UpdateBranchCompactIn } from '../types/RestaurantTypes';
 
 class BranchService {
   constructor(private prisma: PrismaClient = prismaClient) {}
@@ -25,7 +25,7 @@ class BranchService {
     });
   }
 
-  async getBranch(branchId: UUID): Promise<BranchCompleteOut | never> {
+  async getBranch(branchId: UUID): Promise<BranchCompletePlusOut | never> {
     return this.prisma.branch.findUniqueOrThrow({
       where: {
         id: branchId

@@ -23,7 +23,7 @@ export interface RestaurantCompactIn {
 export interface RestaurantCompleteOut extends CompleteOut {
   name: DefaultString | null;
   displayName: Slug| null;
-  branches?: BranchCompleteOut[] | null;
+  branches?: BranchCompletePlusOut[] | null;
   slang?: DefaultString | null;
   instagram?: DefaultString | null;
   telegram?: DefaultString | null;
@@ -52,7 +52,7 @@ export interface UpdateRestaurantCompactIn {
   logoKey?: LongString | null;
 }
 
-export interface CreateBranchCompleteOut extends BranchCompactOut {
+export interface CreateBranchCompleteOut extends BranchCompleteOut {
   restaurantId: UUID | null;
   name?: DefaultString | null;
   displayName?: Slug | null;
@@ -73,7 +73,7 @@ export interface CreateBranchCompleteOut extends BranchCompactOut {
   backlog: BacklogCompactOut | null;
 }
 
-export interface BranchCompactOut extends CompleteOut {
+export interface BranchCompleteOut extends CompleteOut {
   restaurantId: UUID | null;
   name?: DefaultString | null;
   displayName?: Slug | null;
@@ -93,13 +93,13 @@ export interface BranchCompactOut extends CompleteOut {
   eitaa?: DefaultString | null;
 }
 
-export interface BranchCompleteOut extends BranchCompactOut {
+export interface BranchCompletePlusOut extends BranchCompleteOut {
   backlog: BacklogCompactOut | null;
   address: AddressCompleteOut | null;
   openingTimes: OpeningTimesCompleteOut | null;
 }
 
-export interface BranchBySlugCompleteOut extends BranchCompleteOut {
+export interface BranchBySlugCompleteOut extends BranchCompletePlusOut {
   menus: MenuCompactOut[] | null;
 }
 

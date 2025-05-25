@@ -10,6 +10,10 @@ export interface CategoryNameCompleteOut extends CompleteOut {
   name: DefaultString | null;
 }
 
+export interface CategoryNameCompletePlusOut extends CategoryNameCompleteOut {
+  categoryId: UUID;
+}
+
 export interface CreateCategoryCompactIn {
   categoryNameId: UUID;
 }

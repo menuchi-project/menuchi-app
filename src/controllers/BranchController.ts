@@ -5,12 +5,11 @@ import { ForbiddenError, UnauthorizedError } from "../exceptions/AuthError";
 import { PermissionScope, RolesEnum, SessionUpdateScope } from "../types/Enums";
 import { UUID } from "../types/TypeAliases";
 import BranchService from "../services/BranchService";
-import { AddressCompactIn, AddressCompleteOut, BranchCompleteOut, CreateBranchCompactIn, CreateBranchCompleteOut, OpeningTimesCompactIn, OpeningTimesCompleteOut, UpdateBranchCompactIn } from "../types/RestaurantTypes";
+import { AddressCompactIn, AddressCompleteOut, BranchCompletePlusOut, CreateBranchCompactIn, CreateBranchCompleteOut, OpeningTimesCompactIn, OpeningTimesCompleteOut, UpdateBranchCompactIn } from "../types/RestaurantTypes";
 import { BranchNotFound, RestaurantNotFound } from "../exceptions/NotFoundError";
 import { AddressValidationError, BranchValidationError, OpeningTimesValidationError } from "../exceptions/ValidationError";
 import { BranchUpdateSession } from "../types/AuthTypes";
 import { ConstraintsDatabaseError } from "../exceptions/DatabaseError";
-import { CustomerPreviewCompleteOut } from "../types/MenuTypes";
 
 @Route('/branches')
 @Tags('Branch')
@@ -58,7 +57,7 @@ export class BranchController extends BaseController {
   async getBranch(
     @Path() branchId: UUID,
     @Request() req?: express.Request
-  ): Promise<BranchCompleteOut> {
+  ): Promise<BranchCompletePlusOut> {
     this.checkPermission(req?.session.user, PermissionScope.Branch, branchId);
     return BranchService.getBranch(branchId);
   }
@@ -66,7 +65,7 @@ export class BranchController extends BaseController {
   /**
    * Retrieves a branch by its slug.
    * 
-   * It redirects to the menu customer preview if our branch has only one menu.
+   * It redirects to the [GET /menus/{menuId}/preview/customer](#/Menu/GetCustomerMenuPreview) if our branch has only one menu.
    * 
    * Publicly accessible. No authentication required.
    */
@@ -79,7 +78,7 @@ export class BranchController extends BaseController {
   async getBranchBySlug(
     @Path() slug: string,
     @Res() redirect: TsoaResponse<302, void>
-  ): Promise<BranchCompleteOut | void> {
+  ): Promise<BranchCompletePlusOut | void> {
     const branch = await BranchService.getBranchBySlug(slug);
 
     if (branch.menus?.length! === 1) {

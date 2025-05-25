@@ -390,15 +390,24 @@ class BacklogService {
   }
 
   async getAllCategoryNames(backlogId: UUID): Promise<CategoryNameCompleteOut[]> {
-    return this.prisma.categoryName.findMany({
+    const categoryNames = await this.prisma.categoryName.findMany({
       where: {
         categories: {
           some: {
             backlogId
           }
         }
+      },
+      include: {
+        categories: true
       }
     });
+
+    return categoryNames.map(cn => ({
+      ...cn,
+      categoryId: cn.categories[0].id,
+      category: undefined
+    }));
   }
 }
 
