@@ -422,9 +422,19 @@ class MenuService {
                     categoryName: true
                   }
                 },
-                items: true
+                items: {
+                  orderBy: {
+                    positionInMenuCategory: 'asc'
+                  }
+                }
+              },
+              orderBy: {
+                positionInCylinder: 'asc'
               }
             }
+          },
+          orderBy: {
+            positionInMenu: 'asc'
           }
         }
       }
@@ -481,14 +491,24 @@ class MenuService {
           include: {
             menuCategories: {
               include: {
-                items: true,
+                items: {
+                  orderBy: {
+                    positionInMenuCategory: 'asc'
+                  }
+                },
                 category: {
                   include: {
                     categoryName: true
-                  }
+                  },
                 }
+              },
+              orderBy: {
+                positionInCylinder: 'asc'
               }
             }
+          },
+          orderBy: {
+            positionInMenu: 'asc'
           }
         }
       }
@@ -534,14 +554,24 @@ class MenuService {
           include: {
             menuCategories: {
               include: {
-                items: true,
+                items: {
+                  orderBy: {
+                    positionInMenuCategory: 'asc'
+                  }
+                },
                 category: {
                   include: {
                     categoryName: true
                   }
                 }
+              },
+              orderBy: {
+                positionInCylinder: 'asc'
               }
             }
+          },
+          orderBy: {
+            positionInMenu: 'asc'
           }
         }
       }
