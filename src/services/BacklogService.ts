@@ -146,13 +146,16 @@ class BacklogService {
                   deletedAt: null,
                 },
                 orderBy: {
-                  positionInCategory: 'asc',
-                },
+                  positionInCategory: 'asc'
+                }
               },
             },
             omit: {
               categoryNameId: true,
             },
+            orderBy: {
+              positionInBacklog: 'asc'
+            }
           },
         },
       })
