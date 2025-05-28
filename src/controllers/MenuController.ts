@@ -164,7 +164,6 @@ export class MenuController extends BaseController {
    */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
-  @Response<CategoryNotFound>(404, '40412 CategoryNotFound')
   @Response<CylinderNotFound>(404, '4046 CylinderNotFound')
   @Response<MenuNotFound>(404, '4048 MenuNotFound')
   @Response<MenuchiError>(400, 'All item IDs must belong to the specified category.')
@@ -176,9 +175,9 @@ export class MenuController extends BaseController {
   async createMenuCategory(
     @Path() menuId: UUID,
     @Body() body: MenuCategoryCompactIn,
-    @Request() req: express.Request
+    @Request() req?: express.Request
   ): Promise<CreateMenuCategoryCompleteOut> {
-    this.checkPermission(req.session.user, PermissionScope.Menu, menuId);
+    this.checkPermission(req?.session.user, PermissionScope.Menu, menuId);
 
     if (body.items.length < 1) throw new MenuCategoryValidationError();
 

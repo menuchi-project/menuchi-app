@@ -18,7 +18,7 @@ class MenuService {
         branch: true
       }
     }).catch((error: Error) => {
-      if (error.message.includes('menus_branch_id_fkey (index)'))
+      if (error.message.includes('menus_branch_id_fkey'))
         throw new BranchNotFound();
       throw error;
     });
@@ -127,10 +127,6 @@ class MenuService {
             menuId
           }
         }
-      }).catch((error: Error) => {
-        if (error.message.includes('cylinders_menu_id_fkey'))
-          throw new MenuNotFound();
-        throw error;
       });
 
       const positionInCylinder = (maxPositionInCylinder._max.positionInCylinder ?? 0) + 1;
@@ -150,7 +146,7 @@ class MenuService {
         }
       }).catch((error: Error) => {
           if (error.message.includes('not found'))
-            throw new CategoryNotFound();
+            throw new MenuNotFound();
           throw error;
       });
 
@@ -162,8 +158,6 @@ class MenuService {
           }
         }
       }).catch((error: Error) => {
-        if (error.message.includes('menu_categories_menu_id_fkey'))
-          throw new MenuNotFound();
         if (error.message.includes('menu_categories_cylinder_id_fkey'))
           throw new CylinderNotFound();
         if (error.message.includes('menu_categories_category_id_fkey'))
