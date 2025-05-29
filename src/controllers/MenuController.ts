@@ -265,12 +265,12 @@ export class MenuController extends BaseController {
   @SuccessResponse(204, 'Menu Items deleted successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Delete('/{menuId}/items') 
-  async deleteMenuItem(
+  async deleteMenuItems(
     @Path() menuId: UUID,
     @Body() body: UUID[],
-    @Request() req: express.Request
+    @Request() req?: express.Request
   ): Promise<null> {
-    this.checkPermission(req.session.user, PermissionScope.Menu, menuId);
+    this.checkPermission(req?.session.user, PermissionScope.Menu, menuId);
     await MenuService.deleteMenuItems(menuId, body);
     return null;
   }

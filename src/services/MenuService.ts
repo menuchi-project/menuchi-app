@@ -178,6 +178,17 @@ class MenuService {
     });
   }
 
+  async getMenuCategory(menuCategoryId: UUID) {
+    return this.prisma.menuCategory.findUniqueOrThrow({
+      where: {
+        id: menuCategoryId
+      },
+      include: {
+        items: true
+      }
+    });
+  }
+
   async reorderMenuCategories(menuId: UUID, menuCategoriesId: UUID[]) {
     await this.isValidMenuCategoriesId(menuId, menuCategoriesId);
     return this.prisma.$executeRaw`

@@ -309,4 +309,23 @@ describe('PATCH /menus/{menuId}/items/{menuItemId}/hide/{isHide}', () => {
   });
 });
 
+describe('DELETE /menus/{menuId}/items', () => {
+  test('should delete items in menu successfully.', async () => {
+    const { id: categoryNameId } = await categoryNameController.createCategoryName(categoryNameObject);
+    const { id: backlogId, branchId } = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.backlog!;
+    const { id: itemId, categoryId } = await backlogController.createItem(backlogId!, { categoryNameId: categoryNameId, ...itemObject });
+    const { id: menuId } = await menuController.createMenu({ ...menuObject, branchId: branchId! });
+    const { id: cylinderId } = await menuController.createCylinder(menuId, cylinderObject);
+    const { id: menuCategoryId } = await menuController.createMenuCategory(menuId, {
+      categoryId: categoryId!,
+      cylinderId,
+      items: [itemId]
+    });
+    await menuController.deleteMenuItems(menuId, [itemId]);
+    const menuCategory = await MenuService.getMenuCategory(menuCategoryId);
+
+    expect(menuCategory.items.some(item => item.id === itemId)).toBe(false);
+  });
+});
+
 // TODO: test previews
