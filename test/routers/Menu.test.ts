@@ -156,7 +156,7 @@ describe('PATCH /menus/{menuId}/cylinders', () =>{
 });
 
 describe('POST /menus/{menuId}/categories', () => {
-  test('should create menu category successfully', async () => {
+  test('should create menu category successfully.', async () => {
     const { id: categoryNameId } = await categoryNameController.createCategoryName(categoryNameObject);
     const { id: backlogId, branchId } = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.backlog!;
     const item = await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
@@ -254,6 +254,38 @@ describe('POST /menus/{menuId}/categories', () => {
 
     await expect(promise).rejects.toThrowError(MenuchiError);
     await expect(promise).rejects.toThrow('All item IDs must belong to the specified category.');
+  });
+});
+
+describe('PATCH /menus/{menuId}/categories', () => {
+  test('should update categories order in menu successfully and return number of updated categories.', async () => {
+    const { id: categoryNameId1 } = await categoryNameController.createCategoryName(categoryNameObject);
+    const { id: categoryNameId2 } = await categoryNameController.createCategoryName(returnCategoryName());
+    const { id: categoryNameId3 } = await categoryNameController.createCategoryName(returnCategoryName());
+    const { id: backlogId, branchId } = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.backlog!;
+    const item1 = await backlogController.createItem(backlogId!, { categoryNameId: categoryNameId1, ...itemObject });
+    const item2 = await backlogController.createItem(backlogId!, { categoryNameId: categoryNameId2, ...itemObject });
+    const item3 = await backlogController.createItem(backlogId!, { categoryNameId: categoryNameId3, ...itemObject });
+    const { id: menuId } = await menuController.createMenu({ ...menuObject, branchId: branchId! });
+    const { id: cylinderId } = await menuController.createCylinder(menuId, cylinderObject);
+    const { id: menuCategoryId1 } = await menuController.createMenuCategory(menuId, {
+      categoryId: item1.categoryId!,
+      cylinderId,
+      items: [item1.id]
+    });
+    const { id: menuCategoryId2 } = await menuController.createMenuCategory(menuId, {
+      categoryId: item2.categoryId!,
+      cylinderId,
+      items: [item2.id]
+    });
+    const { id: menuCategoryId3 } = await menuController.createMenuCategory(menuId, {
+      categoryId: item3.categoryId!,
+      cylinderId,
+      items: [item3.id]
+    });
+    const promise = menuController.reorderMenuCategories(menuId, [menuCategoryId3, menuCategoryId2, menuCategoryId1]);
+
+    await expect(promise).resolves.toBe(3);
   });
 });
 
