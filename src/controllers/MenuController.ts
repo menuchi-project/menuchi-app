@@ -88,9 +88,9 @@ export class MenuController extends BaseController {
   @Get('/{menuId}')
   public async getMenu(
     @Path() menuId: UUID,
-    @Request() req: express.Request
+    @Request() req?: express.Request
   ): Promise<MenuCompletePlusOut> {
-    this.checkPermission(req.session.user, PermissionScope.Menu, menuId);
+    this.checkPermission(req?.session.user, PermissionScope.Menu, menuId);
     return MenuService.getMenu(menuId);
   }
 

@@ -69,6 +69,25 @@ describe('GET /menus/branch/{branchId}', () => {
   });
 });
 
+describe('GET /menus/{menuId}', () => {
+  // TODO: I should create its details and check them.
+  test('should retrieved menu successfully.', async () => {
+    const branchId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.id!;
+    const menu = await menuController.createMenu({ ...menuObject, branchId });
+    const promise = menuController.getMenu(menu.id);
+
+    await expect(promise).resolves.toMatchObject(menu);
+  });
+
+  test('should rejects menu with MenuNotFound error.', async () => {
+    const branchId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.id!;
+    await menuController.createMenu({ ...menuObject, branchId });
+    const promise = menuController.getMenu(randomUUID());
+
+    await expect(promise).rejects.toThrowError(MenuNotFound);
+  });
+});
+
 describe('POST /menus/{menuId}/cylinders', () => {
   test('should create cylinder successfully.', async () => {
     const branchId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.id!;
@@ -205,3 +224,5 @@ describe('POST /menus/{menuId}/categories', () => {
     await expect(promise).rejects.toThrow('All item IDs must belong to the specified category.');
   });
 });
+
+// TODO: test previews
