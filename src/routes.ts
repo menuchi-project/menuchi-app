@@ -488,6 +488,7 @@ const models: TsoaRoute.Models = {
             "picUrl": {"dataType":"union","subSchemas":[{"ref":"URL"},{"dataType":"enum","enums":[null]}]},
             "positionInItemsList": {"dataType":"union","subSchemas":[{"ref":"Int"},{"dataType":"enum","enums":[null]}]},
             "positionInCategory": {"dataType":"union","subSchemas":[{"ref":"Int"},{"dataType":"enum","enums":[null]}]},
+            "isActive": {"dataType":"union","subSchemas":[{"ref":"Boolean"},{"dataType":"enum","enums":[null]}]},
             "orderCount": {"dataType":"union","subSchemas":[{"ref":"Int"},{"dataType":"enum","enums":[null]}]},
         },
         "additionalProperties": false,
@@ -535,7 +536,7 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "MenuCompactOut": {
+    "CreateMenuCompleteOut": {
         "dataType": "refObject",
         "properties": {
             "id": {"ref":"UUID","required":true},
@@ -546,7 +547,6 @@ const models: TsoaRoute.Models = {
             "name": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}],"required":true},
             "favicon": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}],"required":true},
             "isPublished": {"dataType":"union","subSchemas":[{"ref":"Boolean"},{"dataType":"enum","enums":[null]}],"required":true},
-            "restaurantId": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
         },
         "additionalProperties": false,
     },
@@ -562,15 +562,18 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "MenuNotFound": {
+    "MenuCompleteOut": {
         "dataType": "refObject",
         "properties": {
-            "name": {"dataType":"string","required":true},
-            "message": {"dataType":"string","required":true},
-            "stack": {"dataType":"string"},
-            "status": {"dataType":"double","required":true},
-            "code": {"dataType":"double"},
-            "details": {"dataType":"array","array":{"dataType":"refObject","ref":"ErrorDetail"}},
+            "id": {"ref":"UUID","required":true},
+            "createdAt": {"dataType":"datetime","required":true},
+            "updatedAt": {"dataType":"datetime","required":true},
+            "deletedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}]},
+            "branchId": {"dataType":"union","subSchemas":[{"ref":"UUID"},{"dataType":"enum","enums":[null]}],"required":true},
+            "name": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}],"required":true},
+            "favicon": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}],"required":true},
+            "isPublished": {"dataType":"union","subSchemas":[{"ref":"Boolean"},{"dataType":"enum","enums":[null]}],"required":true},
+            "restaurantId": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
         },
         "additionalProperties": false,
     },
@@ -605,7 +608,7 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "MenuCompleteOut": {
+    "MenuCompletePlusOut": {
         "dataType": "refObject",
         "properties": {
             "id": {"ref":"UUID","required":true},
@@ -618,6 +621,19 @@ const models: TsoaRoute.Models = {
             "isPublished": {"dataType":"union","subSchemas":[{"ref":"Boolean"},{"dataType":"enum","enums":[null]}],"required":true},
             "restaurantId": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
             "cylinders": {"dataType":"union","subSchemas":[{"dataType":"array","array":{"dataType":"refObject","ref":"CylinderCompleteOut"}},{"dataType":"enum","enums":[null]}],"required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "MenuNotFound": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "message": {"dataType":"string","required":true},
+            "stack": {"dataType":"string"},
+            "status": {"dataType":"double","required":true},
+            "code": {"dataType":"double"},
+            "details": {"dataType":"array","array":{"dataType":"refObject","ref":"ErrorDetail"}},
         },
         "additionalProperties": false,
     },
@@ -767,7 +783,7 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "OwnerPreviewCompleteOut": {
+    "MenuPreviewCompleteOut": {
         "dataType": "refObject",
         "properties": {
             "sat": {"dataType":"array","array":{"dataType":"refObject","ref":"MenuCategoryCompleteOut"}},
@@ -818,7 +834,7 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "CustomerPreviewCompleteOut": {
+    "MenuViewCompleteOut": {
         "dataType": "refObject",
         "properties": {
             "id": {"ref":"UUID","required":true},
@@ -1689,8 +1705,8 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsMenuController_getBacklog: Record<string, TsoaRoute.ParameterSchema> = {
                 backlogId: {"in":"path","name":"backlogId","required":true,"ref":"UUID"},
-                req: {"in":"request","name":"req","required":true,"dataType":"object"},
                 search: {"in":"query","name":"search","ref":"DefaultString"},
+                req: {"in":"request","name":"req","dataType":"object"},
         };
         app.get('/menus/backlog/:backlogId',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
@@ -1722,7 +1738,7 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsMenuController_createMenu: Record<string, TsoaRoute.ParameterSchema> = {
                 body: {"in":"body","name":"body","required":true,"ref":"CreateMenuCompactIn"},
-                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                req: {"in":"request","name":"req","dataType":"object"},
         };
         app.post('/menus',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
@@ -1754,7 +1770,7 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsMenuController_getAllMenus: Record<string, TsoaRoute.ParameterSchema> = {
                 branchId: {"in":"path","name":"branchId","required":true,"ref":"UUID"},
-                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                req: {"in":"request","name":"req","dataType":"object"},
         };
         app.get('/menus/branch/:branchId',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
@@ -1786,7 +1802,7 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsMenuController_getMenu: Record<string, TsoaRoute.ParameterSchema> = {
                 menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
-                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                req: {"in":"request","name":"req","dataType":"object"},
         };
         app.get('/menus/:menuId',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
@@ -1819,7 +1835,7 @@ export function RegisterRoutes(app: Router) {
         const argsMenuController_updateMenu: Record<string, TsoaRoute.ParameterSchema> = {
                 menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"ref":"MenuCompactIn"},
-                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                req: {"in":"request","name":"req","dataType":"object"},
         };
         app.patch('/menus/:menuId',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
@@ -1852,7 +1868,7 @@ export function RegisterRoutes(app: Router) {
         const argsMenuController_createCylinder: Record<string, TsoaRoute.ParameterSchema> = {
                 menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"ref":"CylinderCompactIn"},
-                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                req: {"in":"request","name":"req","dataType":"object"},
         };
         app.post('/menus/:menuId/cylinders',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
@@ -1885,7 +1901,7 @@ export function RegisterRoutes(app: Router) {
         const argsMenuController_reorderCylinders: Record<string, TsoaRoute.ParameterSchema> = {
                 menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refAlias","ref":"UUID"}},
-                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                req: {"in":"request","name":"req","dataType":"object"},
         };
         app.patch('/menus/:menuId/cylinders',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
@@ -1918,7 +1934,7 @@ export function RegisterRoutes(app: Router) {
         const argsMenuController_createMenuCategory: Record<string, TsoaRoute.ParameterSchema> = {
                 menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"ref":"MenuCategoryCompactIn"},
-                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                req: {"in":"request","name":"req","dataType":"object"},
         };
         app.post('/menus/:menuId/categories',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
@@ -2017,7 +2033,7 @@ export function RegisterRoutes(app: Router) {
         const argsMenuController_reorderMenuCategories: Record<string, TsoaRoute.ParameterSchema> = {
                 menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refAlias","ref":"UUID"}},
-                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                req: {"in":"request","name":"req","dataType":"object"},
         };
         app.patch('/menus/:menuId/items',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
@@ -2051,7 +2067,7 @@ export function RegisterRoutes(app: Router) {
                 menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
                 menuItemId: {"in":"path","name":"menuItemId","required":true,"ref":"UUID"},
                 isHide: {"in":"path","name":"isHide","required":true,"dataType":"boolean"},
-                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                req: {"in":"request","name":"req","dataType":"object"},
         };
         app.patch('/menus/:menuId/items/:menuItemId/hide/:isHide',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
@@ -2081,28 +2097,28 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsMenuController_deleteMenuItem: Record<string, TsoaRoute.ParameterSchema> = {
+        const argsMenuController_deleteMenuItems: Record<string, TsoaRoute.ParameterSchema> = {
                 menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refAlias","ref":"UUID"}},
-                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                req: {"in":"request","name":"req","dataType":"object"},
         };
         app.delete('/menus/:menuId/items',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
             ...(fetchMiddlewares<RequestHandler>(MenuController)),
-            ...(fetchMiddlewares<RequestHandler>(MenuController.prototype.deleteMenuItem)),
+            ...(fetchMiddlewares<RequestHandler>(MenuController.prototype.deleteMenuItems)),
 
-            async function MenuController_deleteMenuItem(request: ExRequest, response: ExResponse, next: any) {
+            async function MenuController_deleteMenuItems(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsMenuController_deleteMenuItem, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsMenuController_deleteMenuItems, request, response });
 
                 const controller = new MenuController();
 
               await templateService.apiHandler({
-                methodName: 'deleteMenuItem',
+                methodName: 'deleteMenuItems',
                 controller,
                 response,
                 next,
@@ -2149,7 +2165,7 @@ export function RegisterRoutes(app: Router) {
         const argsMenuController_getCustomerMenuPreview: Record<string, TsoaRoute.ParameterSchema> = {
                 menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
         };
-        app.get('/menus/:menuId/preview/customer',
+        app.get('/menus/:menuId/view',
             ...(fetchMiddlewares<RequestHandler>(MenuController)),
             ...(fetchMiddlewares<RequestHandler>(MenuController.prototype.getCustomerMenuPreview)),
 

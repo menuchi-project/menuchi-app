@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import prismaClient from '../db/prisma';
 import { UUID } from '../types/TypeAliases';
-import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompactOut, MenuCompleteOut, CreateMenuCompactIn, OwnerPreviewCompactOut, OwnerPreviewCompleteOut, CustomerPreviewCompleteOut } from '../types/MenuTypes';
+import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, MenuCompletePlusOut, CreateMenuCompactIn, OwnerPreviewCompactOut, MenuPreviewCompleteOut, MenuViewCompleteOut as MenuViewCompleteOut } from '../types/MenuTypes';
 import MenuchiError from '../exceptions/MenuchiError';
 import { BranchNotFound, CategoryNotFound, CylinderNotFound, MenuNotFound } from '../exceptions/NotFoundError';
 import S3Service from './S3Service';
@@ -11,20 +11,19 @@ import { Days } from '../types/Enums';
 class MenuService {
   constructor(private prisma: PrismaClient = prismaClient) {}
 
-  async createMenu(body: CreateMenuCompactIn): Promise<MenuCompactOut | never> {
-    const newMenu = await this.prisma.menu.create({
+  async createMenu(body: CreateMenuCompactIn): Promise<MenuCompleteOut | never> {
+    const { branch, ...newMenu } = await this.prisma.menu.create({
       data: body,
       include: {
         branch: true
       }
     }).catch((error: Error) => {
-      if (error.message.includes('menus_branch_id_fkey (index)'))
+      if (error.message.includes('menus_branch_id_fkey'))
         throw new BranchNotFound();
       throw error;
     });
 
-    const restaurantId = newMenu.branch?.restaurantId;
-    newMenu.branch = null;
+    const restaurantId = branch?.restaurantId;
 
     return {
       ...newMenu,
@@ -56,7 +55,7 @@ class MenuService {
           menuId
         }
       }).catch((error: Error) => {
-        if (error.message.includes('cylinders_menu_id_fkey (index)'))
+        if (error.message.includes('cylinders_menu_id_fkey'))
           throw new MenuNotFound();
         throw error;
       });
@@ -70,7 +69,7 @@ class MenuService {
           positionInMenu
         }
       }).catch((error: Error) => {
-        if (error.message.includes('cylinders_menu_id_fkey (index)'))
+        if (error.message.includes('cylinders_menu_id_fkey'))
           throw new MenuNotFound();
         throw error;
       });
@@ -127,10 +126,6 @@ class MenuService {
             menuId
           }
         }
-      }).catch((error: Error) => {
-        if (error.message.includes('cylinders_menu_id_fkey'))
-          throw new MenuNotFound();
-        throw error;
       });
 
       const positionInCylinder = (maxPositionInCylinder._max.positionInCylinder ?? 0) + 1;
@@ -150,7 +145,7 @@ class MenuService {
         }
       }).catch((error: Error) => {
           if (error.message.includes('not found'))
-            throw new CategoryNotFound();
+            throw new MenuNotFound();
           throw error;
       });
 
@@ -162,8 +157,6 @@ class MenuService {
           }
         }
       }).catch((error: Error) => {
-        if (error.message.includes('menu_categories_menu_id_fkey'))
-          throw new MenuNotFound();
         if (error.message.includes('menu_categories_cylinder_id_fkey'))
           throw new CylinderNotFound();
         if (error.message.includes('menu_categories_category_id_fkey'))
@@ -181,6 +174,17 @@ class MenuService {
       `;
 
       return newMenuCategory;
+    });
+  }
+
+  async getMenuCategory(menuCategoryId: UUID) {
+    return this.prisma.menuCategory.findUniqueOrThrow({
+      where: {
+        id: menuCategoryId
+      },
+      include: {
+        items: true
+      }
     });
   }
 
@@ -398,7 +402,7 @@ class MenuService {
       };
   }
 
-  async getAllMenus(branchId: UUID): Promise<MenuCompactOut[]> {
+  async getAllMenus(branchId: UUID): Promise<MenuCompleteOut[]> {
     return this.prisma.menu.findMany({
       where: {
         branchId,
@@ -407,7 +411,7 @@ class MenuService {
     });
   }
 
-  async getMenu(menuId: UUID): Promise<MenuCompleteOut | never> {
+  async getMenu(menuId: UUID): Promise<MenuCompletePlusOut | never> {
     const menu = await this.prisma.menu.findUniqueOrThrow({
       where: {
         id: menuId
@@ -481,7 +485,20 @@ class MenuService {
     };
   }
 
-  async getMenuPreview(menuId: UUID): Promise<OwnerPreviewCompleteOut | never> {
+  async getCompactMenu(menuId: UUID): Promise<MenuCompleteOut | never> {
+    return this.prisma.menu.findUniqueOrThrow({
+      where: {
+        id: menuId
+      }
+    })
+    .catch((error: Error) => {
+      if (error.message.includes('not found'))
+        throw new MenuNotFound();
+      throw error;
+    });
+  }
+
+  async getMenuPreview(menuId: UUID): Promise<MenuPreviewCompleteOut | never> {
     const { cylinders, ...menu } = await this.prisma.menu.findUniqueOrThrow({
       where: {
         id: menuId
@@ -494,6 +511,9 @@ class MenuService {
                 items: {
                   orderBy: {
                     positionInMenuCategory: 'asc'
+                  },
+                  where: {
+                    isActive: true
                   }
                 },
                 category: {
@@ -538,7 +558,7 @@ class MenuService {
     };
   }
 
-  async getCustomerMenuPreview(menuId: UUID): Promise<CustomerPreviewCompleteOut | never> {
+  async getMenuView(menuId: UUID): Promise<MenuViewCompleteOut | never> {
     const { cylinders, ...menu } = await this.prisma.menu.findUniqueOrThrow({
       where: {
         id: menuId
@@ -557,6 +577,9 @@ class MenuService {
                 items: {
                   orderBy: {
                     positionInMenuCategory: 'asc'
+                  },
+                  where: {
+                    isActive: true
                   }
                 },
                 category: {

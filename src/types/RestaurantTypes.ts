@@ -1,6 +1,6 @@
 import { CompleteOut } from './BaseTypes';
 import { CategoryCompleteOut } from './CategoryTypes';
-import { MenuCompactOut, MenuCompleteOut } from './MenuTypes';
+import { MenuCompleteOut, MenuCompletePlusOut } from './MenuTypes';
 import { Boolean, DefaultString, LongString, Slug, TimePeriod, URL, UUID } from './TypeAliases';
 
 export interface RestaurantCompactIn {
@@ -100,7 +100,7 @@ export interface BranchCompletePlusOut extends BranchCompleteOut {
 }
 
 export interface BranchBySlugCompleteOut extends BranchCompletePlusOut {
-  menus: MenuCompactOut[] | null;
+  menus: MenuCompleteOut[] | null;
 }
 
 export interface CreateBranchCompactIn {
