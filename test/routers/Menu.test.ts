@@ -141,6 +141,20 @@ describe('POST /menus/{menuId}/cylinders', () => {
   });
 });
 
+describe('PATCH /menus/{menuId}/cylinders', () =>{
+  test('should update cylinders order in menu successfully and return number of updated cylinders.', async () => {
+    const branchId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.id!;
+    const { id: menuId } = await menuController.createMenu({ ...menuObject, branchId });
+    await menuController.createCylinder(menuId, cylinderObject);
+    const { id: cylinderId } = await menuController.createCylinder(menuId, cylinderObject);
+    const { id: cylinderId2 } = await menuController.createCylinder(menuId, { sat: true });
+    const { id: cylinderId3 } = await menuController.createCylinder(menuId, { sun: true });
+    const promise = menuController.reorderCylinders(menuId, [cylinderId3, cylinderId2, cylinderId]);
+
+    await expect(promise).resolves.toBe(3);
+  });
+});
+
 describe('POST /menus/{menuId}/categories', () => {
   test('should create menu category successfully', async () => {
     const { id: categoryNameId } = await categoryNameController.createCategoryName(categoryNameObject);

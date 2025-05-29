@@ -152,9 +152,9 @@ export class MenuController extends BaseController {
   async reorderCylinders(
     @Path() menuId: UUID,
     @Body() body: UUID[],
-    @Request() req: express.Request
+    @Request() req?: express.Request
   ): Promise<number> {
-    this.checkPermission(req.session.user, PermissionScope.Menu, menuId);
+    this.checkPermission(req?.session.user, PermissionScope.Menu, menuId);
     return MenuService.reorderCylinders(menuId, body);
   }
 
