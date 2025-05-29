@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import prismaClient from '../db/prisma';
 import { UUID } from '../types/TypeAliases';
-import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, MenuCompletePlusOut, CreateMenuCompactIn, OwnerPreviewCompactOut, OwnerPreviewCompleteOut, CustomerPreviewCompleteOut } from '../types/MenuTypes';
+import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, MenuCompletePlusOut, CreateMenuCompactIn, OwnerPreviewCompactOut, MenuPreviewCompleteOut, MenuViewCompleteOut as MenuViewCompleteOut } from '../types/MenuTypes';
 import MenuchiError from '../exceptions/MenuchiError';
 import { BranchNotFound, CategoryNotFound, CylinderNotFound, MenuNotFound } from '../exceptions/NotFoundError';
 import S3Service from './S3Service';
@@ -488,7 +488,7 @@ class MenuService {
     });
   }
 
-  async getMenuPreview(menuId: UUID): Promise<OwnerPreviewCompleteOut | never> {
+  async getMenuPreview(menuId: UUID): Promise<MenuPreviewCompleteOut | never> {
     const { cylinders, ...menu } = await this.prisma.menu.findUniqueOrThrow({
       where: {
         id: menuId
@@ -501,6 +501,9 @@ class MenuService {
                 items: {
                   orderBy: {
                     positionInMenuCategory: 'asc'
+                  },
+                  where: {
+                    isActive: true
                   }
                 },
                 category: {
@@ -545,7 +548,7 @@ class MenuService {
     };
   }
 
-  async getCustomerMenuPreview(menuId: UUID): Promise<CustomerPreviewCompleteOut | never> {
+  async getMenuView(menuId: UUID): Promise<MenuViewCompleteOut | never> {
     const { cylinders, ...menu } = await this.prisma.menu.findUniqueOrThrow({
       where: {
         id: menuId
@@ -564,6 +567,9 @@ class MenuService {
                 items: {
                   orderBy: {
                     positionInMenuCategory: 'asc'
+                  },
+                  where: {
+                    isActive: true
                   }
                 },
                 category: {

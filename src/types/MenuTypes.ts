@@ -73,9 +73,9 @@ export interface OwnerPreviewCompactOut {
   fri?: MenuCategoryCompleteOut[];
 }
 
-export interface OwnerPreviewCompleteOut extends OwnerPreviewCompactOut, MenuCompleteOut {}
+export interface MenuPreviewCompleteOut extends OwnerPreviewCompactOut, MenuCompleteOut {}
 
-export interface CustomerPreviewCompleteOut extends MenuCompleteOut {
+export interface MenuViewCompleteOut extends MenuCompleteOut {
   currentDay: Days;
   branch: BranchCompleteOut | null;
   menuCategories: MenuCategoryCompleteOut[];

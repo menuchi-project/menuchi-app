@@ -1,7 +1,7 @@
 import { Body, Delete, Get, Patch, Path, Post, Query, Request, Response, Route, Security, SuccessResponse, Tags } from "tsoa";
 import { DefaultString, UUID } from "../types/TypeAliases";
 import MenuService from "../services/MenuService";
-import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, MenuCompletePlusOut, CreateMenuCompactIn, OwnerPreviewCompleteOut, CustomerPreviewCompleteOut } from "../types/MenuTypes";
+import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, MenuCompletePlusOut, CreateMenuCompactIn, MenuPreviewCompleteOut, MenuViewCompleteOut } from "../types/MenuTypes";
 import { CylinderValidationError, MenuCategoryValidationError, MenuValidationError } from "../exceptions/ValidationError";
 import { ConstraintsDatabaseError } from "../exceptions/DatabaseError";
 import MenuchiError from "../exceptions/MenuchiError";
@@ -250,9 +250,9 @@ export class MenuController extends BaseController {
     @Path() menuId: UUID,
     @Path() menuItemId: UUID,
     @Path() isHide: boolean,
-    @Request() req: express.Request
+    @Request() req?: express.Request
   ): Promise<null> {
-    this.checkPermission(req.session.user, PermissionScope.Menu, menuId);
+    this.checkPermission(req?.session.user, PermissionScope.Menu, menuId);
     await MenuService.hideMenuItem(menuId, menuItemId, !isHide);
     return null;
   }
@@ -287,7 +287,7 @@ export class MenuController extends BaseController {
   public async getMenuPreview(
     @Path() menuId: UUID,
     @Request() req: express.Request
-  ): Promise<OwnerPreviewCompleteOut> {
+  ): Promise<MenuPreviewCompleteOut> {
     this.checkPermission(req.session.user, PermissionScope.Menu, menuId);
     return MenuService.getMenuPreview(menuId);
   }
@@ -301,8 +301,8 @@ export class MenuController extends BaseController {
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
   @Response<MenuNotFound>(404, '4048 MenuNotFound')
   @SuccessResponse(200, 'Menu preview is retrieved successfully.')
-  @Get('/{menuId}/preview/customer')
-  public async getCustomerMenuPreview(@Path() menuId: UUID): Promise<CustomerPreviewCompleteOut> {
-    return MenuService.getCustomerMenuPreview(menuId);
+  @Get('/{menuId}/view')
+  public async getCustomerMenuPreview(@Path() menuId: UUID): Promise<MenuViewCompleteOut> {
+    return MenuService.getMenuView(menuId);
   }
 }

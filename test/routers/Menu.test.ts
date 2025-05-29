@@ -11,6 +11,7 @@ import { CategoryNotFound, CylinderNotFound, MenuNotFound } from "../../src/exce
 import MenuchiError from "../../src/exceptions/MenuchiError";
 import { MenuCompactIn } from "../types/MenuTypes";
 import MenuService from "../services/MenuService";
+import BacklogService from "../services/BacklogService";
 
 const categoryNameController = new CategoryNameController();
 const restaurantController = new RestaurantController();
@@ -286,6 +287,25 @@ describe('PATCH /menus/{menuId}/categories', () => {
     const promise = menuController.reorderMenuCategories(menuId, [menuCategoryId3, menuCategoryId2, menuCategoryId1]);
 
     await expect(promise).resolves.toBe(3);
+  });
+});
+
+describe('PATCH /menus/{menuId}/items/{menuItemId}/hide/{isHide}', () => {
+  test('should hide item in menu successfully.', async () => {
+    const { id: categoryNameId } = await categoryNameController.createCategoryName(categoryNameObject);
+    const { id: backlogId, branchId } = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.backlog!;
+    const { id: itemId, categoryId } = await backlogController.createItem(backlogId!, { categoryNameId: categoryNameId, ...itemObject });
+    const { id: menuId } = await menuController.createMenu({ ...menuObject, branchId: branchId! });
+    const { id: cylinderId } = await menuController.createCylinder(menuId, cylinderObject);
+    await menuController.createMenuCategory(menuId, {
+      categoryId: categoryId!,
+      cylinderId,
+      items: [itemId]
+    });
+    await menuController.hideMenuItem(menuId, itemId, true);
+    const { isActive } = await BacklogService.getItem(itemId);
+
+    await expect(isActive).resolves.toBe(false);
   });
 });
 
