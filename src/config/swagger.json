@@ -355,6 +355,46 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"GetMenuFaviconUrlOut": {
+				"properties": {
+					"menuFaviconUrl": {
+						"$ref": "#/components/schemas/URL"
+					},
+					"menuFaviconKey": {
+						"$ref": "#/components/schemas/LongString"
+					}
+				},
+				"required": [
+					"menuFaviconUrl",
+					"menuFaviconKey"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"GetMenuFaviconUrlIn": {
+				"properties": {
+					"restaurantId": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"branchId": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"menuId": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"fileName": {
+						"$ref": "#/components/schemas/ImageFilename"
+					}
+				},
+				"required": [
+					"restaurantId",
+					"branchId",
+					"menuId",
+					"fileName"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"DefaultString": {
 				"type": "string",
 				"example": "string",
@@ -4246,6 +4286,75 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/GetRestaurantPicUrlIn"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/s3/get-menu-favicon-url": {
+			"post": {
+				"operationId": "GeneratePutMenuFaviconPresignedUrl",
+				"responses": {
+					"201": {
+						"description": "Menu favicon presigned url generated successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GetMenuFaviconUrlOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "4224 S3ValidationError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/S3ValidationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Generates a pre-signed URL for uploading an menu favicon to S3.",
+				"tags": [
+					"S3"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/GetMenuFaviconUrlIn"
 							}
 						}
 					}

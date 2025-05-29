@@ -1,6 +1,6 @@
 import { Body, Post, Request, Response, Route, Security, SuccessResponse, Tags } from "tsoa";
 import S3Service from "../services/S3Service";
-import { GetItemPicUrlIn, GetItemPicUrlOut, GetRestaurantAvatarPicUrlOut, GetRestaurantCoverPicUrlOut, GetRestaurantLogoPicUrlOut, GetRestaurantPicUrlIn } from "../types/S3Types";
+import { GetItemPicUrlIn, GetItemPicUrlOut, GetMenuFaviconUrlIn, GetMenuFaviconUrlOut, GetRestaurantAvatarPicUrlOut, GetRestaurantCoverPicUrlOut, GetRestaurantLogoPicUrlOut, GetRestaurantPicUrlIn } from "../types/S3Types";
 import { S3ValidationError } from "../exceptions/ValidationError";
 import BaseController from "./BaseController";
 import { PermissionScope, RolesEnum } from "../types/Enums";
@@ -26,7 +26,7 @@ export class S3Controller extends BaseController {
     const { restaurantId, branchId, fileName } = body;
     const bucketName = process.env.S3_BUCKETNAME;
 
-    this.checkPermission(req.session.user, PermissionScope.Restaurant, restaurantId);
+    this.checkPermission(req.session.user, PermissionScope.Branch, branchId);
 
     const itemPicKey = `${bucketName}/Restaurants/${restaurantId}/Items/${branchId}/${fileName}`;
     const itemPicUrl = await S3Service.generatePutPresignedUrl(itemPicKey);
@@ -111,6 +111,32 @@ export class S3Controller extends BaseController {
     return {
       restaurantLogoPicUrl,
       restaurantLogoPicKey
+    };
+  }
+
+  /**
+   * Generates a pre-signed URL for uploading an menu favicon to S3.
+   */
+  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
+  @Response<UnauthorizedError>(401, 'Unauthorized user.')
+  @Response<S3ValidationError>(422, '4224 S3ValidationError')
+  @SuccessResponse(201, 'Menu favicon presigned url generated successfully.')
+  @Security('', [RolesEnum.RestaurantOwner])
+  @Post('/get-menu-favicon-url')
+  public async generatePutMenuFaviconPresignedUrl(
+    @Body() body: GetMenuFaviconUrlIn,
+    @Request() req: express.Request
+  ): Promise<GetMenuFaviconUrlOut> {
+    const { restaurantId, menuId, fileName } = body;
+    const bucketName = process.env.S3_BUCKETNAME;
+
+    this.checkPermission(req.session.user, PermissionScope.Menu, menuId);
+
+    const menuFaviconKey = `${bucketName}/Restaurants/${restaurantId}/Menus/${menuId}/Favicon-${fileName}`;
+    const menuFaviconUrl = await S3Service.generatePutPresignedUrl(menuFaviconKey);
+    return {
+      menuFaviconUrl,
+      menuFaviconKey
     };
   }
 }

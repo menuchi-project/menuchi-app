@@ -30,3 +30,15 @@ export interface GetRestaurantLogoPicUrlOut {
   restaurantLogoPicUrl: URL;
   restaurantLogoPicKey: LongString;
 }
+
+export interface GetMenuFaviconUrlIn {
+  restaurantId: UUID;
+  branchId: UUID;
+  menuId: UUID;
+  fileName: ImageFilename;
+}
+
+export interface GetMenuFaviconUrlOut {
+  menuFaviconUrl: URL;
+  menuFaviconKey: LongString;
+}
