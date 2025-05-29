@@ -9,6 +9,8 @@ import { Prisma } from "@prisma/client";
 import { randomUUID } from "node:crypto";
 import { CategoryNotFound, CylinderNotFound, MenuNotFound } from "../../src/exceptions/NotFoundError";
 import MenuchiError from "../../src/exceptions/MenuchiError";
+import { MenuCompactIn } from "../types/MenuTypes";
+import MenuService from "../services/MenuService";
 
 const categoryNameController = new CategoryNameController();
 const restaurantController = new RestaurantController();
@@ -85,6 +87,22 @@ describe('GET /menus/{menuId}', () => {
     const promise = menuController.getMenu(randomUUID());
 
     await expect(promise).rejects.toThrowError(MenuNotFound);
+  });
+});
+
+describe('PATCH /menus/{menuId}', () => {
+  test('should update the menu successfully.', async () => {
+    const branchId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.id!;
+    const menu = await menuController.createMenu({ ...menuObject, branchId });
+    const newMenu = {
+      name: 'a new name',
+      isPublished: true,
+      favicon: '/key'
+    } as MenuCompactIn;
+    await menuController.updateMenu(menu.id, newMenu);
+    const promise = MenuService.getCompactMenu(menu.id);
+
+    await expect(promise).resolves.toMatchObject(newMenu);
   });
 });
 

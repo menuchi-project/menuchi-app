@@ -78,7 +78,7 @@ export class MenuController extends BaseController {
   }
 
   /**
-   * Retrieves a menu by ID.
+   * Retrieves a complete menu by ID.
    */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
@@ -107,9 +107,9 @@ export class MenuController extends BaseController {
   async updateMenu(
     @Path() menuId: UUID,
     @Body() body: MenuCompactIn,
-    @Request() req: express.Request
+    @Request() req?: express.Request
   ): Promise<null> {
-    this.checkPermission(req.session.user, PermissionScope.Menu, menuId);
+    this.checkPermission(req?.session.user, PermissionScope.Menu, menuId);
     await MenuService.updateMenu(menuId, body);
     return null;
   }
