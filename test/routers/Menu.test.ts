@@ -7,11 +7,11 @@ import { MenuController } from "../../src/controllers/MenuController";
 import { CylinderValidationError } from "../../src/exceptions/ValidationError";
 import { Prisma } from "@prisma/client";
 import { randomUUID } from "node:crypto";
-import { CategoryNotFound, CylinderNotFound, MenuNotFound } from "../../src/exceptions/NotFoundError";
+import { CylinderNotFound, MenuNotFound } from "../../src/exceptions/NotFoundError";
 import MenuchiError from "../../src/exceptions/MenuchiError";
-import { MenuCompactIn } from "../types/MenuTypes";
-import MenuService from "../services/MenuService";
-import BacklogService from "../services/BacklogService";
+import { MenuCompactIn } from "../../src/types/MenuTypes";
+import MenuService from "../../src/services/MenuService";
+import BacklogService from "../../src/services/BacklogService";
 
 const categoryNameController = new CategoryNameController();
 const restaurantController = new RestaurantController();
