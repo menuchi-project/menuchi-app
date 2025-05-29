@@ -22,6 +22,13 @@ export interface MenuCompleteOut extends CompleteOut {
   restaurantId?: DefaultString | null;
 }
 
+export interface CreateMenuCompleteOut extends CompleteOut {
+  branchId: UUID | null;
+  name: DefaultString | null;
+  favicon: DefaultString | null;
+  isPublished: Boolean | null;
+}
+
 export interface CylinderCompactIn {
   sat?: Boolean | null;
   sun?: Boolean | null;

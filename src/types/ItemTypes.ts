@@ -1,5 +1,5 @@
 import { CompleteOut } from "./BaseTypes";
-import { DefaultString, Int, LongString, URL, UUID } from "./TypeAliases";
+import { Boolean, DefaultString, Int, LongString, URL, UUID } from "./TypeAliases";
 
 export interface ItemCompactIn {
   categoryNameId: UUID;

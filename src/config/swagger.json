@@ -1439,6 +1439,14 @@
 						],
 						"nullable": true
 					},
+					"isActive": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
+						"nullable": true
+					},
 					"orderCount": {
 						"allOf": [
 							{
@@ -1600,6 +1608,105 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"CreateMenuCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"branchId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							}
+						],
+						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"favicon": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"isPublished": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"branchId",
+					"name",
+					"favicon",
+					"isPublished"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CreateMenuCompactIn": {
+				"properties": {
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"favicon": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"isPublished": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Boolean"
+							}
+						],
+						"nullable": true
+					},
+					"branchId": {
+						"$ref": "#/components/schemas/UUID"
+					}
+				},
+				"required": [
+					"branchId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"MenuCompleteOut": {
 				"properties": {
 					"id": {
@@ -1667,42 +1774,6 @@
 					"name",
 					"favicon",
 					"isPublished"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"CreateMenuCompactIn": {
-				"properties": {
-					"name": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"favicon": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
-					"isPublished": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Boolean"
-							}
-						],
-						"nullable": true
-					},
-					"branchId": {
-						"$ref": "#/components/schemas/UUID"
-					}
-				},
-				"required": [
-					"branchId"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -2411,7 +2482,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"OwnerPreviewCompleteOut": {
+			"MenuPreviewCompleteOut": {
 				"properties": {
 					"sat": {
 						"items": {
@@ -2659,7 +2730,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"CustomerPreviewCompleteOut": {
+			"MenuViewCompleteOut": {
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/UUID"
@@ -5032,7 +5103,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/MenuCompleteOut"
+									"$ref": "#/components/schemas/CreateMenuCompleteOut"
 								}
 							}
 						}
@@ -5198,7 +5269,7 @@
 						}
 					}
 				},
-				"description": "Retrieves a menu by ID.",
+				"description": "Retrieves a complete menu by ID.",
 				"tags": [
 					"Menu"
 				],
@@ -5832,7 +5903,7 @@
 				}
 			},
 			"delete": {
-				"operationId": "DeleteMenuItem",
+				"operationId": "DeleteMenuItems",
 				"responses": {
 					"204": {
 						"description": "Menu Items deleted successfully.",
@@ -5992,7 +6063,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/OwnerPreviewCompleteOut"
+									"$ref": "#/components/schemas/MenuPreviewCompleteOut"
 								}
 							}
 						}
@@ -6051,7 +6122,7 @@
 				]
 			}
 		},
-		"/menus/{menuId}/preview/customer": {
+		"/menus/{menuId}/view": {
 			"get": {
 				"operationId": "GetCustomerMenuPreview",
 				"responses": {
@@ -6060,7 +6131,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/CustomerPreviewCompleteOut"
+									"$ref": "#/components/schemas/MenuViewCompleteOut"
 								}
 							}
 						}

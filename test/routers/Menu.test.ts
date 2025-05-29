@@ -146,7 +146,6 @@ describe('PATCH /menus/{menuId}/cylinders', () =>{
   test('should update cylinders order in menu successfully and return number of updated cylinders.', async () => {
     const branchId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.id!;
     const { id: menuId } = await menuController.createMenu({ ...menuObject, branchId });
-    await menuController.createCylinder(menuId, cylinderObject);
     const { id: cylinderId } = await menuController.createCylinder(menuId, cylinderObject);
     const { id: cylinderId2 } = await menuController.createCylinder(menuId, { sat: true });
     const { id: cylinderId3 } = await menuController.createCylinder(menuId, { sun: true });
@@ -305,7 +304,7 @@ describe('PATCH /menus/{menuId}/items/{menuItemId}/hide/{isHide}', () => {
     await menuController.hideMenuItem(menuId, itemId, true);
     const { isActive } = await BacklogService.getItem(itemId);
 
-    await expect(isActive).resolves.toBe(false);
+    expect(isActive).toBe(false);
   });
 });
 

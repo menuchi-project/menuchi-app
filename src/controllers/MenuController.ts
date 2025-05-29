@@ -1,7 +1,7 @@
 import { Body, Delete, Get, Patch, Path, Post, Query, Request, Response, Route, Security, SuccessResponse, Tags } from "tsoa";
 import { DefaultString, UUID } from "../types/TypeAliases";
 import MenuService from "../services/MenuService";
-import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, MenuCompletePlusOut, CreateMenuCompactIn, MenuPreviewCompleteOut, MenuViewCompleteOut } from "../types/MenuTypes";
+import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, MenuCompletePlusOut, CreateMenuCompactIn, MenuPreviewCompleteOut, MenuViewCompleteOut, CreateMenuCompleteOut } from "../types/MenuTypes";
 import { CylinderValidationError, MenuCategoryValidationError, MenuValidationError } from "../exceptions/ValidationError";
 import { ConstraintsDatabaseError } from "../exceptions/DatabaseError";
 import MenuchiError from "../exceptions/MenuchiError";
@@ -46,13 +46,13 @@ export class MenuController extends BaseController {
   async createMenu(
     @Body() body: CreateMenuCompactIn,
     @Request() req?: express.Request
-  ): Promise<MenuCompleteOut> {
+  ): Promise<CreateMenuCompleteOut> {
     this.checkPermission(req?.session.user, PermissionScope.Branch, body.branchId);
-    const menu = await MenuService.createMenu(body);
+    const { restaurantId, ...menu} = await MenuService.createMenu(body);
 
     const updateSession = {
       userSession: req?.session.user,
-      restaurantId: menu.restaurantId,
+      restaurantId: restaurantId,
       branchId: menu.branchId,
       menuId: menu.id
     } as MenuUpdateSession;

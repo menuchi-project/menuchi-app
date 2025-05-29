@@ -12,7 +12,7 @@ class MenuService {
   constructor(private prisma: PrismaClient = prismaClient) {}
 
   async createMenu(body: CreateMenuCompactIn): Promise<MenuCompleteOut | never> {
-    const newMenu = await this.prisma.menu.create({
+    const { branch, ...newMenu } = await this.prisma.menu.create({
       data: body,
       include: {
         branch: true
@@ -23,8 +23,7 @@ class MenuService {
       throw error;
     });
 
-    const restaurantId = newMenu.branch?.restaurantId;
-    newMenu.branch = null;
+    const restaurantId = branch?.restaurantId;
 
     return {
       ...newMenu,
