@@ -403,12 +403,17 @@ class MenuService {
   }
 
   async getAllMenus(branchId: UUID): Promise<MenuCompleteOut[]> {
-    return this.prisma.menu.findMany({
+    const menus = await this.prisma.menu.findMany({
       where: {
         branchId,
         deletedAt: null
       }
     });
+
+    return Promise.all(menus.map(async (menu) => ({
+      ...menu,
+      favicon: await S3Service.generateGetPresignedUrl(menu.favicon)
+    })));
   }
 
   async getMenu(menuId: UUID): Promise<MenuCompletePlusOut | never> {
@@ -451,6 +456,7 @@ class MenuService {
 
     return {
       ...menu,
+      favicon: await S3Service.generateGetPresignedUrl(menu.favicon),
       cylinders: await Promise.all(menu.cylinders.map(async (cylinder) => ({
         ...cylinder,
         days: [
@@ -554,6 +560,7 @@ class MenuService {
 
     return {
       ...menu,
+      favicon: await S3Service.generateGetPresignedUrl(menu.favicon),
       ...previewByDay
     };
   }
@@ -620,6 +627,7 @@ class MenuService {
 
     return {
       ...menu,
+      favicon: await S3Service.generateGetPresignedUrl(menu.favicon),
       currentDay,
       menuCategories: dayMenu
     };

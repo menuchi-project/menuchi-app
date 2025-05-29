@@ -84,6 +84,6 @@ export interface MenuPreviewCompleteOut extends OwnerPreviewCompactOut, MenuComp
 
 export interface MenuViewCompleteOut extends MenuCompleteOut {
   currentDay: Days;
-  branch: BranchCompleteOut | null;
+  branch?: BranchCompleteOut | null;
   menuCategories: MenuCategoryCompleteOut[];
 }

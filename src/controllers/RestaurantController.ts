@@ -1,6 +1,6 @@
 import { Body, Get, Patch, Path, Post, Request, Response, Route, Security, SuccessResponse, Tags } from "tsoa";
 import RestaurantService from "../services/RestaurantService";
-import { RestaurantCompactIn, RestaurantCompleteOut, UpdateRestaurantCompactIn } from "../types/RestaurantTypes";
+import { RestaurantCompactIn, CreateRestaurantCompleteOut, UpdateRestaurantCompactIn } from "../types/RestaurantTypes";
 import { RestaurantValidationError } from "../exceptions/ValidationError";
 import { ConstraintsDatabaseError } from "../exceptions/DatabaseError";
 import { UUID } from "../types/TypeAliases";
@@ -24,7 +24,7 @@ export class RestaurantController extends BaseController {
   @SuccessResponse(201, 'Restaurant, a branch and its backlog created successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Post()
-  public async createRestaurant(@Body() body: RestaurantCompactIn, @Request() req?: express.Request): Promise<RestaurantCompleteOut> {
+  public async createRestaurant(@Body() body: RestaurantCompactIn, @Request() req?: express.Request): Promise<CreateRestaurantCompleteOut> {
     const restaurant = await RestaurantService.createRestaurant(body, req?.session.user?.id);
 
     const updateSession = {
@@ -49,7 +49,7 @@ export class RestaurantController extends BaseController {
   @SuccessResponse(200, 'Restaurant is retrieved successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Get('/{restaurantId}')
-  public async getRestaurant(@Path() restaurantId: UUID, @Request() req?: express.Request): Promise<RestaurantCompleteOut> {
+  public async getRestaurant(@Path() restaurantId: UUID, @Request() req?: express.Request): Promise<CreateRestaurantCompleteOut> {
     this.checkPermission(req?.session.user, PermissionScope.Restaurant, restaurantId);    
     return RestaurantService.getRestaurant(restaurantId);
   }
