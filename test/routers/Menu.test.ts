@@ -58,6 +58,17 @@ describe('POST /menus', () => {
   });
 });
 
+describe('GET /menus/branch/{branchId}', () => {
+  test('should retrieved menus successfully.', async () => {
+    const branchId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.id!;
+    const menu = await menuController.createMenu({ ...menuObject, branchId });
+    const menu2 = await menuController.createMenu({ ...menuObject, branchId });
+    const promise = menuController.getAllMenus(branchId);
+
+    await expect(promise).resolves.toMatchObject([menu, menu2]);
+  });
+});
+
 describe('POST /menus/{menuId}/cylinders', () => {
   test('should create cylinder successfully.', async () => {
     const branchId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.id!;

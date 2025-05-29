@@ -14,7 +14,7 @@ export interface MenuCompactIn {
   isPublished?: Boolean | null;
 }
 
-export interface MenuCompactOut extends CompleteOut {
+export interface MenuCompleteOut extends CompleteOut {
   branchId: UUID | null;
   name: DefaultString | null;
   favicon: DefaultString | null;
@@ -59,7 +59,7 @@ interface MenuCategoryCompleteOut extends CreateMenuCategoryCompleteOut {
   items: ItemCompleteOut[] | null;
 }
 
-export interface MenuCompleteOut extends MenuCompactOut {
+export interface MenuCompletePlusOut extends MenuCompleteOut {
   cylinders: CylinderCompleteOut[] | null;
 }
 
@@ -73,9 +73,9 @@ export interface OwnerPreviewCompactOut {
   fri?: MenuCategoryCompleteOut[];
 }
 
-export interface OwnerPreviewCompleteOut extends OwnerPreviewCompactOut, MenuCompactOut {}
+export interface OwnerPreviewCompleteOut extends OwnerPreviewCompactOut, MenuCompleteOut {}
 
-export interface CustomerPreviewCompleteOut extends MenuCompactOut {
+export interface CustomerPreviewCompleteOut extends MenuCompleteOut {
   currentDay: Days;
   branch: BranchCompleteOut | null;
   menuCategories: MenuCategoryCompleteOut[];

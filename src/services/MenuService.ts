@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import prismaClient from '../db/prisma';
 import { UUID } from '../types/TypeAliases';
-import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompactOut, MenuCompleteOut, CreateMenuCompactIn, OwnerPreviewCompactOut, OwnerPreviewCompleteOut, CustomerPreviewCompleteOut } from '../types/MenuTypes';
+import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, MenuCompletePlusOut, CreateMenuCompactIn, OwnerPreviewCompactOut, OwnerPreviewCompleteOut, CustomerPreviewCompleteOut } from '../types/MenuTypes';
 import MenuchiError from '../exceptions/MenuchiError';
 import { BranchNotFound, CategoryNotFound, CylinderNotFound, MenuNotFound } from '../exceptions/NotFoundError';
 import S3Service from './S3Service';
@@ -11,7 +11,7 @@ import { Days } from '../types/Enums';
 class MenuService {
   constructor(private prisma: PrismaClient = prismaClient) {}
 
-  async createMenu(body: CreateMenuCompactIn): Promise<MenuCompactOut | never> {
+  async createMenu(body: CreateMenuCompactIn): Promise<MenuCompleteOut | never> {
     const newMenu = await this.prisma.menu.create({
       data: body,
       include: {
@@ -392,7 +392,7 @@ class MenuService {
       };
   }
 
-  async getAllMenus(branchId: UUID): Promise<MenuCompactOut[]> {
+  async getAllMenus(branchId: UUID): Promise<MenuCompleteOut[]> {
     return this.prisma.menu.findMany({
       where: {
         branchId,
@@ -401,7 +401,7 @@ class MenuService {
     });
   }
 
-  async getMenu(menuId: UUID): Promise<MenuCompleteOut | never> {
+  async getMenu(menuId: UUID): Promise<MenuCompletePlusOut | never> {
     const menu = await this.prisma.menu.findUniqueOrThrow({
       where: {
         id: menuId
@@ -473,6 +473,19 @@ class MenuService {
         })))
       })))
     };
+  }
+
+  async getCompactMenu(menuId: UUID): Promise<MenuCompleteOut | never> {
+    return this.prisma.menu.findUniqueOrThrow({
+      where: {
+        id: menuId
+      }
+    })
+    .catch((error: Error) => {
+      if (error.message.includes('not found'))
+        throw new MenuNotFound();
+      throw error;
+    });
   }
 
   async getMenuPreview(menuId: UUID): Promise<OwnerPreviewCompleteOut | never> {

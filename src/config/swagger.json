@@ -1600,7 +1600,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"MenuCompactOut": {
+			"MenuCompleteOut": {
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/UUID"
@@ -1703,40 +1703,6 @@
 				},
 				"required": [
 					"branchId"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"MenuNotFound": {
-				"properties": {
-					"name": {
-						"type": "string"
-					},
-					"message": {
-						"type": "string"
-					},
-					"stack": {
-						"type": "string"
-					},
-					"status": {
-						"type": "number",
-						"format": "double"
-					},
-					"code": {
-						"type": "number",
-						"format": "double"
-					},
-					"details": {
-						"items": {
-							"$ref": "#/components/schemas/ErrorDetail"
-						},
-						"type": "array"
-					}
-				},
-				"required": [
-					"name",
-					"message",
-					"status"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1867,7 +1833,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"MenuCompleteOut": {
+			"MenuCompletePlusOut": {
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/UUID"
@@ -1942,6 +1908,40 @@
 					"favicon",
 					"isPublished",
 					"cylinders"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"MenuNotFound": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"details": {
+						"items": {
+							"$ref": "#/components/schemas/ErrorDetail"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"status"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -5032,7 +5032,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/MenuCompactOut"
+									"$ref": "#/components/schemas/MenuCompleteOut"
 								}
 							}
 						}
@@ -5102,7 +5102,7 @@
 							"application/json": {
 								"schema": {
 									"items": {
-										"$ref": "#/components/schemas/MenuCompactOut"
+										"$ref": "#/components/schemas/MenuCompleteOut"
 									},
 									"type": "array"
 								}
@@ -5125,16 +5125,6 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/ForbiddenError"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "4048 MenuNotFound",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/MenuNotFound"
 								}
 							}
 						}
@@ -5172,7 +5162,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/MenuCompleteOut"
+									"$ref": "#/components/schemas/MenuCompletePlusOut"
 								}
 							}
 						}

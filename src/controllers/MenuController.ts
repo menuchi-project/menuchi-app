@@ -1,7 +1,7 @@
 import { Body, Delete, Get, Patch, Path, Post, Query, Request, Response, Route, Security, SuccessResponse, Tags } from "tsoa";
 import { DefaultString, UUID } from "../types/TypeAliases";
 import MenuService from "../services/MenuService";
-import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompactOut, MenuCompleteOut, CreateMenuCompactIn, OwnerPreviewCompleteOut, CustomerPreviewCompleteOut } from "../types/MenuTypes";
+import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, MenuCompletePlusOut, CreateMenuCompactIn, OwnerPreviewCompleteOut, CustomerPreviewCompleteOut } from "../types/MenuTypes";
 import { CylinderValidationError, MenuCategoryValidationError, MenuValidationError } from "../exceptions/ValidationError";
 import { ConstraintsDatabaseError } from "../exceptions/DatabaseError";
 import MenuchiError from "../exceptions/MenuchiError";
@@ -46,7 +46,7 @@ export class MenuController extends BaseController {
   async createMenu(
     @Body() body: CreateMenuCompactIn,
     @Request() req?: express.Request
-  ): Promise<MenuCompactOut> {
+  ): Promise<MenuCompleteOut> {
     this.checkPermission(req?.session.user, PermissionScope.Branch, body.branchId);
     const menu = await MenuService.createMenu(body);
 
@@ -66,15 +66,14 @@ export class MenuController extends BaseController {
    */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
-  @Response<MenuNotFound>(404, '4048 MenuNotFound')
   @SuccessResponse(200, 'Menus are retrieved successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Get('/branch/{branchId}')
   public async getAllMenus(
     @Path() branchId: UUID,
-    @Request() req: express.Request
-  ): Promise<MenuCompactOut[]> {
-    this.checkPermission(req.session.user, PermissionScope.Branch, branchId);
+    @Request() req?: express.Request
+  ): Promise<MenuCompleteOut[]> {
+    this.checkPermission(req?.session.user, PermissionScope.Branch, branchId);
     return MenuService.getAllMenus(branchId);
   }
 
@@ -90,7 +89,7 @@ export class MenuController extends BaseController {
   public async getMenu(
     @Path() menuId: UUID,
     @Request() req: express.Request
-  ): Promise<MenuCompleteOut> {
+  ): Promise<MenuCompletePlusOut> {
     this.checkPermission(req.session.user, PermissionScope.Menu, menuId);
     return MenuService.getMenu(menuId);
   }
