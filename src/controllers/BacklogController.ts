@@ -36,7 +36,7 @@ export class BacklogController extends BaseController {
     this.checkPermission(req?.session.user, PermissionScope.Backlog, backlogId);
 
     const item = await BacklogService.createItem(backlogId, body);
-    await this.publish(item.picKey, SyncOperations.Created);
+    await this.publish(undefined, item.picKey!, SyncOperations.Created);
 
     return item;
   }
