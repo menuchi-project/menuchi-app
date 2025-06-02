@@ -86,15 +86,17 @@ export default class BaseController extends Controller {
     }
   }
 
-  async publish(key?: string | null, operation?: SyncOperations, oldKey?: string | null) {
-    if (key && operation) {
-      const streamName = process.env.TRANSFORMERS_STREAM!;
-      const event = {
-        image_key: key,
-        operation,
-        old_key: oldKey ?? ''
-      };
-      await TransformersRedisClient.xAdd(streamName, '*', event);
-    }
+  async publish(
+    streamName = process.env.TRANSFORMERS_STREAM!,
+    key?: string | null,
+    operation?: SyncOperations,
+    oldKey?: string | null) {
+      if (key && operation) {
+        const event = {
+          image_key: key,
+          operation
+        };
+        await TransformersRedisClient.xAdd(streamName, '*', event);
+      }
   }
 }

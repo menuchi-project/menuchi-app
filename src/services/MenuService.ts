@@ -356,7 +356,8 @@ class MenuService {
                 deletedAt: null,
                 categoryName: {
                   name: {
-                    contains: search
+                    contains: search,
+                    mode: 'insensitive'
                   }
                 }
               },
@@ -365,6 +366,7 @@ class MenuService {
                 items: {
                   where: {
                     deletedAt: null,
+                    menuCategoryId: null
                   },
                   orderBy: {
                     positionInCategory: 'asc',
@@ -374,6 +376,9 @@ class MenuService {
               omit: {
                 categoryNameId: true,
               },
+              orderBy: {
+                positionInBacklog: 'asc'
+              }
             },
           },
         })
