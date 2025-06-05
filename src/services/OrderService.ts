@@ -129,6 +129,7 @@ class OrderService {
       orderItems: await Promise.all(order.orderItems.map(async (orderItem) => ({
         name: orderItem.item?.name,
         pikUrl: await S3Service.generateGetPresignedUrl(orderItem.item?.picKey!) ?? null,
+        ingredients: orderItem.item?.ingredients,
         ...orderItem,
         item: undefined
       }))),

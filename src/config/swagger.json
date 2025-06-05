@@ -758,7 +758,6 @@
 					"id",
 					"createdAt",
 					"updatedAt",
-					"restaurantId",
 					"backlog",
 					"address",
 					"openingTimes"
@@ -766,7 +765,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"RestaurantCompleteOut": {
+			"CreateRestaurantCompleteOut": {
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/UUID"
@@ -855,26 +854,26 @@
 						],
 						"nullable": true
 					},
-					"avatarUrl": {
+					"avatarKey": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/URL"
+								"$ref": "#/components/schemas/DefaultString"
 							}
 						],
 						"nullable": true
 					},
-					"coverUrl": {
+					"coverKey": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/URL"
+								"$ref": "#/components/schemas/DefaultString"
 							}
 						],
 						"nullable": true
 					},
-					"logoUrl": {
+					"logoKey": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/URL"
+								"$ref": "#/components/schemas/DefaultString"
 							}
 						],
 						"nullable": true
@@ -1229,6 +1228,10 @@
 								"$ref": "#/components/schemas/Int"
 							}
 						],
+						"nullable": true
+					},
+					"ingredients": {
+						"type": "string",
 						"nullable": true
 					}
 				},
@@ -2764,8 +2767,7 @@
 				"required": [
 					"id",
 					"createdAt",
-					"updatedAt",
-					"restaurantId"
+					"updatedAt"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -2855,7 +2857,6 @@
 					"favicon",
 					"isPublished",
 					"currentDay",
-					"branch",
 					"menuCategories"
 				],
 				"type": "object",
@@ -4370,7 +4371,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/RestaurantCompleteOut"
+									"$ref": "#/components/schemas/CreateRestaurantCompleteOut"
 								}
 							}
 						}
@@ -4449,7 +4450,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/RestaurantCompleteOut"
+									"$ref": "#/components/schemas/CreateRestaurantCompleteOut"
 								}
 							}
 						}
