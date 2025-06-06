@@ -1,6 +1,6 @@
 import { Body, Get, Patch, Path, Post, Request, Response, Route, Security, SuccessResponse, Tags } from "tsoa";
 import RestaurantService from "../services/RestaurantService";
-import { RestaurantCompactIn, CreateRestaurantCompleteOut, UpdateRestaurantCompactIn } from "../types/RestaurantTypes";
+import { RestaurantCompactIn, CreateRestaurantCompleteOut, UpdateRestaurantCompactIn, RestaurantCompleteOut } from "../types/RestaurantTypes";
 import { RestaurantValidationError } from "../exceptions/ValidationError";
 import { ConstraintsDatabaseError } from "../exceptions/DatabaseError";
 import { UUID } from "../types/TypeAliases";
@@ -52,7 +52,10 @@ export class RestaurantController extends BaseController {
   @SuccessResponse(200, 'Restaurant is retrieved successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Get('/{restaurantId}')
-  public async getRestaurant(@Path() restaurantId: UUID, @Request() req?: express.Request): Promise<CreateRestaurantCompleteOut> {
+  public async getRestaurant(
+    @Path() restaurantId: UUID,
+    @Request() req?: express.Request
+  ): Promise<RestaurantCompleteOut> {
     this.checkPermission(req?.session.user, PermissionScope.Restaurant, restaurantId);    
     return RestaurantService.getRestaurant(restaurantId);
   }

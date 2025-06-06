@@ -1,13 +1,15 @@
 import { describe, expect, test } from "vitest";
-import { returnBranch, returnRestaurant } from "../factories";
+import { returnAddress, returnBranch, returnOpeningTimes, returnRestaurant } from "../factories";
 import { RestaurantController } from "../../src/controllers/RestaurantController";
 import { BranchController } from "../../src/controllers/BranchController";
-import { RestaurantNotFound } from "../../src/exceptions/NotFoundError";
+import { BranchNotFound, RestaurantNotFound } from "../../src/exceptions/NotFoundError";
 import { randomUUID } from "crypto";
 import { Prisma } from "@prisma/client";
 
 const restaurantObject = returnRestaurant();
 const branchObject = returnBranch();
+const addressObject = returnAddress();
+const openingTimesObject = returnOpeningTimes();
 const restaurantController = new RestaurantController();
 const branchController = new BranchController();
 
@@ -31,6 +33,26 @@ describe('POST /branches', () => {
     const promise = branchController.createBranch({ restaurantId, ...branchObject });
 
     await expect(promise).rejects.toThrowError(Prisma.PrismaClientKnownRequestError);
+  });
+});
+
+describe('GET /branches/{branchId}', () => {
+  test('should retrieves branch successfully.', async () => {
+    const { id: restaurantId } = await restaurantController.createRestaurant(restaurantObject);
+    const branch = await branchController.createBranch({ restaurantId, ...branchObject });
+    const address = await branchController.createOrUpdateAddress(branch.id, addressObject);
+    const openingTimes = await branchController.createOrUpdateOpeningTimes(branch.id, openingTimesObject);
+    const promise = branchController.getBranch(branch.id);
+
+    await expect(promise).resolves.toMatchObject({
+      ...branch, address, openingTimes
+    });
+  });
+
+  test('should rejects retrieves branch with BranchNotFound error.', async () => {
+    const promise = branchController.getBranch(randomUUID());
+
+    await expect(promise).rejects.toThrowError(BranchNotFound);
   });
 });
 

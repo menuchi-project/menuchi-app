@@ -1046,6 +1046,130 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"RestaurantCompleteOut": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deletedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"name": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"displayName": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Slug"
+							}
+						],
+						"nullable": true
+					},
+					"branches": {
+						"items": {
+							"$ref": "#/components/schemas/BranchCompletePlusOut"
+						},
+						"type": "array",
+						"nullable": true
+					},
+					"slang": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"instagram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"telegram": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"twitter": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"youtube": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"eitaa": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/DefaultString"
+							}
+						],
+						"nullable": true
+					},
+					"avatarUrl": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/URL"
+							}
+						],
+						"nullable": true
+					},
+					"coverUrl": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/URL"
+							}
+						],
+						"nullable": true
+					},
+					"logoUrl": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/URL"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"createdAt",
+					"updatedAt",
+					"name",
+					"displayName"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"RestaurantNotFound": {
 				"properties": {
 					"name": {
@@ -4457,7 +4581,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/CreateRestaurantCompleteOut"
+									"$ref": "#/components/schemas/RestaurantCompleteOut"
 								}
 							}
 						}
