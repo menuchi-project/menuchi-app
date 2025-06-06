@@ -160,7 +160,7 @@ export class MenuController extends BaseController {
   }
 
   /**
-   * Creates a new category in a menu.
+   * Creates a new menu category.
    */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
@@ -193,13 +193,13 @@ export class MenuController extends BaseController {
   @Response<MenuchiError>(400, 'Some item IDs are invalid or do not belong to the menu.')
   @SuccessResponse(204, 'Menu item orders in the menu category updated successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
-  @Patch('/{menuId}/categories')
+  @Patch('/{menuId}/items')
   async reorderMenuItems(
     @Path() menuId: UUID,
     @Body() body: UUID[],
-    @Request() req: express.Request
+    @Request() req?: express.Request
   ): Promise<number> {
-    this.checkPermission(req.session.user, PermissionScope.Menu, menuId);
+    this.checkPermission(req?.session.user, PermissionScope.Menu, menuId);
     return MenuService.reorderMenuItems(menuId, body);
   }
 
@@ -229,7 +229,7 @@ export class MenuController extends BaseController {
   @Response<MenuchiError>(400, 'All menu category IDs must be in the request.')
   @SuccessResponse(204, 'Menu category orders in the cylinder updated successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
-  @Patch('/{menuId}/items')
+  @Patch('/{menuId}/categories')
   async reorderMenuCategories(
     @Path() menuId: UUID,
     @Body() body: UUID[],

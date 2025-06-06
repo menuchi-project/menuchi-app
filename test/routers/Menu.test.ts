@@ -289,6 +289,26 @@ describe('PATCH /menus/{menuId}/categories', () => {
   });
 });
 
+describe('PATCH /menus/{menuId}/items', () => {
+  test('should update items order in menu category successfully and return number of updated items.', async () => {
+    const { id: categoryNameId } = await categoryNameController.createCategoryName(categoryNameObject);
+    const { id: backlogId, branchId } = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.backlog!;
+    const { id: itemId1, categoryId } = await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
+    const { id: itemId2 } = await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
+    const { id: itemId3 } =  await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
+    const { id: menuId } = await menuController.createMenu({ ...menuObject, branchId: branchId! });
+    const { id: cylinderId } = await menuController.createCylinder(menuId, cylinderObject);
+    await menuController.createMenuCategory(menuId, {
+      categoryId: categoryId!,
+      cylinderId,
+      items: [itemId1, itemId2, itemId3]
+    });
+    const promise = menuController.reorderMenuItems(menuId, [itemId3, itemId2, itemId1]);
+
+    await expect(promise).resolves.toBe(3);
+  });
+});
+
 describe('PATCH /menus/{menuId}/items/{menuItemId}/hide/{isHide}', () => {
   test('should hide item in menu successfully.', async () => {
     const { id: categoryNameId } = await categoryNameController.createCategoryName(categoryNameObject);
@@ -327,4 +347,6 @@ describe('DELETE /menus/{menuId}/items', () => {
   });
 });
 
+// TODO: test DELETE /menus/{menuId}/categories
 // TODO: test previews
+// TODO: test day items

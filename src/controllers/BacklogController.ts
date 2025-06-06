@@ -10,7 +10,6 @@ import express from 'express';
 import { PermissionScope, RolesEnum, SyncOperations } from "../types/Enums";
 import { ForbiddenError, UnauthorizedError } from "../exceptions/AuthError";
 import MenuchiError from "../exceptions/MenuchiError";
-import TransformersRedisClient from "../config/TransformersRedisClient";
 import { CategoryCompactOut, CategoryNameCompleteOut, CreateCategoryCompactIn } from "../types/CategoryTypes";
 import { ConstraintsDatabaseError } from "../exceptions/DatabaseError";
 
@@ -145,7 +144,7 @@ export class BacklogController extends BaseController {
   }
 
   /**
-   * Creates a new backlog. Alternatively, creating an item will automatically create its category (if needed).
+   * Creates a new category. Alternatively, creating an item will automatically create its category (if needed).
    */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')
