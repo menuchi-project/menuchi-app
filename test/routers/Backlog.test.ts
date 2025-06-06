@@ -74,7 +74,7 @@ describe('GET /backlog/{backlogId}', () => {
 });
 
 describe('GET /backlog/{backlogId}/items', () => {
-  test('should retrieved items list successfully.', async () => {
+  test('should retrieves items list successfully.', async () => {
     const { id: categoryNameId } = await categoryNameController.createCategoryName(categoryNameObject);
     const backlogId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.backlog?.id;
     await backlogController.createItem(backlogId!, { categoryNameId, ...itemObject });
@@ -228,5 +228,18 @@ describe('DELETE /backlog/{backlogId}/categories', () => {
     const promise = BacklogService.getCategory(categoryId!);
 
     await expect(promise).rejects.toThrowError(CategoryNotFound);
+  });
+});
+
+describe('GET /backlog/{backlogId}/category-names', () => {
+  test('should retrieves all category names used in the specific backlog.', async () => {
+    const { id: categoryNameId } = await categoryNameController.createCategoryName(categoryNameObject);
+    await categoryNameController.createCategoryName(returnCategoryName());
+    const backlogId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.backlog?.id;
+    await backlogController.createCategory(backlogId!, { categoryNameId });
+    const categoryNames = await backlogController.getAllCategoryNames(backlogId!);
+
+    expect(categoryNames).toMatchObject([{ id: categoryNameId }]);
+    expect(categoryNames.length).toBe(1);
   });
 });
