@@ -24,7 +24,10 @@ export class RestaurantController extends BaseController {
   @SuccessResponse(201, 'Restaurant, a branch and its backlog created successfully.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Post()
-  public async createRestaurant(@Body() body: RestaurantCompactIn, @Request() req?: express.Request): Promise<CreateRestaurantCompleteOut> {
+  public async createRestaurant(
+    @Body() body: RestaurantCompactIn,
+    @Request() req?: express.Request
+  ): Promise<CreateRestaurantCompleteOut> {
     const restaurant = await RestaurantService.createRestaurant(body, req?.session.user?.id);
 
     const updateSession = {

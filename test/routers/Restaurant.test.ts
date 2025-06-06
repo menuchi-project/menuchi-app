@@ -43,3 +43,5 @@ describe('PATCH /restaurants/{restaurantId}', () => {
     await expect(promise).resolves.toMatchObject(newRestaurant);
   });
 });
+
+// TODO: test GET /restaurants/{restaurantId}
