@@ -73,13 +73,53 @@ describe('GET /menus/branch/{branchId}', () => {
 });
 
 describe('GET /menus/{menuId}', () => {
-  // TODO: I should create its details and check them.
-  test('should retrieved menu successfully.', async () => {
-    const branchId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.id!;
-    const menu = await menuController.createMenu({ ...menuObject, branchId });
+  test('should retrieved menu successfully.', async () => {    
+    const { id: categoryNameId1 } = await categoryNameController.createCategoryName(categoryNameObject);
+    const { id: categoryNameId2 } = await categoryNameController.createCategoryName(returnCategoryName());
+    const { id: categoryNameId3 } = await categoryNameController.createCategoryName(returnCategoryName());
+    const { id: backlogId, branchId } = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.backlog!;
+    const item1 = await backlogController.createItem(backlogId!, { categoryNameId: categoryNameId1, ...itemObject });
+    const item2 = await backlogController.createItem(backlogId!, { categoryNameId: categoryNameId2, ...itemObject });
+    const item3 = await backlogController.createItem(backlogId!, { categoryNameId: categoryNameId3, ...itemObject });
+    const menu = await menuController.createMenu({ ...menuObject, branchId: branchId! });
+    const cylinder = await menuController.createCylinder(menu.id, cylinderObject);
+    const menuCategory1 = await menuController.createMenuCategory(menu.id, {
+      categoryId: item1.categoryId!,
+      cylinderId: cylinder.id,
+      items: [item1.id]
+    });
+    const menuCategory2 = await menuController.createMenuCategory(menu.id, {
+      categoryId: item2.categoryId!,
+      cylinderId: cylinder.id,
+      items: [item2.id]
+    });
+    const menuCategory3 = await menuController.createMenuCategory(menu.id, {
+      categoryId: item3.categoryId!,
+      cylinderId: cylinder.id,
+      items: [item3.id]
+    });
     const promise = menuController.getMenu(menu.id);
 
-    await expect(promise).resolves.toMatchObject(menu);
+    await expect(promise).resolves.toMatchObject({
+      ...menu,
+      cylinders: [
+        {
+          ...cylinder,
+          menuCategories: [
+            {
+              ...menuCategory1,
+              items: [item1]
+            }, {
+              ...menuCategory2,
+              items: [item2]
+            }, {
+              ...menuCategory3,
+              items: [item3]
+            }
+          ]
+        }
+      ]
+    });
   });
 
   test('should rejects menu with MenuNotFound error.', async () => {
