@@ -61,9 +61,9 @@ interface CylinderCompleteOut extends CompleteOut {
   positionInMenu: Int | null;
 }
 
-interface MenuCategoryCompleteOut extends CreateMenuCategoryCompleteOut {
+export interface MenuCategoryCompleteOut extends CreateMenuCategoryCompleteOut {
   categoryName?: DefaultString | null;
-  items: ItemCompleteOut[] | null;
+  items?: ItemCompleteOut[] | null;
 }
 
 export interface MenuCompletePlusOut extends MenuCompleteOut {
@@ -84,6 +84,6 @@ export interface MenuPreviewCompleteOut extends OwnerPreviewCompactOut, MenuComp
 
 export interface MenuViewCompleteOut extends MenuCompleteOut {
   currentDay: Days;
-  branch: BranchCompleteOut | null;
+  branch?: BranchCompleteOut | null;
   menuCategories: MenuCategoryCompleteOut[];
 }

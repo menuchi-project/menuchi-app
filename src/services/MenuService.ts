@@ -1,12 +1,13 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import prismaClient from '../db/prisma';
 import { UUID } from '../types/TypeAliases';
-import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, MenuCompletePlusOut, CreateMenuCompactIn, OwnerPreviewCompactOut, MenuPreviewCompleteOut, MenuViewCompleteOut as MenuViewCompleteOut } from '../types/MenuTypes';
+import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, MenuCompletePlusOut, CreateMenuCompactIn, OwnerPreviewCompactOut, MenuPreviewCompleteOut, MenuViewCompleteOut as MenuViewCompleteOut, MenuCategoryCompleteOut } from '../types/MenuTypes';
 import MenuchiError from '../exceptions/MenuchiError';
 import { BranchNotFound, CategoryNotFound, CylinderNotFound, MenuNotFound } from '../exceptions/NotFoundError';
 import S3Service from './S3Service';
 import { BacklogCompleteOut } from '../types/RestaurantTypes';
 import { Days } from '../types/Enums';
+import { ItemCompleteOut } from '../types/ItemTypes';
 
 class MenuService {
   constructor(private prisma: PrismaClient = prismaClient) {}
@@ -356,7 +357,8 @@ class MenuService {
                 deletedAt: null,
                 categoryName: {
                   name: {
-                    contains: search
+                    contains: search,
+                    mode: 'insensitive'
                   }
                 }
               },
@@ -365,6 +367,7 @@ class MenuService {
                 items: {
                   where: {
                     deletedAt: null,
+                    menuCategoryId: null
                   },
                   orderBy: {
                     positionInCategory: 'asc',
@@ -374,6 +377,9 @@ class MenuService {
               omit: {
                 categoryNameId: true,
               },
+              orderBy: {
+                positionInBacklog: 'asc'
+              }
             },
           },
         })
@@ -403,12 +409,17 @@ class MenuService {
   }
 
   async getAllMenus(branchId: UUID): Promise<MenuCompleteOut[]> {
-    return this.prisma.menu.findMany({
+    const menus = await this.prisma.menu.findMany({
       where: {
         branchId,
         deletedAt: null
       }
     });
+
+    return Promise.all(menus.map(async (menu) => ({
+      ...menu,
+      favicon: await S3Service.generateGetPresignedUrl(menu.favicon)
+    })));
   }
 
   async getMenu(menuId: UUID): Promise<MenuCompletePlusOut | never> {
@@ -451,6 +462,7 @@ class MenuService {
 
     return {
       ...menu,
+      favicon: await S3Service.generateGetPresignedUrl(menu.favicon),
       cylinders: await Promise.all(menu.cylinders.map(async (cylinder) => ({
         ...cylinder,
         days: [
@@ -539,21 +551,43 @@ class MenuService {
     });
 
     const previewByDay = Object.values(Days).reduce((acc, day) => {
-       acc[day] = cylinders
+      acc[day] = [];
+      const categoryMap = new Map<string, MenuCategoryCompleteOut>();
+
+       cylinders
         .filter(cylinder => cylinder[day])
-        .flatMap(cylinder =>
-          cylinder.menuCategories.map(mc => ({
-            ...mc.category,
-            ...mc,
-            categoryName: mc.category?.categoryName?.name ?? null,
-             category: undefined
-           }))
+        .forEach(cylinder =>
+          cylinder.menuCategories.forEach(mc => {
+            const categoryId = mc.categoryId!;
+
+            if (!categoryMap.has(categoryId)) {
+              categoryMap.set(categoryId, {
+                ...mc,
+                ...mc.category,
+                categoryId,
+                categoryName: mc.category?.categoryName?.name ?? null,
+                items: [...(mc.items ?? [])],
+              });
+            } else {
+              const existing = categoryMap.get(categoryId);
+              existing?.items?.push(...(mc.items ?? []));
+            }
+          })
         );
+
+      acc[day] = Array.from(categoryMap.values()).map(cat => ({
+        ...cat,
+        items: cat.items?.sort(
+          (a, b) =>
+            (a.positionInMenuCategory ?? 0) - (b.positionInMenuCategory ?? 0)
+        ),
+      }));
       return acc;
     }, {} as OwnerPreviewCompactOut);
 
     return {
       ...menu,
+      favicon: await S3Service.generateGetPresignedUrl(menu.favicon),
       ...previewByDay
     };
   }
@@ -604,27 +638,52 @@ class MenuService {
       throw error;
     });
 
-    const days = Object.values(Days);
-    const currentDay = days[new Date().getDay()];
+    const currentDay = Object.values(Days)[new Date().getDay()];
+    const categoryMap = new Map<string, MenuCategoryCompleteOut>();
 
-    const dayMenu = cylinders
+    cylinders
       .filter(cylinder => cylinder[currentDay])
-      .flatMap(cylinder =>
-        cylinder.menuCategories.map(mc => ({
-          ...mc.category,
-          ...mc,
-          categoryName: mc.category?.categoryName?.name ?? null,
-          category: undefined
-        }))
-      );
+      .forEach(cylinder =>
+        cylinder.menuCategories.forEach(mc => {
+            const categoryId = mc.categoryId!;
+
+            if (!categoryMap.has(categoryId)) {
+              categoryMap.set(categoryId, {
+                ...mc,
+                ...mc.category,
+                categoryId,
+                categoryName: mc.category?.categoryName?.name ?? null,
+                items: [...(mc.items ?? [])],
+              });
+            } else {
+              const existing = categoryMap.get(categoryId);
+              existing?.items?.push(...(mc.items ?? []));
+            }
+      }));
+
+    const dayMenu = Array.from(categoryMap.values()).map(cat => ({
+        ...cat,
+        items: cat.items?.sort(
+          (a, b) =>
+            (a.positionInMenuCategory ?? 0) - (b.positionInMenuCategory ?? 0)
+        ),
+    }));
 
     return {
       ...menu,
+      favicon: await S3Service.generateGetPresignedUrl(menu.favicon),
       currentDay,
       menuCategories: dayMenu
     };
   }
 
+  async getDayItems(menuId: UUID): Promise<ItemCompleteOut[] | never> {
+    const { menuCategories } = await this.getMenuView(menuId);
+
+    const dayItems: ItemCompleteOut[] = [];
+    menuCategories.forEach(mc => dayItems.push(...mc.items!));
+    return dayItems;
+  }
 }
 
 export default new MenuService();

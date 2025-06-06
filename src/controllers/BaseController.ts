@@ -1,8 +1,9 @@
 import { Controller } from 'tsoa';
 import { BranchUpdateSession, MenuUpdateSession, RestaurantUpdateSession, SessionUpdate, UserSession } from '../types/AuthTypes';
 import { UUID } from '../types/TypeAliases';
-import { PermissionScope, SessionUpdateScope } from '../types/Enums';
+import { PermissionScope, SessionUpdateScope, SyncOperations } from '../types/Enums';
 import { ForbiddenError } from '../exceptions/AuthError';
+import TransformersRedisClient from '../config/TransformersRedisClient';
 
 export default class BaseController extends Controller {
   constructor() {
@@ -83,5 +84,19 @@ export default class BaseController extends Controller {
         }
        break;
     }
+  }
+
+  async publish(
+    streamName = process.env.TRANSFORMERS_STREAM!,
+    key?: string | null,
+    operation?: SyncOperations,
+    oldKey?: string | null) {
+      if (key && operation) {
+        const event = {
+          image_key: key,
+          operation
+        };
+        await TransformersRedisClient.xAdd(streamName, '*', event);
+      }
   }
 }

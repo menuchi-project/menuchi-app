@@ -39,3 +39,9 @@ export enum Days {
   Thursday = 'thu',
   Friday = 'fri'
 }
+
+export enum SyncOperations {
+  Created = 'CREATED',
+  Updated = 'UPDATED',
+  Deleted = 'DELETED'
+} 

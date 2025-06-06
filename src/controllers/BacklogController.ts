@@ -7,7 +7,7 @@ import { ItemValidationError } from "../exceptions/ValidationError";
 import { BacklogNotFound, CategoryNameNotFound } from "../exceptions/NotFoundError";
 import BaseController from "./BaseController";
 import express from 'express';
-import { PermissionScope, RolesEnum } from "../types/Enums";
+import { PermissionScope, RolesEnum, SyncOperations } from "../types/Enums";
 import { ForbiddenError, UnauthorizedError } from "../exceptions/AuthError";
 import MenuchiError from "../exceptions/MenuchiError";
 import TransformersRedisClient from "../config/TransformersRedisClient";
@@ -36,11 +36,7 @@ export class BacklogController extends BaseController {
     this.checkPermission(req?.session.user, PermissionScope.Backlog, backlogId);
 
     const item = await BacklogService.createItem(backlogId, body);
-    if (item.picKey) {
-      const streamName = process.env.TRANSFORMERS_STREAM!;
-      const event = { image_key: item.picKey };
-      await TransformersRedisClient.xAdd(streamName, '*', event);
-    }
+    await this.publish(undefined, item.picKey!, SyncOperations.Created);
 
     return item;
   }

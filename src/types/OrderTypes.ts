@@ -36,4 +36,5 @@ interface OrderItemCompleteOut extends CompleteOut {
   pikUrl?: URL | null;
   price?: number | null;
   amount?: Int | null;
+  ingredients?: string | null;
 }

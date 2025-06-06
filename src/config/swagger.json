@@ -355,6 +355,46 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"GetMenuFaviconUrlOut": {
+				"properties": {
+					"menuFaviconUrl": {
+						"$ref": "#/components/schemas/URL"
+					},
+					"menuFaviconKey": {
+						"$ref": "#/components/schemas/LongString"
+					}
+				},
+				"required": [
+					"menuFaviconUrl",
+					"menuFaviconKey"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"GetMenuFaviconUrlIn": {
+				"properties": {
+					"restaurantId": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"branchId": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"menuId": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"fileName": {
+						"$ref": "#/components/schemas/ImageFilename"
+					}
+				},
+				"required": [
+					"restaurantId",
+					"branchId",
+					"menuId",
+					"fileName"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"DefaultString": {
 				"type": "string",
 				"example": "string",
@@ -718,7 +758,6 @@
 					"id",
 					"createdAt",
 					"updatedAt",
-					"restaurantId",
 					"backlog",
 					"address",
 					"openingTimes"
@@ -726,7 +765,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"RestaurantCompleteOut": {
+			"CreateRestaurantCompleteOut": {
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/UUID"
@@ -815,26 +854,26 @@
 						],
 						"nullable": true
 					},
-					"avatarUrl": {
+					"avatarKey": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/URL"
+								"$ref": "#/components/schemas/DefaultString"
 							}
 						],
 						"nullable": true
 					},
-					"coverUrl": {
+					"coverKey": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/URL"
+								"$ref": "#/components/schemas/DefaultString"
 							}
 						],
 						"nullable": true
 					},
-					"logoUrl": {
+					"logoKey": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/URL"
+								"$ref": "#/components/schemas/DefaultString"
 							}
 						],
 						"nullable": true
@@ -1190,6 +1229,10 @@
 							}
 						],
 						"nullable": true
+					},
+					"ingredients": {
+						"type": "string",
+						"nullable": true
 					}
 				},
 				"required": [
@@ -1432,6 +1475,14 @@
 						"nullable": true
 					},
 					"positionInCategory": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					},
+					"positionInMenuCategory": {
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/Int"
@@ -1842,8 +1893,7 @@
 					"updatedAt",
 					"categoryId",
 					"cylinderId",
-					"positionInCylinder",
-					"items"
+					"positionInCylinder"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -2724,8 +2774,7 @@
 				"required": [
 					"id",
 					"createdAt",
-					"updatedAt",
-					"restaurantId"
+					"updatedAt"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -2815,7 +2864,6 @@
 					"favicon",
 					"isPublished",
 					"currentDay",
-					"branch",
 					"menuCategories"
 				],
 				"type": "object",
@@ -4252,6 +4300,75 @@
 				}
 			}
 		},
+		"/s3/get-menu-favicon-url": {
+			"post": {
+				"operationId": "GeneratePutMenuFaviconPresignedUrl",
+				"responses": {
+					"201": {
+						"description": "Menu favicon presigned url generated successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GetMenuFaviconUrlOut"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "4224 S3ValidationError",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/S3ValidationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Generates a pre-signed URL for uploading an menu favicon to S3.",
+				"tags": [
+					"S3"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/GetMenuFaviconUrlIn"
+							}
+						}
+					}
+				}
+			}
+		},
 		"/restaurants": {
 			"post": {
 				"operationId": "CreateRestaurant",
@@ -4261,7 +4378,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/RestaurantCompleteOut"
+									"$ref": "#/components/schemas/CreateRestaurantCompleteOut"
 								}
 							}
 						}
@@ -4340,7 +4457,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/RestaurantCompleteOut"
+									"$ref": "#/components/schemas/CreateRestaurantCompleteOut"
 								}
 							}
 						}
@@ -6172,6 +6289,77 @@
 					"Menu"
 				],
 				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
+			}
+		},
+		"/menus/{menuId}/day-items": {
+			"get": {
+				"operationId": "GetDayItems",
+				"responses": {
+					"200": {
+						"description": "Menu items is retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ItemCompleteOut"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "4048 MenuNotFound",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuNotFound"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieves the menu items available for the current day.",
+				"tags": [
+					"Menu"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",

@@ -20,6 +20,21 @@ export interface RestaurantCompactIn {
   logoKey?: LongString | null;
 }
 
+export interface CreateRestaurantCompleteOut extends CompleteOut {
+  name: DefaultString | null;
+  displayName: Slug| null;
+  branches?: BranchCompletePlusOut[] | null;
+  slang?: DefaultString | null;
+  instagram?: DefaultString | null;
+  telegram?: DefaultString | null;
+  twitter?: DefaultString | null;
+  youtube?: DefaultString | null;
+  eitaa?: DefaultString | null;
+  avatarKey?: DefaultString | null;
+  coverKey?: DefaultString | null;
+  logoKey?: DefaultString | null;
+}
+
 export interface RestaurantCompleteOut extends CompleteOut {
   name: DefaultString | null;
   displayName: Slug| null;
@@ -74,7 +89,7 @@ export interface CreateBranchCompleteOut extends BranchCompleteOut {
 }
 
 export interface BranchCompleteOut extends CompleteOut {
-  restaurantId: UUID | null;
+  restaurantId?: UUID | null;
   name?: DefaultString | null;
   displayName?: Slug | null;
   iOpen?: Boolean | null;
