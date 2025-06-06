@@ -35,7 +35,7 @@ describe('GET /restaurants/{restaurantId}', () => {
     const promise = restaurantController.getRestaurant(restaurant.id);
 
     await expect(promise).resolves.toMatchObject({
-      ...restaurant,
+      ...restaurantObject,
       branches: [{ ...branch, address, openingTimes }]
     });
   });
