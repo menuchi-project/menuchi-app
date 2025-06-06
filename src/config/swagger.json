@@ -5752,7 +5752,7 @@
 						}
 					}
 				},
-				"description": "Creates a new category in a menu.",
+				"description": "Creates a new menu category.",
 				"tags": [
 					"Menu"
 				],
@@ -5779,86 +5779,6 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/MenuCategoryCompactIn"
-							}
-						}
-					}
-				}
-			},
-			"patch": {
-				"operationId": "ReorderMenuItems",
-				"responses": {
-					"204": {
-						"description": "Menu item orders in the menu category updated successfully.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "number",
-									"format": "double"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Some item IDs are invalid or do not belong to the menu.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/MenuchiError"
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized user.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/UnauthorizedError"
-								}
-							}
-						}
-					},
-					"403": {
-						"description": "Access Denied. You are not authorized to perform this action.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ForbiddenError"
-								}
-							}
-						}
-					}
-				},
-				"description": "Reorders menu items.",
-				"tags": [
-					"Menu"
-				],
-				"security": [
-					{
-						"": [
-							"RESTAURANT_OWNER"
-						]
-					}
-				],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "menuId",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/UUID"
-						}
-					}
-				],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"items": {
-									"$ref": "#/components/schemas/UUID"
-								},
-								"type": "array"
 							}
 						}
 					}
@@ -5936,9 +5856,7 @@
 						}
 					}
 				}
-			}
-		},
-		"/menus/{menuId}/items": {
+			},
 			"patch": {
 				"operationId": "ReorderMenuCategories",
 				"responses": {
@@ -5985,6 +5903,88 @@
 					}
 				},
 				"description": "Reorders menu categories.",
+				"tags": [
+					"Menu"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"items": {
+									"$ref": "#/components/schemas/UUID"
+								},
+								"type": "array"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/menus/{menuId}/items": {
+			"patch": {
+				"operationId": "ReorderMenuItems",
+				"responses": {
+					"204": {
+						"description": "Menu item orders in the menu category updated successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"format": "double"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Some item IDs are invalid or do not belong to the menu.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MenuchiError"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Reorders menu items.",
 				"tags": [
 					"Menu"
 				],
@@ -7576,7 +7576,7 @@
 						}
 					}
 				},
-				"description": "Creates a new backlog. Alternatively, creating an item will automatically create its category (if needed).",
+				"description": "Creates a new category. Alternatively, creating an item will automatically create its category (if needed).",
 				"tags": [
 					"Backlog"
 				],

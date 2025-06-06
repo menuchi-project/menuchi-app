@@ -7,6 +7,7 @@ import { randomUUID } from "crypto";
 import { BacklogNotFound, CategoryNameNotFound, CategoryNotFound, ItemNotFound } from "../../src/exceptions/NotFoundError";
 import MenuchiError from "../../src/exceptions/MenuchiError";
 import BacklogService from "../../src/services/BacklogService";
+import { Prisma } from "@prisma/client";
 
 const categoryNameController = new CategoryNameController();
 const restaurantController = new RestaurantController();
@@ -130,6 +131,25 @@ describe('PATCH /backlog/{backlogId}/reorder-items/in-category', () => {
     const promise = backlogController.reorderItemsInCategory(backlogId!, [randomUUID(), itemId]);
 
     await expect(promise).rejects.toThrowError(MenuchiError);
+  });
+});
+
+describe('POST /backlog/{backlogId}/categories', () => {
+  test('should create category successfully.', async () => {
+    const { id: categoryNameId } = await categoryNameController.createCategoryName(categoryNameObject);
+    const backlogId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.backlog?.id;
+    const promise = backlogController.createCategory(backlogId!, { categoryNameId });
+
+    await expect(promise).resolves.toMatchObject({ backlogId, categoryNameId });
+  });
+
+  test('should rejects create category with constraint error..', async () => {
+    const { id: categoryNameId } = await categoryNameController.createCategoryName(categoryNameObject);
+    const backlogId = (await restaurantController.createRestaurant(restaurantObject))?.branches?.[0]?.backlog?.id;
+    await backlogController.createCategory(backlogId!, { categoryNameId });
+    const promise = backlogController.createCategory(backlogId!, { categoryNameId });
+
+    await expect(promise).rejects.toThrowError(Prisma.PrismaClientKnownRequestError);
   });
 });
 

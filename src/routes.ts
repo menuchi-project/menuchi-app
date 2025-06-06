@@ -2023,7 +2023,7 @@ export function RegisterRoutes(app: Router) {
                 body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refAlias","ref":"UUID"}},
                 req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
-        app.patch('/menus/:menuId/categories',
+        app.patch('/menus/:menuId/items',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
             ...(fetchMiddlewares<RequestHandler>(MenuController)),
             ...(fetchMiddlewares<RequestHandler>(MenuController.prototype.reorderMenuItems)),
@@ -2089,7 +2089,7 @@ export function RegisterRoutes(app: Router) {
                 body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refAlias","ref":"UUID"}},
                 req: {"in":"request","name":"req","dataType":"object"},
         };
-        app.patch('/menus/:menuId/items',
+        app.patch('/menus/:menuId/categories',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
             ...(fetchMiddlewares<RequestHandler>(MenuController)),
             ...(fetchMiddlewares<RequestHandler>(MenuController.prototype.reorderMenuCategories)),
