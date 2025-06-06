@@ -1482,6 +1482,14 @@
 						],
 						"nullable": true
 					},
+					"positionInMenuCategory": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Int"
+							}
+						],
+						"nullable": true
+					},
 					"isActive": {
 						"allOf": [
 							{
@@ -1885,8 +1893,7 @@
 					"updatedAt",
 					"categoryId",
 					"cylinderId",
-					"positionInCylinder",
-					"items"
+					"positionInCylinder"
 				],
 				"type": "object",
 				"additionalProperties": false

@@ -61,9 +61,9 @@ interface CylinderCompleteOut extends CompleteOut {
   positionInMenu: Int | null;
 }
 
-interface MenuCategoryCompleteOut extends CreateMenuCategoryCompleteOut {
+export interface MenuCategoryCompleteOut extends CreateMenuCategoryCompleteOut {
   categoryName?: DefaultString | null;
-  items: ItemCompleteOut[] | null;
+  items?: ItemCompleteOut[] | null;
 }
 
 export interface MenuCompletePlusOut extends MenuCompleteOut {
