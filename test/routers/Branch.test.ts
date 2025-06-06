@@ -108,6 +108,14 @@ describe('POST /branches/{branchId}/address', () => {
 
     await expect(promise).resolves.toMatchObject(addressObject);
   });
+
+  test('should rejects create address with BranchNotFound error.', async () => {
+    const { id: restaurantId } = await restaurantController.createRestaurant(restaurantObject);
+    await branchController.createBranch({ restaurantId, ...branchObject });
+    const promise = branchController.createOrUpdateAddress(randomUUID(), addressObject);
+
+    await expect(promise).rejects.toThrowError(BranchNotFound);
+  });
 });
 
 describe('POST /branches/{branchId}/opening-times', () => {
@@ -117,5 +125,13 @@ describe('POST /branches/{branchId}/opening-times', () => {
     const promise = branchController.createOrUpdateOpeningTimes(branchId, openingTimesObject);
 
     await expect(promise).resolves.toMatchObject(openingTimesObject);
+  });
+
+  test('should rejects create opening times with BranchNotFound error.', async () => {
+    const { id: restaurantId } = await restaurantController.createRestaurant(restaurantObject);
+    await branchController.createBranch({ restaurantId, ...branchObject });
+    const promise = branchController.createOrUpdateOpeningTimes(randomUUID(), openingTimesObject);
+
+    await expect(promise).rejects.toThrowError(BranchNotFound);
   });
 });

@@ -1,32 +1,60 @@
 import { describe, expect, test } from "vitest";
-import { returnRestaurant } from "../factories";
+import { returnAddress, returnBranch, returnOpeningTimes, returnRestaurant } from "../factories";
 import { RestaurantController } from "../../src/controllers/RestaurantController";
+import { BranchController } from "../../src/controllers/BranchController";
+import { randomUUID } from "crypto";
+import { RestaurantNotFound } from "../../src/exceptions/NotFoundError";
 
 const restaurantObject = returnRestaurant();
-const controller = new RestaurantController();
+const branchObject = returnBranch();
+const addressObject = returnAddress();
+const openingTimesObject = returnOpeningTimes();
+const restaurantController = new RestaurantController();
+const branchController = new BranchController();
 
 describe('POST /restaurants', () => {
   test('should create restaurant with a default branch and backlog successfully.', async () => {
-    const promise = controller.createRestaurant(restaurantObject);
+    const promise = restaurantController.createRestaurant(restaurantObject);
     await expect(promise).resolves.toMatchObject(restaurantObject);
   });
 
   test('should return the restaurant with the given id.', async () => {
-    const { id: restaurantId } = await controller.createRestaurant(restaurantObject);
-    const promise = controller.getRestaurant(restaurantId);
+    const { id: restaurantId } = await restaurantController.createRestaurant(restaurantObject);
+    const promise = restaurantController.getRestaurant(restaurantId);
 
     await expect(promise).resolves.toMatchObject(restaurantObject);
   });
 });
 
+describe('GET /restaurants/{restaurantId}', () => {
+  test('should retrieves restaurant with its complete branches successfully.', async () => {
+    const restaurant = await restaurantController.createRestaurant(restaurantObject);
+    const branch = await branchController.createBranch({ restaurantId: restaurant.id, ...branchObject });
+    const address = await branchController.createOrUpdateAddress(branch.id, addressObject);
+    const openingTimes = await branchController.createOrUpdateOpeningTimes(branch.id, openingTimesObject);
+    const promise = restaurantController.getRestaurant(restaurant.id);
+
+    await expect(promise).resolves.toMatchObject({
+      ...restaurant,
+      branches: [{ ...branch, address, openingTimes }]
+    });
+  });
+
+  test('should rejects retrieves restaurant with RestaurantNotFound error.', async () => {
+    const promise = restaurantController.getRestaurant(randomUUID());
+
+    await expect(promise).rejects.toThrowError(RestaurantNotFound);
+  });
+});
+
 describe('PATCH /restaurants/{restaurantId}', () => {
   test('should update restaurant successfully.', async () => {
-    const promise = controller.createRestaurant(restaurantObject);
+    const promise = restaurantController.createRestaurant(restaurantObject);
     await expect(promise).resolves.toMatchObject(restaurantObject);
   });
 
   test('should return the restaurant with the given id.', async () => {
-    const { id: restaurantId } = await controller.createRestaurant(restaurantObject);
+    const { id: restaurantId } = await restaurantController.createRestaurant(restaurantObject);
     const newRestaurant = {
       name: 'New Restaurant',
       displayName: 'new-restaurant',
@@ -37,11 +65,9 @@ describe('PATCH /restaurants/{restaurantId}', () => {
       youtube:'new-id',
       eitaa:'new-id'
     };
-    await controller.updateRestaurant(restaurantId, newRestaurant);
-    const promise = controller.getRestaurant(restaurantId);
+    await restaurantController.updateRestaurant(restaurantId, newRestaurant);
+    const promise = restaurantController.getRestaurant(restaurantId);
 
     await expect(promise).resolves.toMatchObject(newRestaurant);
   });
 });
-
-// TODO: test GET /restaurants/{restaurantId}
