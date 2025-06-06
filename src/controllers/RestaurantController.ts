@@ -63,7 +63,7 @@ export class RestaurantController extends BaseController {
   @SuccessResponse(204, 'Restaurant updated successfully. It doesn\'t retrieve anything.')
   @Security('', [RolesEnum.RestaurantOwner])
   @Patch('/{restaurantId}')
-  async updateBranch(
+  async updateRestaurant(
     @Path() restaurantId: UUID,
     @Body() body: UpdateRestaurantCompactIn,
     @Request() req?: express.Request

@@ -1490,7 +1490,7 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsRestaurantController_updateBranch: Record<string, TsoaRoute.ParameterSchema> = {
+        const argsRestaurantController_updateRestaurant: Record<string, TsoaRoute.ParameterSchema> = {
                 restaurantId: {"in":"path","name":"restaurantId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"ref":"UpdateRestaurantCompactIn"},
                 req: {"in":"request","name":"req","dataType":"object"},
@@ -1498,20 +1498,20 @@ export function RegisterRoutes(app: Router) {
         app.patch('/restaurants/:restaurantId',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
             ...(fetchMiddlewares<RequestHandler>(RestaurantController)),
-            ...(fetchMiddlewares<RequestHandler>(RestaurantController.prototype.updateBranch)),
+            ...(fetchMiddlewares<RequestHandler>(RestaurantController.prototype.updateRestaurant)),
 
-            async function RestaurantController_updateBranch(request: ExRequest, response: ExResponse, next: any) {
+            async function RestaurantController_updateRestaurant(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsRestaurantController_updateBranch, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsRestaurantController_updateRestaurant, request, response });
 
                 const controller = new RestaurantController();
 
               await templateService.apiHandler({
-                methodName: 'updateBranch',
+                methodName: 'updateRestaurant',
                 controller,
                 response,
                 next,
@@ -2021,7 +2021,7 @@ export function RegisterRoutes(app: Router) {
         const argsMenuController_reorderMenuItems: Record<string, TsoaRoute.ParameterSchema> = {
                 menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refAlias","ref":"UUID"}},
-                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                req: {"in":"request","name":"req","dataType":"object"},
         };
         app.patch('/menus/:menuId/items',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),

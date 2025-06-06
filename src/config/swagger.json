@@ -4516,7 +4516,7 @@
 				]
 			},
 			"patch": {
-				"operationId": "UpdateBranch",
+				"operationId": "UpdateRestaurant",
 				"responses": {
 					"204": {
 						"description": "Restaurant updated successfully. It doesn't retrieve anything.",
