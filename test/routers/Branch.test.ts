@@ -109,3 +109,13 @@ describe('POST /branches/{branchId}/address', () => {
     await expect(promise).resolves.toMatchObject(addressObject);
   });
 });
+
+describe('POST /branches/{branchId}/opening-times', () => {
+  test('should create opening times successfully.', async () => {
+    const { id: restaurantId } = await restaurantController.createRestaurant(restaurantObject);
+    const { id: branchId } = await branchController.createBranch({ restaurantId, ...branchObject });
+    const promise = branchController.createOrUpdateOpeningTimes(branchId, openingTimesObject);
+
+    await expect(promise).resolves.toMatchObject(openingTimesObject);
+  });
+});
