@@ -677,6 +677,13 @@ class MenuService {
     };
   }
 
+  async getDayItems(menuId: UUID): Promise<ItemCompleteOut[] | never> {
+    const { menuCategories } = await this.getMenuView(menuId);
+
+    const dayItems: ItemCompleteOut[] = [];
+    menuCategories.forEach(mc => dayItems.push(...mc.items!));
+    return dayItems;
+  }
 }
 
 export default new MenuService();

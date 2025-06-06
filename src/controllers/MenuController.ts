@@ -12,6 +12,7 @@ import BaseController from "./BaseController";
 import express from 'express';
 import { ForbiddenError, UnauthorizedError } from "../exceptions/AuthError";
 import { MenuUpdateSession } from "../types/AuthTypes";
+import { ItemCompleteOut } from "../types/ItemTypes";
 
 @Route('/menus')
 @Tags('Menu')
@@ -304,5 +305,22 @@ export class MenuController extends BaseController {
   @Get('/{menuId}/view')
   public async getCustomerMenuPreview(@Path() menuId: UUID): Promise<MenuViewCompleteOut> {
     return MenuService.getMenuView(menuId);
+  }
+
+  /**
+   * Retrieves the menu items available for the current day.
+   */
+  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
+  @Response<UnauthorizedError>(401, 'Unauthorized user.')
+  @Response<MenuNotFound>(404, '4048 MenuNotFound')
+  @SuccessResponse(200, 'Menu items is retrieved successfully.')
+  @Security('', [RolesEnum.RestaurantOwner])
+  @Get('/{menuId}/day-items')
+  public async getDayItems(
+    @Path() menuId: UUID,
+    @Request() req: express.Request
+  ): Promise<ItemCompleteOut[]> {
+    this.checkPermission(req?.session.user, PermissionScope.Menu, menuId);
+    return MenuService.getDayItems(menuId);
   }
 }
