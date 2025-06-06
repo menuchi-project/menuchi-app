@@ -99,3 +99,13 @@ describe('PATCH /branches', () => {
     await expect(promise).rejects.toThrowError(Prisma.PrismaClientKnownRequestError);
   });
 });
+
+describe('POST /branches/{branchId}/address', () => {
+  test('should create address successfully.', async () => {
+    const { id: restaurantId } = await restaurantController.createRestaurant(restaurantObject);
+    const { id: branchId } = await branchController.createBranch({ restaurantId, ...branchObject });
+    const promise = branchController.createOrUpdateAddress(branchId, addressObject);
+
+    await expect(promise).resolves.toMatchObject(addressObject);
+  });
+});
