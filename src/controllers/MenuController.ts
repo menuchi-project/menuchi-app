@@ -308,7 +308,7 @@ export class MenuController extends BaseController {
   }
 
   /**
-   * Retrieves the menu items available for the current day.
+   * Returns today's menu items sorted by descending order count.
    */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
   @Response<UnauthorizedError>(401, 'Unauthorized user.')

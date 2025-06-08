@@ -681,8 +681,8 @@ class MenuService {
     const { menuCategories } = await this.getMenuView(menuId);
 
     const dayItems: ItemCompleteOut[] = [];
-    menuCategories.forEach(mc => dayItems.push(...mc.items!));
-    return dayItems;
+    menuCategories.forEach(mc => dayItems.push(...(mc.items ?? [])));
+    return dayItems.sort((a, b) => (b.orderCount ?? 0) - (a.orderCount ?? 0));
   }
 }
 

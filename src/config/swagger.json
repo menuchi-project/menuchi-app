@@ -6349,7 +6349,7 @@
 						}
 					}
 				},
-				"description": "Retrieves the menu items available for the current day.",
+				"description": "Returns today's menu items sorted by descending order count.",
 				"tags": [
 					"Menu"
 				],
