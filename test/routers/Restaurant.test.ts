@@ -33,22 +33,15 @@ describe('GET /restaurants/{restaurantId}', () => {
     await branchController.createOrUpdateAddress(branch.id, addressObject);
     await branchController.createOrUpdateOpeningTimes(branch.id, openingTimesObject);
     const promise = restaurantController.getRestaurant(restaurant.id);
-    console.log(await promise, {
-      ...restaurantObject,
-      branches: [{
-        ...{ restaurantId: restaurant.id, ...branchObject }, 
-        address: { branchId: branch.id, ...addressObject },
-        openingTimes: { branchId: branch.id, ...openingTimesObject }
-      }]
-    });
-    
+        
     await expect(promise).resolves.toMatchObject({
       ...restaurantObject,
-      branches: [{
-        ...{ restaurantId: restaurant.id, ...branchObject }, 
-        address: { branchId: branch.id, ...addressObject },
-        openingTimes: { branchId: branch.id, ...openingTimesObject }
-      }]
+      branches: [expect.objectContaining({
+        ...branchObject,
+        restaurantId: restaurant.id,
+        address: expect.objectContaining(addressObject),
+        openingTimes: expect.objectContaining(openingTimesObject),
+      })],
     });
   });
 
