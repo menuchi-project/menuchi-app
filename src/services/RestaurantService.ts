@@ -42,7 +42,7 @@ class RestaurantService {
     });
   }
 
-  async getRestaurant(restaurantId: UUID): Promise<RestaurantCompleteOut> {
+  async getRestaurant(restaurantId: UUID): Promise<RestaurantCompleteOut | never> {
     const { avatarKey, coverKey, logoKey, ...restaurant } = await this.prisma.restaurant
       .findUniqueOrThrow({
         where: {

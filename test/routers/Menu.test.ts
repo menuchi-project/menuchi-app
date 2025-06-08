@@ -105,16 +105,32 @@ describe('GET /menus/{menuId}', () => {
       cylinders: [
         {
           ...cylinder,
+          days: [
+            cylinder.sat,
+            cylinder.sun,
+            cylinder.mon,
+            cylinder.tue,
+            cylinder.wed,
+            cylinder.thu,
+            cylinder.fri
+          ],
+          sat: undefined,
+          sun: undefined,
+          mon: undefined,
+          tue: undefined,
+          wed: undefined,
+          thu: undefined,
+          fri: undefined,
           menuCategories: [
             {
               ...menuCategory1,
-              items: [item1]
+              items: [{ ...itemObject, menuCategoryId: menuCategory1.id }]
             }, {
               ...menuCategory2,
-              items: [item2]
+              items: [{ ...itemObject, menuCategoryId: menuCategory2.id }]
             }, {
               ...menuCategory3,
-              items: [item3]
+              items: [{ ...itemObject, menuCategoryId: menuCategory3.id }]
             }
           ]
         }
