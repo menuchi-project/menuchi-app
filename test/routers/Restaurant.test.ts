@@ -30,13 +30,17 @@ describe('GET /restaurants/{restaurantId}', () => {
   test('should retrieves restaurant with its complete branches successfully.', async () => {
     const restaurant = await restaurantController.createRestaurant(restaurantObject);
     const branch = await branchController.createBranch({ restaurantId: restaurant.id, ...branchObject });
-    const address = await branchController.createOrUpdateAddress(branch.id, addressObject);
-    const openingTimes = await branchController.createOrUpdateOpeningTimes(branch.id, openingTimesObject);
+    await branchController.createOrUpdateAddress(branch.id, addressObject);
+    await branchController.createOrUpdateOpeningTimes(branch.id, openingTimesObject);
     const promise = restaurantController.getRestaurant(restaurant.id);
 
     await expect(promise).resolves.toMatchObject({
       ...restaurantObject,
-      branches: [{ ...branch, address, openingTimes }]
+      branches: [{
+        ...{ restaurantId: restaurant.id, ...branchObject }, 
+        address: { branchId: branch.id, ...addressObject },
+        openingTimes: { branchId: branch.id, ...openingTimesObject }
+      }]
     });
   });
 
