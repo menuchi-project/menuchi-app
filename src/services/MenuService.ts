@@ -433,6 +433,9 @@ class MenuService {
             }
           }
         }
+      },
+      orderBy: {
+        createdAt: 'asc'
       }
     });
 
