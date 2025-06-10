@@ -1,4 +1,4 @@
-import { Menu, Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import prismaClient from '../db/prisma';
 import { UUID } from '../types/TypeAliases';
 import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, MenuCompletePlusOut, CreateMenuCompactIn, OwnerPreviewCompactOut, MenuPreviewCompleteOut, MenuViewCompleteOut as MenuViewCompleteOut, MenuCategoryCompleteOut, MenuCompleteWithCountsOut, MenuCompeteWithResIdOut } from '../types/MenuTypes';
@@ -53,7 +53,8 @@ class MenuService {
           positionInMenu: true
         },
         where: {
-          menuId
+          menuId,
+          deletedAt: null
         }
       }).catch((error: Error) => {
         if (error.message.includes('cylinders_menu_id_fkey'))
@@ -124,7 +125,8 @@ class MenuService {
         },
         where: {
           cylinder: {
-            menuId
+            menuId,
+            deletedAt: null
           }
         }
       });
@@ -142,7 +144,8 @@ class MenuService {
                 }
               }
             }
-          }
+          },
+          deletedAt: null
         }
       }).catch((error: Error) => {
           if (error.message.includes('not found'))
@@ -181,7 +184,8 @@ class MenuService {
   async getMenuCategory(menuCategoryId: UUID) {
     return this.prisma.menuCategory.findUniqueOrThrow({
       where: {
-        id: menuCategoryId
+        id: menuCategoryId,
+        deletedAt: null
       },
       include: {
         items: true
@@ -273,7 +277,8 @@ class MenuService {
           cylinder: {
             menuId
           }
-        }
+        },
+        deletedAt: null
       },
       data: {
         isActive
@@ -343,6 +348,39 @@ class MenuService {
     });
     
     if (cylinders.length !== cylindersId.length) throw new MenuchiError('All cylinder IDs must be in the request.', 400);
+  }
+
+  async deleteMenu(menuId: UUID) {
+    return this.prisma.$transaction(async (tx) => {
+      await tx.menu.update({
+        where: {
+          id: menuId
+        },
+        data: {
+          deletedAt: new Date()
+        }
+      });
+
+      await tx.cylinder.updateMany({
+        where: {
+          menuId
+        },
+        data: {
+          deletedAt: new Date()
+        }
+      });
+
+      await tx.menuCategory.updateMany({
+        where: {
+          cylinder: {
+            menuId
+          }
+        },
+        data: {
+          deletedAt: new Date()
+        }
+      });
+    });
   }
 
   async getBacklog(backlogId: UUID, search = ''): Promise<BacklogCompleteOut | never> {
@@ -459,7 +497,8 @@ class MenuService {
   async getMenu(menuId: UUID): Promise<MenuCompletePlusOut | never> {
     const menu = await this.prisma.menu.findUniqueOrThrow({
       where: {
-        id: menuId
+        id: menuId,
+        deletedAt: null
       },
       include: {
         cylinders: {
@@ -534,7 +573,8 @@ class MenuService {
   async getCompactMenu(menuId: UUID): Promise<MenuCompleteOut | never> {
     return this.prisma.menu.findUniqueOrThrow({
       where: {
-        id: menuId
+        id: menuId,
+        deletedAt: null
       }
     })
     .catch((error: Error) => {
@@ -547,7 +587,8 @@ class MenuService {
   async getMenuPreview(menuId: UUID): Promise<MenuPreviewCompleteOut | never> {
     const { cylinders, ...menu } = await this.prisma.menu.findUniqueOrThrow({
       where: {
-        id: menuId
+        id: menuId,
+        deletedAt: null
       },
       include: {
         cylinders: {
@@ -629,7 +670,8 @@ class MenuService {
   async getMenuView(menuId: UUID): Promise<MenuViewCompleteOut | never> {
     const { cylinders, ...menu } = await this.prisma.menu.findUniqueOrThrow({
       where: {
-        id: menuId
+        id: menuId,
+        deletedAt: null
       },
       include: {
         branch: {

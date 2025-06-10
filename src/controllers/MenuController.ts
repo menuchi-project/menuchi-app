@@ -277,6 +277,23 @@ export class MenuController extends BaseController {
   }
 
   /**
+   * Deletes a menu.
+   */
+  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
+  @Response<UnauthorizedError>(401, 'Unauthorized user.')
+  @SuccessResponse(204, 'Menu deleted successfully.')
+  @Security('', [RolesEnum.RestaurantOwner])
+  @Delete('/{menuId}') 
+  async deleteMenu(
+    @Path() menuId: UUID,
+    @Request() req?: express.Request
+  ): Promise<null> {
+    this.checkPermission(req?.session.user, PermissionScope.Menu, menuId);
+    await MenuService.deleteMenu(menuId);
+    return null;
+  }
+
+  /**
    * Retrieves a menu preview by its id.
    */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
