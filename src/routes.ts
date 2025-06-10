@@ -584,7 +584,7 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "MenuCompleteOut": {
+    "MenuCompleteWithCountsOut": {
         "dataType": "refObject",
         "properties": {
             "id": {"ref":"UUID","required":true},
@@ -595,7 +595,9 @@ const models: TsoaRoute.Models = {
             "name": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}],"required":true},
             "favicon": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}],"required":true},
             "isPublished": {"dataType":"union","subSchemas":[{"ref":"Boolean"},{"dataType":"enum","enums":[null]}],"required":true},
-            "restaurantId": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+            "cylindersCount": {"ref":"Int","required":true},
+            "categoriesCount": {"ref":"Int","required":true},
+            "itemsCount": {"ref":"Int","required":true},
         },
         "additionalProperties": false,
     },
@@ -641,7 +643,6 @@ const models: TsoaRoute.Models = {
             "name": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}],"required":true},
             "favicon": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}],"required":true},
             "isPublished": {"dataType":"union","subSchemas":[{"ref":"Boolean"},{"dataType":"enum","enums":[null]}],"required":true},
-            "restaurantId": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
             "cylinders": {"dataType":"union","subSchemas":[{"dataType":"array","array":{"dataType":"refObject","ref":"CylinderCompleteOut"}},{"dataType":"enum","enums":[null]}],"required":true},
         },
         "additionalProperties": false,
@@ -823,7 +824,6 @@ const models: TsoaRoute.Models = {
             "name": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}],"required":true},
             "favicon": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}],"required":true},
             "isPublished": {"dataType":"union","subSchemas":[{"ref":"Boolean"},{"dataType":"enum","enums":[null]}],"required":true},
-            "restaurantId": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
         },
         "additionalProperties": false,
     },
@@ -867,7 +867,6 @@ const models: TsoaRoute.Models = {
             "name": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}],"required":true},
             "favicon": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}],"required":true},
             "isPublished": {"dataType":"union","subSchemas":[{"ref":"Boolean"},{"dataType":"enum","enums":[null]}],"required":true},
-            "restaurantId": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
             "currentDay": {"ref":"Days","required":true},
             "branch": {"dataType":"union","subSchemas":[{"ref":"BranchCompleteOut"},{"dataType":"enum","enums":[null]}]},
             "menuCategories": {"dataType":"array","array":{"dataType":"refObject","ref":"MenuCategoryCompleteOut"},"required":true},

@@ -1,7 +1,7 @@
 import { Body, Delete, Get, Patch, Path, Post, Query, Request, Response, Route, Security, SuccessResponse, Tags } from "tsoa";
 import { DefaultString, UUID } from "../types/TypeAliases";
 import MenuService from "../services/MenuService";
-import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, MenuCompletePlusOut, CreateMenuCompactIn, MenuPreviewCompleteOut, MenuViewCompleteOut, CreateMenuCompleteOut } from "../types/MenuTypes";
+import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, MenuCompletePlusOut, CreateMenuCompactIn, MenuPreviewCompleteOut, MenuViewCompleteOut, CreateMenuCompleteOut, MenuCompleteWithCountsOut } from "../types/MenuTypes";
 import { CylinderValidationError, MenuCategoryValidationError, MenuValidationError } from "../exceptions/ValidationError";
 import { ConstraintsDatabaseError } from "../exceptions/DatabaseError";
 import MenuchiError from "../exceptions/MenuchiError";
@@ -73,7 +73,7 @@ export class MenuController extends BaseController {
   public async getAllMenus(
     @Path() branchId: UUID,
     @Request() req?: express.Request
-  ): Promise<MenuCompleteOut[]> {
+  ): Promise<MenuCompleteWithCountsOut[]> {
     this.checkPermission(req?.session.user, PermissionScope.Branch, branchId);
     return MenuService.getAllMenus(branchId);
   }

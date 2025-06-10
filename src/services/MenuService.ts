@@ -1,7 +1,7 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Menu, Prisma, PrismaClient } from '@prisma/client';
 import prismaClient from '../db/prisma';
 import { UUID } from '../types/TypeAliases';
-import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, MenuCompletePlusOut, CreateMenuCompactIn, OwnerPreviewCompactOut, MenuPreviewCompleteOut, MenuViewCompleteOut as MenuViewCompleteOut, MenuCategoryCompleteOut } from '../types/MenuTypes';
+import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, MenuCompletePlusOut, CreateMenuCompactIn, OwnerPreviewCompactOut, MenuPreviewCompleteOut, MenuViewCompleteOut as MenuViewCompleteOut, MenuCategoryCompleteOut, MenuCompleteWithCountsOut, MenuCompeteWithResIdOut } from '../types/MenuTypes';
 import MenuchiError from '../exceptions/MenuchiError';
 import { BranchNotFound, CategoryNotFound, CylinderNotFound, MenuNotFound } from '../exceptions/NotFoundError';
 import S3Service from './S3Service';
@@ -12,7 +12,7 @@ import { ItemCompleteOut } from '../types/ItemTypes';
 class MenuService {
   constructor(private prisma: PrismaClient = prismaClient) {}
 
-  async createMenu(body: CreateMenuCompactIn): Promise<MenuCompleteOut | never> {
+  async createMenu(body: CreateMenuCompactIn): Promise<MenuCompeteWithResIdOut | never> {
     const { branch, ...newMenu } = await this.prisma.menu.create({
       data: body,
       include: {
@@ -408,17 +408,48 @@ class MenuService {
       };
   }
 
-  async getAllMenus(branchId: UUID): Promise<MenuCompleteOut[]> {
+  async getAllMenus(branchId: UUID): Promise<MenuCompleteWithCountsOut[]> {
     const menus = await this.prisma.menu.findMany({
       where: {
         branchId,
         deletedAt: null
+      },
+      include: {
+        _count: {
+          select: {
+            cylinders: true
+          }
+        },
+        cylinders: {
+          include: {
+            menuCategories: {
+              include: {
+                _count: {
+                  select: {
+                    items: true
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     });
 
+    const categoriesSet = new Set<UUID>();
     return Promise.all(menus.map(async (menu) => ({
       ...menu,
-      favicon: await S3Service.generateGetPresignedUrl(menu.favicon)
+      cylindersCount: menu._count.cylinders,
+      itemsCount: menu.cylinders.reduce((acc, cylinder) => {
+        return cylinder.menuCategories.reduce((acc, mc) => {
+          categoriesSet.add(mc.categoryId!);
+          return mc._count.items + acc
+        }, 0) + acc
+      }, 0),
+      categoriesCount: categoriesSet.size,
+      favicon: await S3Service.generateGetPresignedUrl(menu.favicon),
+      cylinders: undefined,
+      _count: undefined
     })));
   }
 

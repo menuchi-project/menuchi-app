@@ -1758,7 +1758,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"MenuCompleteOut": {
+			"MenuCompleteWithCountsOut": {
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/UUID"
@@ -1808,13 +1808,14 @@
 						],
 						"nullable": true
 					},
-					"restaurantId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
+					"cylindersCount": {
+						"$ref": "#/components/schemas/Int"
+					},
+					"categoriesCount": {
+						"$ref": "#/components/schemas/Int"
+					},
+					"itemsCount": {
+						"$ref": "#/components/schemas/Int"
 					}
 				},
 				"required": [
@@ -1824,7 +1825,10 @@
 					"branchId",
 					"name",
 					"favicon",
-					"isPublished"
+					"isPublished",
+					"cylindersCount",
+					"categoriesCount",
+					"itemsCount"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -2000,14 +2004,6 @@
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/Boolean"
-							}
-						],
-						"nullable": true
-					},
-					"restaurantId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
 							}
 						],
 						"nullable": true
@@ -2623,14 +2619,6 @@
 							}
 						],
 						"nullable": true
-					},
-					"restaurantId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
 					}
 				},
 				"required": [
@@ -2825,14 +2813,6 @@
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/Boolean"
-							}
-						],
-						"nullable": true
-					},
-					"restaurantId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
 							}
 						],
 						"nullable": true
@@ -5290,7 +5270,7 @@
 							"application/json": {
 								"schema": {
 									"items": {
-										"$ref": "#/components/schemas/MenuCompleteOut"
+										"$ref": "#/components/schemas/MenuCompleteWithCountsOut"
 									},
 									"type": "array"
 								}
