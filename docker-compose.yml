@@ -1,0 +1,148 @@
+networks:
+  menuchi-network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+    ipam:
+      config:
+        - subnet: 172.16.10.0/24
+
+volumes:
+  menuchi-data:
+    name: menuchi-data
+
+  postgres-log:
+    name: postgres-log
+
+  redis-broker-data:
+    name: redis-broker-data
+
+services:
+  menuchi.api:
+    image: mahdihaghverdi/menuchi-project:dev
+    container_name: menuchi.api
+    hostname: menuchi.api
+    restart: always
+    stop_grace_period: 30s
+    env_file:
+      - ./.docker/.dev.env
+    expose:
+      - 8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      menuchi.psql:
+        condition: service_healthy
+      menuchi.transformers.api:
+        condition: service_started
+    networks:
+      menuchi-network:
+
+  # menuchi.front:
+  #   image: zahraam/menuchi-project:dev
+  #   container_name: menuchi.front
+  #   hostname: menuchi.front
+  #   restart: always
+  #   stop_grace_period: 30s
+  #   env_file:
+  #     - ./.docker/.dev.env
+  #   ports:
+  #     - "3000:7000"
+  #   depends_on:
+  #     menuchi.api:
+  #       condition: service_started
+  #   networks:
+  #     menuchi-network:
+
+  menuchi.psql:
+    image: postgres:latest
+    container_name: menuchi.psql
+    hostname: menuchi.psql
+    restart: unless-stopped
+    stop_grace_period: 1m
+    env_file:
+      - ./.docker/.dev.env
+    environment:
+      TZ: "Asia/Tehran"
+      PGTZ: "Asia/Tehran"
+      POSTGRES_DB: menuchi
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: "/data/postgres"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 10s
+      timeout: 20s
+      retries: 5
+      start_period: 10s
+    volumes:
+      - "menuchi-data:/data/postgres:rw"
+      - "postgres-log:/var/log/postgresql:rw"
+    ports:
+      - "5432:5432"
+    networks:
+      menuchi-network:
+
+  menuchi.redis:
+    image: redis:latest
+    container_name: menuchi.redis
+    hostname: menuchi.redis
+    restart: always
+    stop_grace_period: 20s
+    environment:
+      TZ: "Asia/Tehran"
+      REDIS_PASSWORD: redis
+    env_file:
+      - ./.docker/.dev.env
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-a", "redis", "--raw", "incr", "ping" ]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+      start_period: 5s
+    volumes:
+      - "redis-broker-data:/data:rw"
+    ports:
+      - "6379:6379"
+    networks:
+      menuchi-network:
+
+  menuchi.transformers.api:
+    image: mahdihaghverdi2/menuchi-transformers:dev
+    container_name: menuchi.transformers.api
+    hostname: menuchi.transformers.api
+    restart: always
+    stop_grace_period: 1m
+    env_file:
+      - ./.docker/.dev.env
+    depends_on:
+      menuchi.transformers.celery.worker:
+        condition: service_started
+    networks:
+      menuchi-network:
+
+  menuchi.transformers.celery.worker:
+    image: mahdihaghverdi2/menuchi-transformers:dev
+    container_name: jast.transformers.celery.worker
+    hostname: menuchi.transformers.celery.worker
+    restart: always
+    stop_grace_period: 1m
+    env_file:
+      - ./.docker/.dev.env
+    command:
+      [
+        "celery",
+        "-A",
+        "workers",
+        "worker",
+        "--loglevel",
+        "info",
+        "-c",
+        "4",
+        "-Ofair",
+      ]
+    depends_on:
+      menuchi.redis:
+        condition: service_healthy
+    networks:
+      menuchi-network:

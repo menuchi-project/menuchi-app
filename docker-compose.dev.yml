@@ -1,0 +1,57 @@
+networks:
+  menuchi.net.back:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+      com.docker.network.bridge.name: "menuchi_bnet"
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.10.0/24
+
+volumes:
+  menuchi_data:
+    name: menuchi_data
+
+services:
+  menuchi.api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: menuchi.api:dev
+    hostname: menuchi.api
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.docker/.dev.env
+    depends_on:
+      menuchi.psql:
+        condition: service_healthy
+    networks:
+      menuchi.net.back:
+
+  menuchi.psql:
+    image: postgres:latest
+    hostname: menuchi.psql
+    container_name: menuchi.psql
+    restart: unless-stopped
+    stop_grace_period: 2m
+    environment:
+      TZ: "Asia/Tehran"
+      PGTZ: "Asia/Tehran"
+      POSTGRES_DB: menuchi
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d menuchi"]
+      interval: 10s
+      timeout: 20s
+      retries: 5
+      start_period: 10s
+    env_file:
+      - ./.docker/.dev.env
+    volumes:
+      - "menuchi_data:/var/lib/postgresql/data"
+    networks:
+      menuchi.net.back:

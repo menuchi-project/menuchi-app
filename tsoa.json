@@ -1,0 +1,69 @@
+{
+  "entryFile": "./src/index.ts",
+  "noImplicitAdditionalProperties": "silently-remove-extras",
+  "controllerPathGlobs": [
+    "./src/controllers/*Controller.ts"
+  ],
+  "spec": {
+    "outputDirectory": "./src/config",
+    "specVersion": 3,
+    "name": "Menuchi-API",
+    "description": "Menuchi API Documentation",
+    "version": "1.0.0",
+    "securityDefinitions": {
+      "SessionAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "session-id" 
+      },
+      "JWTAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "access-token"
+      }
+    },
+    "tags": [
+      {
+        "name": "Auth",
+        "description": "Authentication and session management"
+      },
+      {
+        "name": "Dashboard",
+        "description": "User dashboard and session info"
+      },
+      {
+        "name": "Restaurant",
+        "description": "Restaurant operations"
+      },
+      {
+        "name": "Branch",
+        "description": "Branch management"
+      },
+      {
+        "name": "Backlog",
+        "description": "Backlog handling for restaurant branches"
+      },
+      {
+        "name": "Menu",
+        "description": "Menu management"
+      },
+      {
+        "name": "Order",
+        "description": "Order management"
+      },
+      {
+        "name": "S3",
+        "description": "S3 file upload URL generation"
+      },
+      {
+        "name": "Category Name",
+        "description": "Menu category name operations"
+      }
+    ]
+  },
+  "routes": {
+    "routesDir": "./src",
+    "middleware": "express",
+    "authenticationModule": "./src/middlewares/Auth.ts"
+  }
+}
