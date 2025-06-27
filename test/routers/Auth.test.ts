@@ -78,3 +78,6 @@ describe('POST /auth/logout', () => {
     expect(res.body).toBe(true);
   });
 });
+
+// TODO: test /auth/send-otp and /auth/check-otp
+// TODO: test GET /users/profile

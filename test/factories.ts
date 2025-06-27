@@ -41,3 +41,34 @@ export const returnCylinder = () => ({
   thu: false,
   fri: false
 });
+
+export const returnBranch = () => ({
+  name: 'Test Branch',
+  displayName: 'test-name',
+  status: 'test-status',
+  showRating: true,
+  instagram: 'some-id',
+  telegram:'some-id',
+  twitter:'some-id',
+  youtube:'some-id',
+  eitaa:'some-id'
+});
+
+export const returnAddress = () => ({
+  country: 'test-country',
+  region: 'test-region',
+  city: 'test-city',
+  area: 'test-area',
+  street: 'test-street',
+  description: 'test-desc',
+});
+
+export const returnOpeningTimes = () => ({
+  sat: '08:00-23:00',
+  sun: '08:00-23:00',
+  mon: '08:00-23:00',
+  tue: '08:00-23:00',
+  wed: '08:00-23:00',
+  thu: '08:00-23:00',
+  fri: '08:00-23:00'
+});

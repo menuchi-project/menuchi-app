@@ -335,6 +335,29 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "RestaurantCompleteOut": {
+        "dataType": "refObject",
+        "properties": {
+            "id": {"ref":"UUID","required":true},
+            "createdAt": {"dataType":"datetime","required":true},
+            "updatedAt": {"dataType":"datetime","required":true},
+            "deletedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}]},
+            "name": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}],"required":true},
+            "displayName": {"dataType":"union","subSchemas":[{"ref":"Slug"},{"dataType":"enum","enums":[null]}],"required":true},
+            "branches": {"dataType":"union","subSchemas":[{"dataType":"array","array":{"dataType":"refObject","ref":"BranchCompletePlusOut"}},{"dataType":"enum","enums":[null]}]},
+            "slang": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+            "instagram": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+            "telegram": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+            "twitter": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+            "youtube": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+            "eitaa": {"dataType":"union","subSchemas":[{"ref":"DefaultString"},{"dataType":"enum","enums":[null]}]},
+            "avatarUrl": {"dataType":"union","subSchemas":[{"ref":"URL"},{"dataType":"enum","enums":[null]}]},
+            "coverUrl": {"dataType":"union","subSchemas":[{"ref":"URL"},{"dataType":"enum","enums":[null]}]},
+            "logoUrl": {"dataType":"union","subSchemas":[{"ref":"URL"},{"dataType":"enum","enums":[null]}]},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "RestaurantNotFound": {
         "dataType": "refObject",
         "properties": {
@@ -1458,7 +1481,7 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsRestaurantController_updateBranch: Record<string, TsoaRoute.ParameterSchema> = {
+        const argsRestaurantController_updateRestaurant: Record<string, TsoaRoute.ParameterSchema> = {
                 restaurantId: {"in":"path","name":"restaurantId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"ref":"UpdateRestaurantCompactIn"},
                 req: {"in":"request","name":"req","dataType":"object"},
@@ -1466,20 +1489,20 @@ export function RegisterRoutes(app: Router) {
         app.patch('/restaurants/:restaurantId',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
             ...(fetchMiddlewares<RequestHandler>(RestaurantController)),
-            ...(fetchMiddlewares<RequestHandler>(RestaurantController.prototype.updateBranch)),
+            ...(fetchMiddlewares<RequestHandler>(RestaurantController.prototype.updateRestaurant)),
 
-            async function RestaurantController_updateBranch(request: ExRequest, response: ExResponse, next: any) {
+            async function RestaurantController_updateRestaurant(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsRestaurantController_updateBranch, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsRestaurantController_updateRestaurant, request, response });
 
                 const controller = new RestaurantController();
 
               await templateService.apiHandler({
-                methodName: 'updateBranch',
+                methodName: 'updateRestaurant',
                 controller,
                 response,
                 next,
@@ -1989,9 +2012,9 @@ export function RegisterRoutes(app: Router) {
         const argsMenuController_reorderMenuItems: Record<string, TsoaRoute.ParameterSchema> = {
                 menuId: {"in":"path","name":"menuId","required":true,"ref":"UUID"},
                 body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refAlias","ref":"UUID"}},
-                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                req: {"in":"request","name":"req","dataType":"object"},
         };
-        app.patch('/menus/:menuId/categories',
+        app.patch('/menus/:menuId/items',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
             ...(fetchMiddlewares<RequestHandler>(MenuController)),
             ...(fetchMiddlewares<RequestHandler>(MenuController.prototype.reorderMenuItems)),
@@ -2057,7 +2080,7 @@ export function RegisterRoutes(app: Router) {
                 body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refAlias","ref":"UUID"}},
                 req: {"in":"request","name":"req","dataType":"object"},
         };
-        app.patch('/menus/:menuId/items',
+        app.patch('/menus/:menuId/categories',
             authenticateMiddleware([{"":["RESTAURANT_OWNER"]}]),
             ...(fetchMiddlewares<RequestHandler>(MenuController)),
             ...(fetchMiddlewares<RequestHandler>(MenuController.prototype.reorderMenuCategories)),
