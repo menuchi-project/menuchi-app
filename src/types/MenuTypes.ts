@@ -1,3 +1,4 @@
+import { P } from 'vitest/dist/chunks/environment.d.Dmw5ulng';
 import { CompleteOut } from './BaseTypes';
 import { Days } from './Enums';
 import { ItemCompleteOut } from './ItemTypes';
@@ -19,7 +20,16 @@ export interface MenuCompleteOut extends CompleteOut {
   name: DefaultString | null;
   favicon: DefaultString | null;
   isPublished: Boolean | null;
+}
+
+export interface MenuCompeteWithResIdOut extends MenuCompleteOut {
   restaurantId?: DefaultString | null;
+}
+
+export interface MenuCompleteWithCountsOut extends MenuCompleteOut {
+  cylindersCount: Int;
+  categoriesCount: Int;
+  itemsCount: Int;
 }
 
 export interface CreateMenuCompleteOut extends CompleteOut {

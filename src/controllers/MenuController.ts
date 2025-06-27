@@ -1,7 +1,7 @@
 import { Body, Delete, Get, Patch, Path, Post, Query, Request, Response, Route, Security, SuccessResponse, Tags } from "tsoa";
 import { DefaultString, UUID } from "../types/TypeAliases";
 import MenuService from "../services/MenuService";
-import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, MenuCompletePlusOut, CreateMenuCompactIn, MenuPreviewCompleteOut, MenuViewCompleteOut, CreateMenuCompleteOut } from "../types/MenuTypes";
+import { CylinderCompactIn, CreateCylinderCompleteOut, MenuCategoryCompactIn, CreateMenuCategoryCompleteOut, MenuCompactIn, MenuCompleteOut, MenuCompletePlusOut, CreateMenuCompactIn, MenuPreviewCompleteOut, MenuViewCompleteOut, CreateMenuCompleteOut, MenuCompleteWithCountsOut } from "../types/MenuTypes";
 import { CylinderValidationError, MenuCategoryValidationError, MenuValidationError } from "../exceptions/ValidationError";
 import { ConstraintsDatabaseError } from "../exceptions/DatabaseError";
 import MenuchiError from "../exceptions/MenuchiError";
@@ -73,7 +73,7 @@ export class MenuController extends BaseController {
   public async getAllMenus(
     @Path() branchId: UUID,
     @Request() req?: express.Request
-  ): Promise<MenuCompleteOut[]> {
+  ): Promise<MenuCompleteWithCountsOut[]> {
     this.checkPermission(req?.session.user, PermissionScope.Branch, branchId);
     return MenuService.getAllMenus(branchId);
   }
@@ -277,6 +277,23 @@ export class MenuController extends BaseController {
   }
 
   /**
+   * Deletes a menu.
+   */
+  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
+  @Response<UnauthorizedError>(401, 'Unauthorized user.')
+  @SuccessResponse(204, 'Menu deleted successfully.')
+  @Security('', [RolesEnum.RestaurantOwner])
+  @Delete('/{menuId}') 
+  async deleteMenu(
+    @Path() menuId: UUID,
+    @Request() req?: express.Request
+  ): Promise<null> {
+    this.checkPermission(req?.session.user, PermissionScope.Menu, menuId);
+    await MenuService.deleteMenu(menuId);
+    return null;
+  }
+
+  /**
    * Retrieves a menu preview by its id.
    */
   @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
@@ -305,22 +322,5 @@ export class MenuController extends BaseController {
   @Get('/{menuId}/view')
   public async getCustomerMenuPreview(@Path() menuId: UUID): Promise<MenuViewCompleteOut> {
     return MenuService.getMenuView(menuId);
-  }
-
-  /**
-   * Retrieves the menu items available for the current day.
-   */
-  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
-  @Response<UnauthorizedError>(401, 'Unauthorized user.')
-  @Response<MenuNotFound>(404, '4048 MenuNotFound')
-  @SuccessResponse(200, 'Menu items is retrieved successfully.')
-  @Security('', [RolesEnum.RestaurantOwner])
-  @Get('/{menuId}/day-items')
-  public async getDayItems(
-    @Path() menuId: UUID,
-    @Request() req: express.Request
-  ): Promise<ItemCompleteOut[]> {
-    this.checkPermission(req?.session.user, PermissionScope.Menu, menuId);
-    return MenuService.getDayItems(menuId);
   }
 }

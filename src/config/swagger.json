@@ -7,109 +7,30 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"UUID": {
+			"URL": {
 				"type": "string",
-				"example": "52907745-7672-470e-a803-a2f8feb52944",
-				"format": "uuid",
-				"description": "Stringified UUIDv4.\r\nSee [RFC 4112](https://tools.ietf.org/html/rfc4122)",
-				"pattern": "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}"
+				"example": "https://example.com/example",
+				"format": "uri",
+				"description": "URL format.",
+				"pattern": "^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$"
 			},
-			"Email": {
+			"LongString": {
 				"type": "string",
-				"example": "example@example.com",
-				"format": "email",
-				"description": "Email address format.",
-				"pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+				"minLength": 2,
+				"maxLength": 300
 			},
-			"Username": {
-				"type": "string",
-				"description": "Username format.\r\nMust be 3-30 characters long, containing only letters, numbers, underscores, and hyphens.",
-				"pattern": "^[a-zA-Z0-9_-]{3,30}$"
-			},
-			"IranPhoneNumber": {
-				"type": "string",
-				"description": "Iran phone number format.\r\nSupported format: 09123456789",
-				"pattern": "^0?9\\d{9}$"
-			},
-			"BranchSession": {
+			"GetItemPicUrlOut": {
 				"properties": {
-					"id": {
-						"$ref": "#/components/schemas/UUID"
+					"itemPicUrl": {
+						"$ref": "#/components/schemas/URL"
 					},
-					"backlogId": {
-						"$ref": "#/components/schemas/UUID"
-					},
-					"menus": {
-						"items": {
-							"$ref": "#/components/schemas/UUID"
-						},
-						"type": "array"
-					}
-				},
-				"type": "object",
-				"additionalProperties": false
-			},
-			"RestaurantSession": {
-				"properties": {
-					"id": {
-						"$ref": "#/components/schemas/UUID"
-					},
-					"branches": {
-						"items": {
-							"$ref": "#/components/schemas/BranchSession"
-						},
-						"type": "array"
+					"itemPicKey": {
+						"$ref": "#/components/schemas/LongString"
 					}
 				},
 				"required": [
-					"branches"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"UserSession": {
-				"properties": {
-					"id": {
-						"anyOf": [
-							{
-								"$ref": "#/components/schemas/UUID"
-							},
-							{
-								"$ref": "#/components/schemas/Email"
-							}
-						]
-					},
-					"username": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Username"
-							}
-						],
-						"nullable": true
-					},
-					"phoneNumber": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/IranPhoneNumber"
-							}
-						],
-						"nullable": true
-					},
-					"restaurants": {
-						"items": {
-							"$ref": "#/components/schemas/RestaurantSession"
-						},
-						"type": "array"
-					},
-					"recentlyOrderIds": {
-						"items": {
-							"$ref": "#/components/schemas/UUID"
-						},
-						"type": "array"
-					}
-				},
-				"required": [
-					"id"
+					"itemPicUrl",
+					"itemPicKey"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -200,34 +121,6 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"URL": {
-				"type": "string",
-				"example": "https://example.com/example",
-				"format": "uri",
-				"description": "URL format.",
-				"pattern": "^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$"
-			},
-			"LongString": {
-				"type": "string",
-				"minLength": 2,
-				"maxLength": 300
-			},
-			"GetItemPicUrlOut": {
-				"properties": {
-					"itemPicUrl": {
-						"$ref": "#/components/schemas/URL"
-					},
-					"itemPicKey": {
-						"$ref": "#/components/schemas/LongString"
-					}
-				},
-				"required": [
-					"itemPicUrl",
-					"itemPicKey"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
 			"S3ValidationError": {
 				"properties": {
 					"name": {
@@ -261,6 +154,13 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"UUID": {
+				"type": "string",
+				"example": "52907745-7672-470e-a803-a2f8feb52944",
+				"format": "uuid",
+				"description": "Stringified UUIDv4.\r\nSee [RFC 4112](https://tools.ietf.org/html/rfc4122)",
+				"pattern": "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}"
 			},
 			"ImageFilename": {
 				"type": "string",
@@ -1169,6 +1069,13 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"Email": {
+				"type": "string",
+				"example": "example@example.com",
+				"format": "email",
+				"description": "Email address format.",
+				"pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+			},
 			"OrderStatus": {
 				"enum": [
 					"PENDING",
@@ -1758,7 +1665,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"MenuCompleteOut": {
+			"MenuCompleteWithCountsOut": {
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/UUID"
@@ -1808,13 +1715,14 @@
 						],
 						"nullable": true
 					},
-					"restaurantId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
+					"cylindersCount": {
+						"$ref": "#/components/schemas/Int"
+					},
+					"categoriesCount": {
+						"$ref": "#/components/schemas/Int"
+					},
+					"itemsCount": {
+						"$ref": "#/components/schemas/Int"
 					}
 				},
 				"required": [
@@ -1824,7 +1732,10 @@
 					"branchId",
 					"name",
 					"favicon",
-					"isPublished"
+					"isPublished",
+					"cylindersCount",
+					"categoriesCount",
+					"itemsCount"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -2000,14 +1911,6 @@
 						"allOf": [
 							{
 								"$ref": "#/components/schemas/Boolean"
-							}
-						],
-						"nullable": true
-					},
-					"restaurantId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
 							}
 						],
 						"nullable": true
@@ -2623,14 +2526,6 @@
 							}
 						],
 						"nullable": true
-					},
-					"restaurantId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
 					}
 				},
 				"required": [
@@ -2829,14 +2724,6 @@
 						],
 						"nullable": true
 					},
-					"restaurantId": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/DefaultString"
-							}
-						],
-						"nullable": true
-					},
 					"currentDay": {
 						"$ref": "#/components/schemas/Days"
 					},
@@ -2865,6 +2752,99 @@
 					"isPublished",
 					"currentDay",
 					"menuCategories"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Username": {
+				"type": "string",
+				"description": "Username format.\r\nMust be 3-30 characters long, containing only letters, numbers, underscores, and hyphens.",
+				"pattern": "^[a-zA-Z0-9_-]{3,30}$"
+			},
+			"IranPhoneNumber": {
+				"type": "string",
+				"description": "Iran phone number format.\r\nSupported format: 09123456789",
+				"pattern": "^0?9\\d{9}$"
+			},
+			"BranchSession": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"backlogId": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"menus": {
+						"items": {
+							"$ref": "#/components/schemas/UUID"
+						},
+						"type": "array"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"RestaurantSession": {
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/UUID"
+					},
+					"branches": {
+						"items": {
+							"$ref": "#/components/schemas/BranchSession"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"branches"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UserSession": {
+				"properties": {
+					"id": {
+						"anyOf": [
+							{
+								"$ref": "#/components/schemas/UUID"
+							},
+							{
+								"$ref": "#/components/schemas/Email"
+							}
+						]
+					},
+					"username": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Username"
+							}
+						],
+						"nullable": true
+					},
+					"phoneNumber": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/IranPhoneNumber"
+							}
+						],
+						"nullable": true
+					},
+					"restaurants": {
+						"items": {
+							"$ref": "#/components/schemas/RestaurantSession"
+						},
+						"type": "array"
+					},
+					"recentlyOrderIds": {
+						"items": {
+							"$ref": "#/components/schemas/UUID"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"id"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -3974,56 +3954,6 @@
 		}
 	},
 	"paths": {
-		"/users/profile": {
-			"get": {
-				"operationId": "GetProfile",
-				"responses": {
-					"200": {
-						"description": "Authorized user profile retrieved successfully.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/UserSession"
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized user.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/UnauthorizedError"
-								}
-							}
-						}
-					},
-					"403": {
-						"description": "Access Denied. You are not authorized to perform this action.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ForbiddenError"
-								}
-							}
-						}
-					}
-				},
-				"description": "Retrieves the profile of the currently authorized user.",
-				"tags": [
-					"User"
-				],
-				"security": [
-					{
-						"": [
-							"RESTAURANT_OWNER",
-							"RESTAURANT_CUSTOMER"
-						]
-					}
-				],
-				"parameters": []
-			}
-		},
 		"/s3/get-item-pic-url": {
 			"post": {
 				"operationId": "GeneratePutItemPicPresignedUrl",
@@ -5290,7 +5220,7 @@
 							"application/json": {
 								"schema": {
 									"items": {
-										"$ref": "#/components/schemas/MenuCompleteOut"
+										"$ref": "#/components/schemas/MenuCompleteWithCountsOut"
 									},
 									"type": "array"
 								}
@@ -5497,6 +5427,66 @@
 						}
 					}
 				}
+			},
+			"delete": {
+				"operationId": "DeleteMenu",
+				"responses": {
+					"204": {
+						"description": "Menu deleted successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "number",
+									"enum": [
+										null
+									],
+									"nullable": true
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Deletes a menu.",
+				"tags": [
+					"Menu"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "menuId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/UUID"
+						}
+					}
+				]
 			}
 		},
 		"/menus/{menuId}/cylinders": {
@@ -6301,12 +6291,62 @@
 				]
 			}
 		},
-		"/menus/{menuId}/day-items": {
+		"/dashboard/profile": {
+			"get": {
+				"operationId": "GetProfile",
+				"responses": {
+					"200": {
+						"description": "Authorized user profile retrieved successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UserSession"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized user.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UnauthorizedError"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Access Denied. You are not authorized to perform this action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ForbiddenError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieves the profile of the currently authorized user.",
+				"tags": [
+					"Dashboard"
+				],
+				"security": [
+					{
+						"": [
+							"RESTAURANT_OWNER",
+							"RESTAURANT_CUSTOMER"
+						]
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/dashboard/day-items": {
 			"get": {
 				"operationId": "GetDayItems",
 				"responses": {
 					"200": {
-						"description": "Menu items is retrieved successfully.",
+						"description": "Today's menu items is retrieved successfully.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -6337,21 +6377,11 @@
 								}
 							}
 						}
-					},
-					"404": {
-						"description": "4048 MenuNotFound",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/MenuNotFound"
-								}
-							}
-						}
 					}
 				},
-				"description": "Retrieves the menu items available for the current day.",
+				"description": "Returns today's menus items sorted by descending order count.",
 				"tags": [
-					"Menu"
+					"Dashboard"
 				],
 				"security": [
 					{
@@ -6360,16 +6390,7 @@
 						]
 					}
 				],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "menuId",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/UUID"
-						}
-					}
-				]
+				"parameters": []
 			}
 		},
 		"/category-names": {
@@ -8019,8 +8040,8 @@
 			"description": "Authentication and session management"
 		},
 		{
-			"name": "User",
-			"description": "User profile and session info"
+			"name": "Dashboard",
+			"description": "User dashboard and session info"
 		},
 		{
 			"name": "Restaurant",
