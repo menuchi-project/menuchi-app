@@ -28,8 +28,8 @@
         "description": "Authentication and session management"
       },
       {
-        "name": "User",
-        "description": "User profile and session info"
+        "name": "Dashboard",
+        "description": "User dashboard and session info"
       },
       {
         "name": "Restaurant",

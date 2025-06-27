@@ -323,21 +323,4 @@ export class MenuController extends BaseController {
   public async getCustomerMenuPreview(@Path() menuId: UUID): Promise<MenuViewCompleteOut> {
     return MenuService.getMenuView(menuId);
   }
-
-  /**
-   * Returns today's menu items sorted by descending order count.
-   */
-  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
-  @Response<UnauthorizedError>(401, 'Unauthorized user.')
-  @Response<MenuNotFound>(404, '4048 MenuNotFound')
-  @SuccessResponse(200, 'Menu items is retrieved successfully.')
-  @Security('', [RolesEnum.RestaurantOwner])
-  @Get('/{menuId}/day-items')
-  public async getDayItems(
-    @Path() menuId: UUID,
-    @Request() req: express.Request
-  ): Promise<ItemCompleteOut[]> {
-    this.checkPermission(req?.session.user, PermissionScope.Menu, menuId);
-    return MenuService.getDayItems(menuId);
-  }
 }

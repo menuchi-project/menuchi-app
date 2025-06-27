@@ -4,9 +4,11 @@ import { RolesEnum } from "../types/Enums";
 import express from 'express';
 import { UserSession } from "../types/AuthTypes";
 import { ForbiddenError, UnauthorizedError } from "../exceptions/AuthError";
+import { ItemCompleteOut } from "../types/ItemTypes";
+import DashboardService from "../services/DashboardService";
 
-@Route('/users')
-@Tags('User')
+@Route('/dashboard')
+@Tags('Dashboard')
 export class UserController extends BaseController {
   /**
    * Retrieves the profile of the currently authorized user.
@@ -18,5 +20,17 @@ export class UserController extends BaseController {
   @Get('/profile')
   public async getProfile(@Request() req: express.Request): Promise<UserSession | undefined> {
     return req.session.user;
+  }
+
+  /**
+   * Returns today's menus items sorted by descending order count.
+   */
+  @Response<ForbiddenError>(403, 'Access Denied. You are not authorized to perform this action.')
+  @Response<UnauthorizedError>(401, 'Unauthorized user.')
+  @SuccessResponse(200, 'Today\'s menu items is retrieved successfully.')
+  @Security('', [RolesEnum.RestaurantOwner])
+  @Get('/day-items')
+  public async getDayItems(@Request() req: express.Request): Promise<ItemCompleteOut[]> {
+    return DashboardService.getDayItems(req.session.id);
   }
 }

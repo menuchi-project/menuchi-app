@@ -7,7 +7,6 @@ import { BranchNotFound, CategoryNotFound, CylinderNotFound, MenuNotFound } from
 import S3Service from './S3Service';
 import { BacklogCompleteOut } from '../types/RestaurantTypes';
 import { Days } from '../types/Enums';
-import { ItemCompleteOut } from '../types/ItemTypes';
 
 class MenuService {
   constructor(private prisma: PrismaClient = prismaClient) {}
@@ -668,6 +667,8 @@ class MenuService {
   }
 
   async getMenuView(menuId: UUID): Promise<MenuViewCompleteOut | never> {
+    const currentDay = Object.values(Days)[new Date().getDay()];
+
     const { cylinders, ...menu } = await this.prisma.menu.findUniqueOrThrow({
       where: {
         id: menuId,
@@ -681,6 +682,9 @@ class MenuService {
           }
         },
         cylinders: {
+          where: {
+            [currentDay]: true
+          },
           include: {
             menuCategories: {
               include: {
@@ -714,11 +718,8 @@ class MenuService {
       throw error;
     });
 
-    const currentDay = Object.values(Days)[new Date().getDay()];
     const categoryMap = new Map<string, MenuCategoryCompleteOut>();
-
     cylinders
-      .filter(cylinder => cylinder[currentDay])
       .forEach(cylinder =>
         cylinder.menuCategories.forEach(mc => {
             const categoryId = mc.categoryId!;
@@ -751,14 +752,6 @@ class MenuService {
       currentDay,
       menuCategories: dayMenu
     };
-  }
-
-  async getDayItems(menuId: UUID): Promise<ItemCompleteOut[] | never> {
-    const { menuCategories } = await this.getMenuView(menuId);
-
-    const dayItems: ItemCompleteOut[] = [];
-    menuCategories.forEach(mc => dayItems.push(...(mc.items ?? [])));
-    return dayItems.sort((a, b) => (b.orderCount ?? 0) - (a.orderCount ?? 0));
   }
 }
 
