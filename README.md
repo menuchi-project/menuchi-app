@@ -94,15 +94,15 @@ MenuChi
 │   │   ├── swagger.json
 │   │   └── TransformersRedisClient.ts
 │   ├── controllers/          # API request handlers
-│   │   ├── 🔐 AuthController.ts
-│   │   ├── 📋 BacklogController.ts
-│   │   ├── 🏢 BranchController.ts
-│   │   ├── 📱 MenuController.ts
-│   │   ├── 📦 OrderController.ts
-│   │   └── 🏪 RestaurantController.ts
+│   │   ├── AuthController.ts
+│   │   ├── BacklogController.ts
+│   │   ├── BranchController.ts
+│   │   ├── MenuController.ts
+│   │   ├── OrderController.ts
+│   │   └── RestaurantController.ts
 │   ├── db/                  # Database configuration
-│   │   ├── 🔧 prisma.ts
-│   │   └── 📋 schema.prisma
+│   │   ├── prisma.ts
+│   │   └── schema.prisma
 │   ├── exceptions/          # Custom error classes
 │   ├── middlewares/         # Express middleware
 │   ├── services/            # Business logic
