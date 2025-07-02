@@ -31,6 +31,6 @@ export class UserController extends BaseController {
   @Security('', [RolesEnum.RestaurantOwner])
   @Get('/day-items')
   public async getDayItems(@Request() req: express.Request): Promise<ItemCompleteOut[]> {
-    return DashboardService.getDayItems(req.session.id);
+    return DashboardService.getDayItems(req.session.user?.id!);
   }
 }
